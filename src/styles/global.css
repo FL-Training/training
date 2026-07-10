@@ -409,7 +409,7 @@
       top: 16%;
       left: calc(100% + 8px);
       display: block;
-      width: clamp(3rem, 4vw, 4.5rem);
+      width: 2.5rem;
       height: 1.5px;
       background: var(--color-sage);
       transform-origin: left;
