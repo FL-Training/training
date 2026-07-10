@@ -7,7 +7,12 @@ import { enrichir } from "../lib/texte";
 const { seo, entete, parcours, ton } = aPropos;
 ---
 
-<Base title={seo.titre} description={seo.description}>
+<Base
+  title={seo.titre}
+  description={seo.description}
+  typePage="AboutPage"
+  fil={[{ label: "À propos", chemin: "/a-propos" }]}
+>
   <section class="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
     <div class="grid items-start gap-10 md:grid-cols-[1fr_auto]" data-reveal-group>
       <div data-reveal>

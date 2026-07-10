@@ -13,6 +13,8 @@ import formationsPageBrut from "../../contenu/formations-page.yaml";
 import approcheBrut from "../../contenu/approche.yaml";
 import aProposBrut from "../../contenu/a-propos.yaml";
 import contactBrut from "../../contenu/contact.yaml";
+import mentionsLegalesBrut from "../../contenu/mentions-legales.yaml";
+import confidentialiteBrut from "../../contenu/confidentialite.yaml";
 
 // Required text: an emptied or whitespace-only field must fail the build
 // (otherwise the CI would happily publish blank pages).
@@ -42,8 +44,9 @@ const communSchema = z.object({
   }),
   navigation: z.array(lien).min(1),
   boutonContact: texteRequis,
+  menu: z.object({ ouvrir: texteRequis, fermer: texteRequis }),
   liens: z.object({ linkedin: z.url() }),
-  photos: z.object({ portrait_alt: texteRequis }),
+  photos: z.object({ portrait_alt: texteRequis, og_alt: texteRequis }),
   pied_de_page: z.object({
     description: texteRequis,
     titre_site: texteRequis,
@@ -53,6 +56,7 @@ const communSchema = z.object({
     bouton_contact: texteRequis,
     bouton_linkedin: texteRequis,
     copyright: texteRequis,
+    liens_legaux: z.array(lien).min(1),
   }),
   page_introuvable: z.object({
     surtitre: texteRequis,
@@ -74,7 +78,11 @@ const accueilSchema = z.object({
   chiffres: z
     .array(z.object({ valeur: texteRequis, texte: texteRequis }))
     .min(1),
-  publics: entete.extend({ liste: z.array(texteRequis).min(1) }),
+  publics: entete.extend({
+    liste: z
+      .array(z.object({ label: texteRequis, picto: texteRequis }))
+      .min(1),
+  }),
   methode: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
@@ -186,6 +194,15 @@ const contactSchema = z.object({
   }),
 });
 
+const pageLegaleSchema = z.object({
+  seo,
+  titre: texteRequis,
+  intro: texteRequis,
+  sections: z
+    .array(z.object({ titre: texteRequis, texte: texteRequis }))
+    .min(1),
+});
+
 function valider<T>(fichier: string, schema: z.ZodType<T>, data: unknown): T {
   const resultat = schema.safeParse(data);
   if (!resultat.success) {
@@ -210,6 +227,16 @@ export const formationsPage = valider(
 export const approche = valider("approche.yaml", approcheSchema, approcheBrut);
 export const aPropos = valider("a-propos.yaml", aProposSchema, aProposBrut);
 export const contact = valider("contact.yaml", contactSchema, contactBrut);
+export const mentionsLegales = valider(
+  "mentions-legales.yaml",
+  pageLegaleSchema,
+  mentionsLegalesBrut,
+);
+export const confidentialite = valider(
+  "confidentialite.yaml",
+  pageLegaleSchema,
+  confidentialiteBrut,
+);
 
 export type TextesFormulaire = z.infer<typeof contactSchema>["formulaire"] & {
   linkedin: string;

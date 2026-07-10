@@ -80,7 +80,20 @@ const year = new Date().getFullYear();
     <div
       class="mt-12 flex flex-col items-start justify-between gap-2 border-t border-paper/15 pt-6 text-xs text-paper/50 sm:flex-row"
     >
-      <p>© {year} {pied.copyright}</p>
+      <p>
+        © {year}
+        {pied.copyright}
+        {
+          pied.liens_legaux.map((l) => (
+            <>
+              {" · "}
+              <a class="hover:text-paper" href={href(l.chemin)}>
+                {l.label}
+              </a>
+            </>
+          ))
+        }
+      </p>
       <p>{commun.marque.signature}</p>
     </div>
   </div>

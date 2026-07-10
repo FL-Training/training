@@ -9,7 +9,12 @@ const formations = await formationsTriees();
 const { seo, entete, carte } = formationsPage;
 ---
 
-<Base title={seo.titre} description={seo.description}>
+<Base
+  title={seo.titre}
+  description={seo.description}
+  typePage="CollectionPage"
+  fil={[{ label: entete.surtitre, chemin: "/formations" }]}
+>
   <section class="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24">
     <p class="eyebrow">{entete.surtitre}</p>
     <h1 class="display mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">

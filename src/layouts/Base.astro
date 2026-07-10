@@ -7,15 +7,47 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { href } from "../lib/url";
 import { commun } from "../lib/contenu";
+import { grapheSeo, urlAbsolue } from "../lib/seo";
+import type { Fil, TypePage } from "../lib/seo";
 
 interface Props {
   title: string;
   description: string;
+  typePage?: TypePage;
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  fil?: Fil[];
+  noeudsSeo?: Record<string, unknown>[];
 }
 
-const { title, description } = Astro.props;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const {
+  title,
+  description,
+  typePage = "WebPage",
+  image = "/og-image.jpg",
+  imageAlt = commun.photos.og_alt,
+  noindex = false,
+  fil,
+  noeudsSeo,
+} = Astro.props;
+
 const marque = commun.marque.nom;
+const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = urlAbsolue(Astro.site!, `${base}${image}`);
+
+const jsonLd = grapheSeo({
+  site: Astro.site!,
+  base: import.meta.env.BASE_URL,
+  pathname: Astro.url.pathname,
+  titre: `${title} — ${marque}`,
+  description,
+  typePage,
+  imageUrl,
+  fil,
+  noeudsSupplementaires: noeudsSeo,
+});
 ---
 
 <!doctype html>
@@ -25,7 +57,16 @@ const marque = commun.marque.nom;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — {marque}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {
+      noindex ? (
+        <meta name="robots" content="noindex,follow" />
+      ) : (
+        <>
+          <meta name="robots" content="index,follow,max-image-preview:large" />
+          <link rel="canonical" href={canonical} />
+        </>
+      )
+    }
     <link rel="icon" type="image/png" href={href("/favicon.png")} />
     <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
     <link rel="sitemap" href={href("/sitemap-index.xml")} />
@@ -37,25 +78,54 @@ const marque = commun.marque.nom;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} — ${marque}`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+
+    <script
+      is:inline
+      type="application/ld+json"
+      set:html={JSON.stringify(jsonLd)}
+    />
 
     <ClientRouter />
 
-    <script is:inline>
+    <script
+      is:inline
+      define:vars={{
+        libelleOuvrir: commun.menu.ouvrir,
+        libelleFermer: commun.menu.fermer,
+      }}
+    >
       // Scroll reveal + navigation progress. Motion is opt-in: without JS
       // (or with prefers-reduced-motion) every element stays visible.
       (() => {
         if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
           return;
         }
-        document.documentElement.classList.add("js-reveal");
+
+        let observateur = null;
 
         const init = () => {
+          // The ClientRouter swaps <html> attributes on every navigation:
+          // the class must be re-applied here, not just at first load.
+          document.documentElement.classList.add("js-reveal");
+          observateur?.disconnect();
+
           document.querySelectorAll("[data-reveal-group]").forEach((groupe) => {
+            const pas = Number(groupe.dataset.revealStagger) || 70;
             groupe.querySelectorAll("[data-reveal]").forEach((el, i) => {
-              el.style.setProperty("--reveal-delay", `${i * 70}ms`);
+              el.style.setProperty("--reveal-delay", `${i * pas}ms`);
             });
           });
-          const observateur = new IntersectionObserver(
+          observateur = new IntersectionObserver(
             (entrees) => {
               for (const entree of entrees) {
                 if (entree.isIntersecting) {
@@ -75,6 +145,24 @@ const marque = commun.marque.nom;
         document.addEventListener("astro:before-preparation", () => {
           document.querySelector(".nav-progress")?.classList.add("actif");
         });
+
+        // Accessible state of the mobile menu (<details> toggle doesn't
+        // bubble: capture phase).
+        document.addEventListener(
+          "toggle",
+          (evenement) => {
+            const details = evenement.target;
+            if (!(details instanceof HTMLDetailsElement)) return;
+            const resume = details.querySelector("summary");
+            if (!resume) return;
+            resume.setAttribute(
+              "aria-label",
+              details.open ? libelleFermer : libelleOuvrir,
+            );
+            resume.setAttribute("aria-expanded", String(details.open));
+          },
+          true,
+        );
       })();
     </script>
   </head>

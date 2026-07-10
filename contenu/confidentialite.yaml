@@ -1,0 +1,29 @@
+# ============================================================
+# PAGE « POLITIQUE DE CONFIDENTIALITÉ »
+# ============================================================
+
+seo:
+  titre: "Politique de confidentialité"
+  description: "Comment FL Training traite les données du formulaire de contact : quelles données, pour quel usage, où elles sont stockées et vos droits."
+
+titre: "Politique de confidentialité"
+intro: "Ce site est un site vitrine : il ne dépose aucun cookie, n'utilise aucun outil de mesure d'audience et ne collecte des données personnelles que lorsque vous choisissez d'utiliser le formulaire de contact."
+
+sections:
+  - titre: "Données collectées par le formulaire de contact"
+    texte: |
+      Lorsque vous envoyez un message via la page Contact, les informations suivantes sont enregistrées : votre **nom**, votre **adresse email**, votre **organisation** (facultatif), le **sujet** choisi et le **contenu de votre message**, ainsi que la date de réception.
+  - titre: "Finalité et base juridique"
+    texte: "Ces informations servent exclusivement à répondre à votre demande. Elles ne sont ni cédées, ni vendues, ni utilisées à des fins publicitaires ou de prospection non sollicitée. Le traitement repose sur l'exécution de mesures précontractuelles prises à votre demande (article 6.1.b du RGPD) : c'est vous qui initiez le contact, et les données sont nécessaires pour y répondre."
+  - titre: "Responsable du traitement"
+    texte: "Fabien Lacombe, formateur indépendant, éditeur du site."
+  - titre: "Où sont stockées les données"
+    texte: "Les messages sont stockés de manière sécurisée sur la plateforme Convex (déploiement hébergé en Union européenne — région Irlande). Seul Fabien Lacombe et l'administrateur technique du site y ont accès."
+  - titre: "Durée de conservation"
+    texte: "Les messages sont conservés le temps nécessaire au traitement de la demande et au suivi de la relation commerciale qui peut en découler, puis supprimés."
+  - titre: "Vos droits"
+    texte: |
+      Conformément au RGPD, vous disposez des droits d'**accès**, de **rectification**, d'**effacement**, de **limitation du traitement**, d'**opposition** et de **portabilité** des données vous concernant. Pour les exercer, contactez Fabien Lacombe via le formulaire de contact ou son profil LinkedIn — la demande sera traitée dans les meilleurs délais.
+      Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL (Commission nationale de l'informatique et des libertés) : www.cnil.fr.
+  - titre: "Cookies et traceurs"
+    texte: "Ce site ne dépose aucun cookie et n'embarque aucun traceur tiers. Les polices de caractères et toutes les ressources sont servies directement par le site, sans appel à des services externes."

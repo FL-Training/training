@@ -1,0 +1,38 @@
+---
+/**
+ * Lucide line icon, inlined at build time (no runtime dependency).
+ * An unknown name fails the build with the list of available icons,
+ * so a typo in contenu/accueil.yaml can't ship a broken module.
+ */
+import messagesSquare from "lucide-static/icons/messages-square.svg?raw";
+import shieldCheck from "lucide-static/icons/shield-check.svg?raw";
+import plane from "lucide-static/icons/plane.svg?raw";
+import landmark from "lucide-static/icons/landmark.svg?raw";
+import building2 from "lucide-static/icons/building-2.svg?raw";
+import usersRound from "lucide-static/icons/users-round.svg?raw";
+
+const pictos: Record<string, string> = {
+  "messages-square": messagesSquare,
+  "shield-check": shieldCheck,
+  plane: plane,
+  landmark: landmark,
+  "building-2": building2,
+  "users-round": usersRound,
+};
+
+interface Props {
+  nom: string;
+  class?: string;
+}
+
+const { nom, class: className = "" } = Astro.props;
+const svg = pictos[nom];
+if (!svg) {
+  throw new Error(
+    `Pictogramme inconnu : "${nom}". Disponibles : ${Object.keys(pictos).join(", ")} ` +
+      `(voir contenu/accueil.yaml, section publics).`,
+  );
+}
+---
+
+<span class={`picto ${className}`} aria-hidden="true" set:html={svg} />

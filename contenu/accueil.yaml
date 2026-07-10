@@ -9,7 +9,7 @@
 
 seo:
   titre: "Prévention & gestion des conflits en milieu professionnel"
-  description: "FL Training forme les professionnels exposés à l'agressivité : prévention des conflits, désescalade verbale, posture professionnelle et gestes de protection en dernier recours. Par Fabien Lacombe, ancien policier et formateur certifié."
+  description: "Formations à la prévention des conflits, à la désescalade verbale et à la gestion des violences au travail, par Fabien Lacombe — ancien policier, formateur certifié."
 
 hero:
   surtitre: "Formation professionnelle · Fabien Lacombe"
@@ -30,17 +30,25 @@ chiffres:
   - valeur: "Droit public"
     texte: "licence — cadre légal maîtrisé"
 
+# Pictogrammes disponibles : messages-square, shield-check, plane,
+# landmark, building-2, users-round
 publics:
   surtitre: "Pour qui"
   titre: "Pour celles et ceux qui font face, chaque jour."
   texte: "Des équipes confrontées à des publics difficiles, à de l'agressivité verbale ou physique, ou à des situations de tension répétées."
   liste:
-    - "Personnel d'accueil"
-    - "Sûreté & sécurité"
-    - "Transport aérien"
-    - "Institutions & collectivités"
-    - "Établissements recevant du public"
-    - "Équipes de terrain"
+    - label: "Personnel d'accueil"
+      picto: "messages-square"
+    - label: "Sûreté & sécurité"
+      picto: "shield-check"
+    - label: "Transport aérien"
+      picto: "plane"
+    - label: "Institutions & collectivités"
+      picto: "landmark"
+    - label: "Établissements recevant du public"
+      picto: "building-2"
+    - label: "Équipes de terrain"
+      picto: "users-round"
 
 methode:
   surtitre: "La méthode"

@@ -8,7 +8,7 @@ import { enrichir } from "../lib/texte";
 const page = commun.page_introuvable;
 ---
 
-<Base title={page.titre} description={page.texte}>
+<Base title={page.titre} description={page.texte} noindex>
   <section class="mx-auto max-w-6xl px-6 py-28 text-center">
     <p class="eyebrow">{page.surtitre}</p>
     <h1 class="display mx-auto mt-4 max-w-xl text-4xl text-navy-deep md:text-5xl">

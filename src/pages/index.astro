@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
+import Picto from "../components/Picto.astro";
 import { href } from "../lib/url";
 import { accueil, commun } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
@@ -8,35 +9,9 @@ import { formationsTriees } from "../lib/formations";
 
 const formations = await formationsTriees();
 const featured = formations.slice(0, 3);
-
-const siteUrl = new URL(
-  import.meta.env.BASE_URL.replace(/\/*$/, "/"),
-  Astro.site,
-).href;
-
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  name: commun.marque.nom,
-  founder: {
-    "@type": "Person",
-    name: "Fabien Lacombe",
-    jobTitle: "Formateur en prévention et gestion des conflits",
-    sameAs: commun.liens.linkedin,
-  },
-  description: accueil.seo.description,
-  url: siteUrl,
-  knowsAbout: formations.map((f) => f.data.titre),
-};
 ---
 
 <Base title={accueil.seo.titre} description={accueil.seo.description}>
-  <script
-    is:inline
-    type="application/ld+json"
-    set:html={JSON.stringify(jsonLd)}
-  />
-
   <!-- ============ Hero ============ -->
   <section class="relative overflow-hidden">
     <img
@@ -94,28 +69,42 @@ const jsonLd = {
   </section>
 
   <!-- ============ Publics ============ -->
-  <section class="mx-auto max-w-6xl px-6 py-20" data-reveal-group>
-    <p class="eyebrow" data-reveal>{accueil.publics.surtitre}</p>
-    <h2
-      class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
-      data-reveal
-    >
-      {accueil.publics.titre}
-    </h2>
-    <p
-      class="mt-5 max-w-xl text-ink-soft"
-      data-reveal
-      set:html={enrichir(accueil.publics.texte)}
-    />
-    <ul class="mt-9 flex flex-wrap gap-3" data-reveal>
-      {
-        accueil.publics.liste.map((p) => (
-          <li class="rounded-full border border-ink/15 bg-paper px-5 py-2.5 text-sm font-medium text-ink-soft transition-colors hover:border-sage-deep hover:text-sage-deep">
-            {p}
-          </li>
-        ))
-      }
-    </ul>
+  <section
+    class="mx-auto max-w-6xl px-6 py-20"
+    data-reveal-group
+    data-reveal-stagger="50"
+  >
+    <div class="grid gap-12 md:grid-cols-[45fr_55fr] md:gap-16">
+      <div>
+        <p class="eyebrow" data-reveal>{accueil.publics.surtitre}</p>
+        <h2
+          class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+          data-reveal
+        >
+          {accueil.publics.titre}
+        </h2>
+        <p
+          class="mt-5 max-w-xl text-ink-soft"
+          data-reveal
+          set:html={enrichir(accueil.publics.texte)}
+        />
+      </div>
+      <ul class="grid grid-cols-2 content-center gap-x-8 gap-y-7">
+        {
+          accueil.publics.liste.map((p) => (
+            <li
+              class="min-h-22 rounded-[4px] border-t border-ink/15 pt-4"
+              data-reveal
+            >
+              <Picto nom={p.picto} />
+              <span class="mt-2.5 block text-[0.95rem] leading-snug font-medium text-navy-deep">
+                {p.label}
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
   </section>
 
   <!-- ============ Méthode : 4 piliers ============ -->

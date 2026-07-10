@@ -1,0 +1,33 @@
+---
+import Base from "../layouts/Base.astro";
+import { mentionsLegales } from "../lib/contenu";
+import { enrichir } from "../lib/texte";
+
+const { seo, titre, intro, sections } = mentionsLegales;
+---
+
+<Base
+  title={seo.titre}
+  description={seo.description}
+  fil={[{ label: titre, chemin: "/mentions-legales" }]}
+>
+  <section class="mx-auto max-w-3xl px-6 pt-16 pb-20 md:pt-24">
+    <h1 class="display max-w-2xl text-4xl text-navy-deep md:text-5xl">
+      {titre}
+    </h1>
+    <p
+      class="mt-6 leading-relaxed text-ink-soft"
+      set:html={enrichir(intro)}
+    />
+    <div class="prose-site mt-10">
+      {
+        sections.map((s) => (
+          <>
+            <h2>{s.titre}</h2>
+            <p set:html={enrichir(s.texte)} />
+          </>
+        ))
+      }
+    </div>
+  </section>
+</Base>

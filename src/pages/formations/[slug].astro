@@ -16,9 +16,34 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 const { fiche } = formationsPage;
+
+const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+const racine = new URL(`${base}/`, Astro.site).href;
+const noeudsSeo = [
+  {
+    "@type": "Course",
+    "@id": `${new URL(Astro.url.pathname, Astro.site).href}#course`,
+    name: entry.data.titre,
+    description: entry.data.accroche,
+    provider: { "@id": `${racine}#organization` },
+    inLanguage: "fr-FR",
+    audience: entry.data.publics.map((p) => ({
+      "@type": "Audience",
+      audienceType: p,
+    })),
+  },
+];
 ---
 
-<Base title={entry.data.titre} description={entry.data.accroche}>
+<Base
+  title={entry.data.titre}
+  description={entry.data.accroche}
+  fil={[
+    { label: "Formations", chemin: "/formations" },
+    { label: entry.data.titre, chemin: `/formations/${entry.id}` },
+  ]}
+  noeudsSeo={noeudsSeo}
+>
   <article class="mx-auto max-w-6xl px-6 pt-14 pb-20 md:pt-20">
     <a
       href={href("/formations")}

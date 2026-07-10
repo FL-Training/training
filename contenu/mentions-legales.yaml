@@ -1,0 +1,29 @@
+# ============================================================
+# PAGE « MENTIONS LÉGALES »
+#
+# ⚠️ DÈS QUE FABIEN FOURNIT SES INFORMATIONS OFFICIELLES,
+# compléter la section « Éditeur du site » avec : la forme
+# juridique (ex. entrepreneur individuel), le numéro SIREN
+# et l'adresse professionnelle.
+# ============================================================
+
+seo:
+  titre: "Mentions légales"
+  description: "Mentions légales du site FL Training : éditeur, responsable de publication, hébergement."
+
+titre: "Mentions légales"
+intro: "Informations légales relatives au site FL Training."
+
+sections:
+  - titre: "Éditeur du site"
+    texte: |
+      Le site FL Training est édité par **Fabien Lacombe**, formateur indépendant en prévention et gestion des conflits.
+      Contact : via le formulaire de la page Contact ou le profil LinkedIn de Fabien Lacombe.
+  - titre: "Directeur de la publication"
+    texte: "Fabien Lacombe."
+  - titre: "Hébergement"
+    texte: |
+      Le site est hébergé par **GitHub, Inc.** (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis — https://pages.github.com.
+      Les données du formulaire de contact sont hébergées par **Convex, Inc.** sur une infrastructure située en Union européenne (Irlande) — https://www.convex.dev.
+  - titre: "Propriété intellectuelle"
+    texte: "L'ensemble des contenus du site (textes, logo, photographies, identité visuelle) est la propriété de Fabien Lacombe, sauf mention contraire. Toute reproduction sans autorisation préalable est interdite."
