@@ -190,9 +190,11 @@ const featured = formations.slice(0, 3);
       <div
         class="relative mx-auto w-60 md:w-80"
         data-portrait
+        data-portrait-directional
         data-reveal
       >
         <span class="portrait-cadre" aria-hidden="true"></span>
+        <span class="portrait-direction" aria-hidden="true"></span>
         <img
           src={href("/fabien.webp")}
           alt={commun.photos.portrait_alt}
@@ -201,16 +203,23 @@ const featured = formations.slice(0, 3);
           class="relative aspect-4/5 w-full rounded-[6px] object-cover object-[50%_30%]"
         />
       </div>
-      <div data-reveal>
-        <p class="eyebrow">{accueil.formateur.surtitre}</p>
-        <h2 class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl">
+      <div data-portrait-copy data-reveal>
+        <p class="portrait-copy-step portrait-copy-kicker eyebrow">
+          {accueil.formateur.surtitre}
+        </p>
+        <h2
+          class="portrait-copy-step portrait-copy-title display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+        >
           {accueil.formateur.titre}
         </h2>
         <p
-          class="mt-5 max-w-2xl leading-relaxed text-ink-soft"
+          class="portrait-copy-step portrait-copy-body mt-5 max-w-2xl leading-relaxed text-ink-soft"
           set:html={enrichir(accueil.formateur.texte)}
         />
-        <a href={href("/a-propos")} class="btn btn-ghost mt-8">
+        <a
+          href={href("/a-propos")}
+          class="portrait-copy-step portrait-copy-action btn btn-ghost mt-8"
+        >
           {accueil.formateur.bouton}
         </a>
       </div>

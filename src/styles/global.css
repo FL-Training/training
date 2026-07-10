@@ -393,6 +393,77 @@
     transform: scale(1.03);
   }
 
+  /* ---- Portrait direction: frame leads the eye into the copy ---- */
+  html.js-reveal [data-portrait-directional] {
+    transition: transform var(--dur-portrait) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.js-reveal [data-portrait-directional]:not(.revealed) {
+    transform: translateX(-4px);
+  }
+  .portrait-direction {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .portrait-direction {
+      position: absolute;
+      top: 16%;
+      left: calc(100% + 8px);
+      display: block;
+      width: clamp(3rem, 4vw, 4.5rem);
+      height: 1.5px;
+      background: var(--color-sage);
+      transform-origin: left;
+    }
+    html.js-reveal [data-portrait-directional] .portrait-direction {
+      transition:
+        opacity 220ms ease,
+        transform 480ms cubic-bezier(0.22, 1, 0.36, 1);
+      transition-delay: calc(var(--reveal-delay, 0ms) + 420ms);
+    }
+    html.js-reveal
+      [data-portrait-directional]:not(.revealed)
+      .portrait-direction {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+  }
+
+  html.js-reveal [data-portrait-copy][data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html.js-reveal [data-portrait-copy] .portrait-copy-step {
+    transition:
+      opacity var(--dur-section) ease,
+      transform var(--dur-section) cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.js-reveal
+    [data-portrait-copy]:not(.revealed)
+    .portrait-copy-step {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  html.js-reveal [data-portrait-copy] .portrait-copy-kicker {
+    transition-delay: calc(var(--reveal-delay, 0ms) + 480ms);
+  }
+  html.js-reveal [data-portrait-copy] .portrait-copy-title {
+    transition-delay: calc(var(--reveal-delay, 0ms) + 570ms);
+  }
+  html.js-reveal [data-portrait-copy] .portrait-copy-body {
+    transition-delay: calc(var(--reveal-delay, 0ms) + 670ms);
+  }
+  html.js-reveal [data-portrait-copy] .portrait-copy-action {
+    transition-delay: calc(var(--reveal-delay, 0ms) + 770ms);
+  }
+  @media (max-width: 767px) {
+    html.js-reveal
+      [data-portrait-copy]:not(.revealed)
+      .portrait-copy-step {
+      transform: translateY(8px);
+    }
+  }
+
   /* ---- Menu mobile : hamburger → croix, panneau en cascade ---- */
   .menu-icone path {
     transform-box: fill-box;
