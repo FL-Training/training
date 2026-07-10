@@ -44,14 +44,16 @@ const { seo, entete, parcours, ton } = aPropos;
 
   <section class="mx-auto max-w-6xl px-6 py-16">
     <ol
-      class="relative space-y-12 border-l border-ink/15 pl-8 md:pl-12"
+      class="timeline relative space-y-12 pl-8 md:pl-12"
+      data-timeline
+      data-reveal
       data-reveal-group
     >
       {
         parcours.map((etape) => (
-          <li class="relative" data-reveal>
+          <li class="timeline-item relative" data-reveal>
             <span
-              class="absolute -left-[2.36rem] top-2 h-3 w-3 rounded-full border-2 border-sage-deep bg-paper md:-left-[3.36rem]"
+              class="timeline-node absolute -left-[2.36rem] top-2 h-3 w-3 rounded-full border-2 border-sage-deep bg-paper md:-left-[3.36rem]"
               aria-hidden="true"
             />
             <p class="eyebrow">{etape.periode}</p>

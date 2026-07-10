@@ -14,6 +14,12 @@ export default defineConfig({
   site: "https://fl-training.github.io",
   base: "/training",
   trailingSlash: "ignore",
+  build: {
+    // GitHub Pages deletes previous hashed assets on every deploy; cached
+    // HTML (max-age=600) can reference them for up to ~10 min and render
+    // an unstyled page. Inlining all CSS removes that failure mode.
+    inlineStylesheets: "always",
+  },
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss(), yaml()],

@@ -353,6 +353,54 @@
     opacity: 1;
     transform: none;
   }
+
+  /* ---- Timeline: the path settles first, then each milestone lands ---- */
+  .timeline::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background: rgb(23 41 59 / 0.15);
+    transform-origin: top;
+  }
+  html.js-reveal [data-timeline][data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html.js-reveal [data-timeline]::before {
+    transform: scaleY(0);
+  }
+  html.js-reveal [data-timeline].revealed::before {
+    animation: timeline-line-draw 1100ms 80ms
+      cubic-bezier(0.33, 0, 0.67, 1) both;
+  }
+  .timeline-node {
+    z-index: 1;
+    transform-origin: center;
+  }
+  .timeline-node::after {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    border: 1px solid var(--color-sage);
+    border-radius: 999px;
+    opacity: 0;
+  }
+  html.js-reveal .timeline-item .timeline-node {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  html.js-reveal .timeline-item.revealed .timeline-node {
+    animation: timeline-node-in 420ms
+      calc(var(--reveal-delay, 0ms) + 100ms)
+      cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  html.js-reveal .timeline-item.revealed .timeline-node::after {
+    animation: timeline-node-ring 620ms
+      calc(var(--reveal-delay, 0ms) + 180ms) ease-out both;
+  }
+
   /* second temps optionnel à l'intérieur d'un bloc (ex. chiffres) */
   html.js-reveal [data-reveal] .sous-reveal {
     opacity: 0;
@@ -551,6 +599,40 @@
     transform: scale(1.4);
   }
   100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes timeline-node-ring {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  35% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.65);
+  }
+}
+
+@keyframes timeline-line-draw {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes timeline-node-in {
+  from {
+    opacity: 0;
+    transform: scale(0.45);
+  }
+  to {
+    opacity: 1;
     transform: scale(1);
   }
 }
