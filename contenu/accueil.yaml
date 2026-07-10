@@ -1,0 +1,78 @@
+# ============================================================
+# PAGE D'ACCUEIL
+#
+# Astuces d'écriture :
+#   - [mots entre crochets]  → affichés en vert (couleur accent)
+#   - **mots entre étoiles** → affichés en gras
+#   - "|" en début de texte  → permet d'écrire sur plusieurs lignes
+# ============================================================
+
+seo:
+  titre: "Prévention & gestion des conflits en milieu professionnel"
+  description: "FL Training forme les professionnels exposés à l'agressivité : prévention des conflits, désescalade verbale, posture professionnelle et gestes de protection en dernier recours. Par Fabien Lacombe, ancien policier et formateur certifié."
+
+hero:
+  surtitre: "Formation professionnelle · Fabien Lacombe"
+  titre: |
+    De la tension
+    à la [maîtrise].
+  texte: "FL Training accompagne les professionnels exposés à l'agressivité : prévenir les conflits, désamorcer la violence, garder une posture stable — et ne recourir au geste qu'en **dernier recours**."
+  bouton_principal: "Découvrir les formations"
+  bouton_secondaire: "L'approche"
+
+chiffres:
+  - valeur: "10 ans"
+    texte: "de terrain en Police nationale"
+  - valeur: "Depuis 1999"
+    texte: "arts martiaux & sports de combat"
+  - valeur: "Certifié"
+    texte: "conception & animation de formations"
+  - valeur: "Droit public"
+    texte: "licence — cadre légal maîtrisé"
+
+publics:
+  surtitre: "Pour qui"
+  titre: "Pour celles et ceux qui font face, chaque jour."
+  texte: "Des équipes confrontées à des publics difficiles, à de l'agressivité verbale ou physique, ou à des situations de tension répétées."
+  liste:
+    - "Personnel d'accueil"
+    - "Sûreté & sécurité"
+    - "Transport aérien"
+    - "Institutions & collectivités"
+    - "Établissements recevant du public"
+    - "Équipes de terrain"
+
+methode:
+  surtitre: "La méthode"
+  titre: "Quatre piliers, un ordre précis."
+  piliers:
+    - numero: "01"
+      titre: "Anticiper"
+      texte: "Lire l'environnement et les comportements pour détecter la tension avant qu'elle n'éclate."
+    - numero: "02"
+      titre: "Se tenir"
+      texte: "Posture, langage corporel, régulation émotionnelle : un corps stable pour un esprit clair."
+    - numero: "03"
+      titre: "Dire"
+      texte: "Désescalade verbale, écoute et cadre ferme — inspirés de la communication non violente et de la négociation d'influence."
+    - numero: "04"
+      titre: "Agir"
+      texte: "Des gestes simples, proportionnés et légaux — uniquement lorsque tous les autres leviers sont épuisés."
+  citation: "Le geste physique n'est jamais le point de départ. C'est la dernière marche d'un escalier que la formation apprend, précisément, à ne pas gravir."
+
+formations:
+  surtitre: "Formations"
+  titre: "Des programmes construits sur mesure."
+  bouton_tous: "Toutes les formations"
+  lien_programme: "Voir le programme"
+
+formateur:
+  surtitre: "Le formateur"
+  titre: "Une double école : le terrain et le tatami."
+  texte: "Fabien Lacombe a passé une dizaine d'années en Police nationale, au contact des situations sensibles, et pratique les arts martiaux depuis 1999 — ceinture noire 1er dan d'aïkido, boxe française, krav maga, escrime, canne de combat. De cette double expérience est née une conviction : la vraie maîtrise est celle qui évite l'affrontement."
+  bouton: "Découvrir son parcours"
+
+appel_final:
+  titre: "Parlons de vos équipes."
+  texte: "Chaque contexte est différent : les formations sont construites à partir de vos situations réelles, de vos contraintes et de vos objectifs."
+  bouton: "Prendre contact"

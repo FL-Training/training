@@ -1,0 +1,25 @@
+# ============================================================
+# PAGE « FORMATIONS » (la liste) ET FICHES FORMATION
+# Les fiches elles-mêmes sont dans le dossier formations/
+# ============================================================
+
+seo:
+  titre: "Formations"
+  description: "Prévention des conflits, désescalade verbale, gestion des situations violentes, posture professionnelle, régulation émotionnelle, sûreté aérienne : les formations FL Training, construites sur mesure pour vos équipes."
+
+entete:
+  surtitre: "Formations"
+  titre: "Des programmes sur mesure, du désamorçage au dernier recours."
+  texte: "Chaque formation est adaptée à votre métier, vos situations réelles et vos contraintes. Les durées et formats indiqués sont des points de départ : le programme définitif se construit ensemble."
+
+carte:
+  lien_programme: "Programme"
+
+fiche:
+  retour: "Toutes les formations"
+  titre_pratique: "En pratique"
+  libelle_duree: "Durée"
+  libelle_format: "Format"
+  libelle_publics: "Publics"
+  bouton_demander: "Demander un programme"
+  note: "Contenu, durée et intensité sont ajustés à vos équipes après un échange sur vos situations réelles."

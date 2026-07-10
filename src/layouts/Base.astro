@@ -1,0 +1,94 @@
+---
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/archivo";
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { href } from "../lib/url";
+import { commun } from "../lib/contenu";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const marque = commun.marque.nom;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — {marque}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/png" href={href("/favicon.png")} />
+    <link rel="apple-touch-icon" href={href("/apple-touch-icon.png")} />
+    <link rel="sitemap" href={href("/sitemap-index.xml")} />
+    <meta name="generator" content={Astro.generator} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={marque} />
+    <meta property="og:title" content={`${title} — ${marque}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="fr_FR" />
+
+    <ClientRouter />
+
+    <script is:inline>
+      // Scroll reveal + navigation progress. Motion is opt-in: without JS
+      // (or with prefers-reduced-motion) every element stays visible.
+      (() => {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return;
+        }
+        document.documentElement.classList.add("js-reveal");
+
+        const init = () => {
+          document.querySelectorAll("[data-reveal-group]").forEach((groupe) => {
+            groupe.querySelectorAll("[data-reveal]").forEach((el, i) => {
+              el.style.setProperty("--reveal-delay", `${i * 70}ms`);
+            });
+          });
+          const observateur = new IntersectionObserver(
+            (entrees) => {
+              for (const entree of entrees) {
+                if (entree.isIntersecting) {
+                  entree.target.classList.add("revealed");
+                  observateur.unobserve(entree.target);
+                }
+              }
+            },
+            { threshold: 0.18 },
+          );
+          document
+            .querySelectorAll("[data-reveal]:not(.revealed)")
+            .forEach((el) => observateur.observe(el));
+        };
+
+        document.addEventListener("astro:page-load", init);
+        document.addEventListener("astro:before-preparation", () => {
+          document.querySelector(".nav-progress")?.classList.add("actif");
+        });
+      })();
+    </script>
+  </head>
+  <body class="grain flex min-h-screen flex-col">
+    <a
+      href="#contenu"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-navy focus:px-4 focus:py-2 focus:text-paper"
+    >
+      Aller au contenu
+    </a>
+    <Header />
+    <main id="contenu" class="flex-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

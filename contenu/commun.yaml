@@ -1,0 +1,53 @@
+# ============================================================
+# TEXTES COMMUNS À TOUT LE SITE
+# (en-tête, menu, pied de page, page introuvable)
+# ============================================================
+
+marque:
+  nom: "FL Training"
+  slogan: "Prévention & gestion des conflits"
+  signature: "La maîtrise commence avant le conflit."
+
+navigation:
+  - label: "Accueil"
+    chemin: "/"
+  - label: "Formations"
+    chemin: "/formations"
+  - label: "L'approche"
+    chemin: "/approche"
+  - label: "À propos"
+    chemin: "/a-propos"
+  - label: "Contact"
+    chemin: "/contact"
+
+boutonContact: "Prendre contact"
+
+liens:
+  linkedin: "https://www.linkedin.com/in/fabien-lacombe/"
+
+photos:
+  portrait_alt: "Portrait de Fabien Lacombe, formateur en prévention et gestion des conflits"
+
+pied_de_page:
+  description: "Formation à la prévention et à la gestion des conflits, des agressions et des situations de violence en contexte professionnel."
+  titre_site: "Le site"
+  liens_site:
+    - label: "Formations"
+      chemin: "/formations"
+    - label: "L'approche"
+      chemin: "/approche"
+    - label: "À propos de Fabien Lacombe"
+      chemin: "/a-propos"
+    - label: "Contact"
+      chemin: "/contact"
+  titre_echanger: "Échanger"
+  texte_echanger: "Un projet de formation, une question sur les formats ou les publics : le plus simple est d'en parler."
+  bouton_contact: "Prendre contact"
+  bouton_linkedin: "LinkedIn"
+  copyright: "FL Training — Fabien Lacombe. Tous droits réservés."
+
+page_introuvable:
+  surtitre: "Erreur 404"
+  titre: "Cette page a pris la sortie de secours."
+  texte: "Pas de tension inutile : tout le contenu du site reste accessible depuis l'accueil."
+  bouton: "Revenir à l'accueil"

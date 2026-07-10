@@ -1,0 +1,75 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Build first: an invalid commit (broken content YAML, type error…)
+      # must fail here, before anything touches production. The form only
+      # points at Convex when the deploy key is configured — the very next
+      # step then deploys the functions, and any failure there stops the
+      # workflow before Pages publishes the new frontend.
+      - name: Type check (astro check)
+        run: npm run check
+
+      - name: Build Astro site
+        env:
+          PUBLIC_CONVEX_URL: ${{ secrets.CONVEX_DEPLOY_KEY != '' && vars.PUBLIC_CONVEX_URL || '' }}
+        run: npm run build
+
+      # The production deploy key is scoped to this single step: install
+      # and build never see it, so a compromised dependency script can't
+      # exfiltrate it.
+      - name: Deploy Convex functions (production)
+        env:
+          # Repo secret generated from the Convex dashboard
+          # (fl-training → Production → Settings → Deploy keys)
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: |
+          if [ -n "$CONVEX_DEPLOY_KEY" ]; then
+            npx convex deploy
+          else
+            echo "CONVEX_DEPLOY_KEY absent — étape sautée, le site est publié avec le repli LinkedIn."
+          fi
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

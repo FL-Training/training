@@ -1,0 +1,26 @@
+---
+import Base from "../layouts/Base.astro";
+import DeescalationLine from "../components/DeescalationLine.astro";
+import { href } from "../lib/url";
+import { commun } from "../lib/contenu";
+import { enrichir } from "../lib/texte";
+
+const page = commun.page_introuvable;
+---
+
+<Base title={page.titre} description={page.texte}>
+  <section class="mx-auto max-w-6xl px-6 py-28 text-center">
+    <p class="eyebrow">{page.surtitre}</p>
+    <h1 class="display mx-auto mt-4 max-w-xl text-4xl text-navy-deep md:text-5xl">
+      {page.titre}
+    </h1>
+    <p
+      class="mx-auto mt-5 max-w-md text-ink-soft"
+      set:html={enrichir(page.texte)}
+    />
+    <DeescalationLine class="mx-auto mt-10 h-12 max-w-2xl" />
+    <a href={href("/")} class="btn btn-primary mt-10">
+      {page.bouton}
+    </a>
+  </section>
+</Base>

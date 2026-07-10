@@ -1,0 +1,514 @@
+@import "tailwindcss";
+
+/*
+  FL Training — design system « autorité calme »
+  Encre marine + vert sauge sur papier crème, typographie éditoriale.
+  Motif signature : la ligne de désescalade (du chaos au calme).
+*/
+
+@theme {
+  /* Palette — dérivée du logo (ensō, marine, sauge, crème) */
+  --color-paper: #f6f2ea;
+  --color-paper-deep: #ede7da;
+  --color-paper-dark: #e4dccb;
+  --color-ink: #17293b;
+  --color-ink-soft: #3d5165;
+  /* 4.65:1 on paper — keeps small helper text above the WCAG AA threshold */
+  --color-ink-faint: #5c6f80;
+  --color-navy: #1f3d5c;
+  --color-navy-deep: #16293f;
+  /* 5.15:1 on navy-deep — sage is only used as text on dark sections */
+  --color-sage: #7aa18f;
+  --color-sage-deep: #47685a;
+  --color-sage-faint: #d8e2da;
+
+  /* Typographie */
+  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-body: "Archivo Variable", "Avenir Next", system-ui, sans-serif;
+
+  /* Ombres douces, teintées encre */
+  --shadow-card: 0 1px 2px rgb(23 41 59 / 0.05), 0 8px 24px -12px rgb(23 41 59 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(23 41 59 / 0.06), 0 16px 40px -12px rgb(23 41 59 / 0.24);
+}
+
+/* ---- Système de mouvement ----
+   Concept : « de la tension à la maîtrise » — les mouvements démarrent
+   puis se stabilisent. Uniquement transform / opacity / clip-path,
+   jamais en boucle, ~20 % plus court sur mobile. */
+:root {
+  --dur-vt-out: 160ms;
+  --dur-vt-in: 400ms;
+  --dur-section: 450ms;
+  --dur-portrait: 700ms;
+  --dur-menu: 220ms;
+  --dur-btn: 200ms;
+}
+@media (max-width: 640px) {
+  :root {
+    --dur-vt-in: 320ms;
+    --dur-section: 360ms;
+    --dur-portrait: 560ms;
+    --dur-menu: 180ms;
+    --dur-btn: 160ms;
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: var(--color-sage);
+    color: var(--color-paper);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-sage-deep);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* ---- Titres éditoriaux ---- */
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 40, "WONK" 0;
+    font-weight: 560;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.775rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-sage-deep);
+  }
+
+  .prose-site {
+    max-width: 65ch;
+  }
+  .prose-site p + p {
+    margin-top: 1em;
+  }
+  .prose-site h2 {
+    font-family: var(--font-display);
+    font-weight: 580;
+    font-size: 1.65rem;
+    line-height: 1.2;
+    margin-top: 2.2em;
+    margin-bottom: 0.6em;
+    letter-spacing: -0.01em;
+  }
+  .prose-site h3 {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-size: 1.25rem;
+    margin-top: 1.8em;
+    margin-bottom: 0.5em;
+  }
+  .prose-site ul {
+    margin: 1em 0 1em 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .prose-site ul li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.45em;
+  }
+  .prose-site ul li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.85rem;
+    height: 1.5px;
+    background: var(--color-sage);
+  }
+  .prose-site strong {
+    font-weight: 640;
+    color: var(--color-navy-deep);
+  }
+
+  /* ---- Boutons ---- */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.8rem 1.6rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    border-radius: 999px;
+    transition:
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease,
+      transform 200ms ease;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-primary {
+    color: var(--color-paper);
+    border: 1.5px solid var(--color-navy);
+    /* fond sauge qui progresse latéralement au survol (couche unie) */
+    background:
+      linear-gradient(var(--color-sage-deep), var(--color-sage-deep))
+        no-repeat left center / 0% 100%,
+      var(--color-navy);
+    transition:
+      background-size var(--dur-btn) ease,
+      border-color var(--dur-btn) ease,
+      transform 200ms ease;
+  }
+  .btn-primary:hover {
+    background-size:
+      100% 100%,
+      auto;
+    border-color: var(--color-sage-deep);
+  }
+  .btn > span[aria-hidden="true"] {
+    transition: transform var(--dur-btn) ease;
+  }
+  .btn:hover > span[aria-hidden="true"] {
+    transform: translateX(4px);
+  }
+  .btn-ghost {
+    border: 1.5px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
+    color: var(--color-ink);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    border-color: var(--color-sage-deep);
+    color: var(--color-sage-deep);
+  }
+
+  /* ---- Liens de navigation : soulignement glissant ---- */
+  .nav-link {
+    position: relative;
+    padding-block: 0.35rem;
+    font-size: 0.92rem;
+    font-weight: 540;
+    color: var(--color-ink-soft);
+    transition: color 180ms ease;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1.5px;
+    width: 100%;
+    background: var(--color-sage-deep);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 260ms ease;
+  }
+  .nav-link:hover,
+  .nav-link[aria-current="page"] {
+    color: var(--color-navy-deep);
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  /* soulignement actif : élément dédié qui glisse d'un lien à l'autre
+     entre les pages grâce à sa view transition (nav-actif) */
+  .nav-souligne {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1.5px;
+    width: 100%;
+    background: var(--color-sage-deep);
+  }
+
+  /* ---- Cartes ---- */
+  .card {
+    position: relative;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--color-paper) 55%, white);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
+    transition:
+      transform 240ms ease,
+      box-shadow 240ms ease,
+      border-color 240ms ease;
+  }
+  /* ligne supérieure qui se dessine de gauche à droite */
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background: var(--color-sage-deep);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 300ms ease;
+  }
+  .card:hover,
+  .card:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: color-mix(in srgb, var(--color-sage) 55%, transparent);
+  }
+  .card:hover::before,
+  .card:focus-visible::before {
+    transform: scaleX(1);
+  }
+
+  /* ---- Grain papier (texture globale, très discrète) ---- */
+  .grain {
+    position: relative;
+    isolation: isolate;
+  }
+  /* Kept below the sticky header (z-40) and menus: with multiply blending
+     a higher layer paints dark artifacts over fixed UI in Chromium. */
+  .grain::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ---- Révélations à l'arrivée (hero) ---- */
+  .reveal {
+    animation: reveal-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .reveal-1 { animation-delay: 80ms; }
+  .reveal-2 { animation-delay: 200ms; }
+  .reveal-3 { animation-delay: 320ms; }
+  .reveal-4 { animation-delay: 460ms; }
+
+  /* ---- Ligne de désescalade : tracé animé ---- */
+  .deescalation-path {
+    stroke-dasharray: 1400;
+    stroke-dashoffset: 1400;
+    animation: draw-line 2200ms 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  .deescalation-dot {
+    opacity: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation:
+      fade-in 500ms 2300ms ease forwards,
+      dot-pulse 420ms 2820ms ease-out;
+  }
+
+  /* ---- Révélation au défilement (activée seulement si JS présent) ---- */
+  html.js-reveal [data-reveal]:not([data-portrait]) {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity var(--dur-section) ease,
+      transform var(--dur-section) cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  html.js-reveal [data-reveal].revealed:not([data-portrait]) {
+    opacity: 1;
+    transform: none;
+  }
+  /* second temps optionnel à l'intérieur d'un bloc (ex. chiffres) */
+  html.js-reveal [data-reveal] .sous-reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity var(--dur-section) ease,
+      transform var(--dur-section) ease;
+    transition-delay: calc(var(--reveal-delay, 0ms) + 80ms);
+  }
+  html.js-reveal [data-reveal].revealed .sous-reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ---- Portrait : cadre sauge dessiné, puis masque vertical ---- */
+  .portrait-cadre {
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid var(--color-sage);
+    transform: translate(8px, 8px);
+  }
+  html.js-reveal [data-portrait] .portrait-cadre {
+    transition: transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    transform-origin: left;
+  }
+  html.js-reveal [data-portrait]:not(.revealed) .portrait-cadre {
+    transform: translate(8px, 8px) scaleX(0);
+  }
+  html.js-reveal [data-portrait] img {
+    transition:
+      clip-path var(--dur-portrait) cubic-bezier(0.4, 0, 0.2, 1),
+      transform var(--dur-portrait) cubic-bezier(0.4, 0, 0.2, 1);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 150ms);
+  }
+  html.js-reveal [data-portrait]:not(.revealed) img {
+    clip-path: inset(0 100% 0 0);
+    transform: scale(1.03);
+  }
+
+  /* ---- Menu mobile : hamburger → croix, panneau en cascade ---- */
+  .menu-icone path {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition:
+      transform var(--dur-menu) ease,
+      opacity var(--dur-menu) ease;
+  }
+  details[open] .menu-icone .ligne-1 {
+    transform: translateY(4.5px) rotate(45deg);
+  }
+  details[open] .menu-icone .ligne-2 {
+    opacity: 0;
+  }
+  details[open] .menu-icone .ligne-3 {
+    transform: translateY(-4.5px) rotate(-45deg);
+  }
+  details[open] .menu-panneau {
+    animation: menu-in var(--dur-menu) ease both;
+  }
+  details[open] .menu-panneau a {
+    opacity: 0;
+    animation: menu-item-in 240ms ease forwards;
+    animation-delay: calc(50ms + var(--i, 0) * 35ms);
+  }
+
+  /* ---- Ligne de progression sous le header (navigation) ---- */
+  .nav-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1.5px;
+    background: var(--color-sage-deep);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .nav-progress.actif {
+    animation: draw-progress 450ms ease forwards;
+  }
+}
+
+/* ---- Transitions entre pages (View Transitions) ---- */
+::view-transition-old(root) {
+  animation: vt-sortie var(--dur-vt-out) ease both;
+}
+::view-transition-new(root) {
+  animation: vt-entree var(--dur-vt-in) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dot-pulse {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes draw-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes vt-sortie {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-entree {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

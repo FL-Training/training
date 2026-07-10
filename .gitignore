@@ -1,0 +1,23 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.*
+!.env.example
+
+# Convex
+.convex/
+convex/_generated/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+
+# logs
+npm-debug.log*

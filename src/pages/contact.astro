@@ -1,0 +1,58 @@
+---
+import Base from "../layouts/Base.astro";
+import ContactForm from "../components/react/ContactForm";
+import { contact, commun } from "../lib/contenu";
+import { enrichir } from "../lib/texte";
+
+const { seo, entete, etapes, contact_direct, formulaire } = contact;
+const textesFormulaire = { ...formulaire, linkedin: commun.liens.linkedin };
+---
+
+<Base title={seo.titre} description={seo.description}>
+  <section class="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24">
+    <p class="eyebrow">{entete.surtitre}</p>
+    <h1 class="display mt-4 max-w-2xl text-4xl text-navy-deep md:text-5xl">
+      {entete.titre}
+    </h1>
+    <p
+      class="mt-6 max-w-xl leading-relaxed text-ink-soft"
+      set:html={enrichir(entete.texte)}
+    />
+
+    <div class="mt-14 grid gap-12 lg:grid-cols-[380px_1fr] lg:gap-16">
+      <ol class="space-y-8" data-reveal-group>
+        {
+          etapes.map((e, index) => (
+            <li class="flex gap-5" data-reveal>
+              <span class="display flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-sage-deep/40 text-lg text-sage-deep">
+                {index + 1}
+              </span>
+              <div>
+                <h2 class="font-semibold text-navy-deep">{e.titre}</h2>
+                <p
+                  class="mt-1.5 text-sm leading-relaxed text-ink-soft"
+                  set:html={enrichir(e.texte)}
+                />
+              </div>
+            </li>
+          ))
+        }
+        <li class="border-t border-ink/10 pt-6 text-sm text-ink-soft">
+          {contact_direct.texte}{" "}
+          <a
+            class="font-semibold text-sage-deep hover:text-navy-deep"
+            href={commun.liens.linkedin}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {contact_direct.lien}
+          </a>
+        </li>
+      </ol>
+
+      <div class="card p-8 md:p-10">
+        <ContactForm client:load textes={textesFormulaire} />
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,38 @@
+# ============================================================
+# PAGE « À PROPOS »
+#
+# Astuces d'écriture :
+#   - **mots entre étoiles** → affichés en gras
+# ============================================================
+
+seo:
+  titre: "À propos — Fabien Lacombe"
+  description: "Fabien Lacombe, formateur indépendant en prévention et gestion des conflits : dix ans de Police nationale, plus de vingt-cinq ans d'arts martiaux, une licence en droit public et une pédagogie certifiée."
+
+entete:
+  surtitre: "À propos"
+  titre: "Fabien Lacombe"
+  texte: "Formateur indépendant, spécialisé dans la prévention et la gestion des conflits, des agressions et des situations de violence en contexte professionnel. Son approche tient en une phrase : **la vraie maîtrise est celle qui évite l'affrontement.**"
+
+parcours:
+  - periode: "1999"
+    titre: "Le tatami comme première école"
+    texte: "Début des arts martiaux et sports de combat : aïkido (ceinture noire 1er dan), boxe française, krav maga, escrime, canne de combat. Plus de vingt-cinq ans de pratique et d'enseignement."
+  - periode: "≈ 10 ans"
+    titre: "Police nationale — le terrain"
+    texte: "Une décennie de missions de terrain, exposées aux situations sensibles : gestion de crise, publics difficiles, interventions où la parole et la posture font la différence avant le geste."
+  - periode: "Formation"
+    titre: "Le droit et la pédagogie"
+    texte: "Licence en droit public, formation à la négociation d'influence, certification en conception et animation de formations en présentiel et distanciel : la transmission comme métier, pas comme improvisation."
+  - periode: "Sûreté aérienne"
+    titre: "Former les navigants"
+    texte: "Formateur en sûreté aérienne (Amelia / Regourd Aviation), notamment sur la gestion des passagers indisciplinés : la désescalade dans l'un des environnements les plus contraints qui soient — une cabine en vol."
+  - periode: "Aujourd'hui"
+    titre: "FL Training"
+    texte: "Formateur indépendant, au service des équipes exposées à l'agressivité et à la violence au travail. Une conviction : professionnaliser la réaction face au conflit, c'est protéger les personnes des deux côtés de la tension."
+
+ton:
+  titre: "Un ton calme, structuré, humain."
+  texte: "Pas de dramatisation, pas de posture martiale : des formations qui rassurent, outillent et respectent les personnes — y compris celles qui sont en face. C'est aussi cela, l'éthique du dernier recours."
+  bouton_contact: "Prendre contact"
+  bouton_linkedin: "Profil LinkedIn"

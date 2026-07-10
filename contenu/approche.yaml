@@ -1,0 +1,43 @@
+# ============================================================
+# PAGE « L'APPROCHE »
+# ============================================================
+
+seo:
+  titre: "L'approche"
+  description: "Une méthode en quatre piliers — anticiper, se tenir, dire, agir — où le geste physique n'intervient qu'en dernier recours. Une approche mesurée, préventive, professionnelle et éthique de la gestion des conflits."
+
+entete:
+  surtitre: "L'approche"
+  titre: "Professionnaliser la réaction face au conflit."
+  texte: "Ni martiale, ni dramatisante : une approche mesurée et éthique, qui transforme les situations de tension en situations maîtrisées. L'objectif n'est pas d'apprendre à se battre — c'est d'apprendre à ne pas avoir à le faire."
+
+piliers:
+  - numero: "01"
+    titre: "Anticiper — l'environnement et les comportements"
+    texte: "La plupart des situations violentes s'annoncent. Configuration des lieux, moments à risque, signaux comportementaux précurseurs : la formation apprend à structurer une vigilance professionnelle qui voit venir la tension — sans basculer dans la méfiance permanente."
+  - numero: "02"
+    titre: "Se tenir — posture, corps, émotions"
+    texte: "Sous stress, le corps parle avant la bouche et décide souvent à sa place. Ancrage, respiration, placement, langage corporel non provocant : un travail concret, accessible à tous, pour rester stable et lisible quand la pression monte."
+  - numero: "03"
+    titre: "Dire — la désescalade verbale"
+    texte: "Écoute active, reformulation, validation, cadre ferme : des techniques inspirées de la communication non violente et de la négociation d'influence, entraînées jusqu'à devenir des réflexes naturels — pas un script récité."
+  - numero: "04"
+    titre: "Agir — le geste proportionné, en dernier recours"
+    texte: "Quand tous les autres leviers sont épuisés, des gestes simples de protection, de désengagement ou d'immobilisation, choisis pour fonctionner sous stress sans expertise martiale, et toujours inscrits dans le cadre légal de la proportionnalité."
+
+cadre:
+  surtitre: "Pour être clair"
+  titre: "Ce que cette approche n'est pas."
+  points:
+    - titre: "Pas un stage de combat"
+      texte: "Les techniques physiques occupent une place volontairement réduite : elles n'existent que pour protéger, se dégager et passer le relais."
+    - titre: "Pas de recettes magiques"
+      texte: "Aucune phrase miracle ne désamorce tout. La formation construit des réflexes entraînés, adaptés à vos situations réelles."
+    - titre: "Pas de dramatisation"
+      texte: "L'objectif est de rassurer et d'outiller, pas d'installer la peur. Une équipe préparée est une équipe plus sereine."
+
+appel_final:
+  titre: "Une méthode qui s'adapte à votre réalité."
+  texte: "Les quatre piliers forment le socle commun ; leur dosage dépend de votre métier, de vos risques et de vos équipes."
+  bouton_formations: "Voir les formations"
+  bouton_contact: "Prendre contact"

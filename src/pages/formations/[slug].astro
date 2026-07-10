@@ -1,0 +1,89 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import { href } from "../../lib/url";
+import { formationsPage } from "../../lib/contenu";
+import { formationsTriees } from "../../lib/formations";
+
+export async function getStaticPaths() {
+  const formations = await formationsTriees();
+  return formations.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { fiche } = formationsPage;
+---
+
+<Base title={entry.data.titre} description={entry.data.accroche}>
+  <article class="mx-auto max-w-6xl px-6 pt-14 pb-20 md:pt-20">
+    <a
+      href={href("/formations")}
+      class="inline-flex items-center gap-2 text-sm font-semibold text-sage-deep hover:text-navy-deep"
+    >
+      <span aria-hidden="true">←</span> {fiche.retour}
+    </a>
+
+    <div class="mt-8 grid gap-12 lg:grid-cols-[1fr_320px]">
+      <div>
+        <h1 class="display max-w-2xl text-4xl text-navy-deep md:text-[3.2rem]">
+          {entry.data.titre}
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft">
+          {entry.data.accroche}
+        </p>
+        <div class="prose-site mt-10">
+          <Content />
+        </div>
+      </div>
+
+      <aside class="lg:pt-4">
+        <div class="card sticky top-24 p-7">
+          <h2 class="eyebrow">{fiche.titre_pratique}</h2>
+          <dl class="mt-5 space-y-4 text-sm">
+            <div>
+              <dt class="font-semibold text-navy-deep">
+                {fiche.libelle_duree}
+              </dt>
+              <dd class="mt-0.5 text-ink-soft">{entry.data.duree}</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-navy-deep">
+                {fiche.libelle_format}
+              </dt>
+              <dd class="mt-0.5 text-ink-soft">{entry.data.format}</dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-navy-deep">
+                {fiche.libelle_publics}
+              </dt>
+              <dd class="mt-1.5">
+                <ul class="flex flex-wrap gap-2">
+                  {
+                    entry.data.publics.map((p) => (
+                      <li class="rounded-full bg-sage-faint px-3 py-1 text-xs font-semibold text-sage-deep">
+                        {p}
+                      </li>
+                    ))
+                  }
+                </ul>
+              </dd>
+            </div>
+          </dl>
+          <a
+            href={href("/contact")}
+            class="btn btn-primary mt-7 w-full justify-center"
+          >
+            {fiche.bouton_demander}
+          </a>
+          <p class="mt-4 text-xs leading-relaxed text-ink-faint">
+            {fiche.note}
+          </p>
+        </div>
+      </aside>
+    </div>
+  </article>
+</Base>

@@ -1,0 +1,87 @@
+---
+import DeescalationLine from "./DeescalationLine.astro";
+import { href } from "../lib/url";
+import { commun } from "../lib/contenu";
+import { enrichir } from "../lib/texte";
+
+const pied = commun.pied_de_page;
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-navy-deep text-paper">
+  <div class="mx-auto max-w-6xl px-6 pt-14 pb-8">
+    <DeescalationLine class="mb-12 h-10 opacity-40" animated={false} />
+
+    <div class="grid gap-10 md:grid-cols-3">
+      <div>
+        <div class="flex items-center gap-3">
+          <span
+            class="flex h-10 w-10 items-center justify-center rounded-full bg-paper"
+          >
+            <img
+              src={href("/logo-96.png")}
+              alt=""
+              width="32"
+              height="32"
+              class="h-8 w-8"
+            />
+          </span>
+          <span class="display text-lg">{commun.marque.nom}</span>
+        </div>
+        <p
+          class="mt-4 max-w-xs text-sm leading-relaxed text-paper/70"
+          set:html={enrichir(pied.description, "text-sage")}
+        />
+      </div>
+
+      <nav aria-label="Navigation pied de page">
+        <h2 class="eyebrow !text-sage">{pied.titre_site}</h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            pied.liens_site.map((item) => (
+              <li>
+                <a
+                  class="text-paper/80 hover:text-paper"
+                  href={href(item.chemin)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <div>
+        <h2 class="eyebrow !text-sage">{pied.titre_echanger}</h2>
+        <p
+          class="mt-4 text-sm text-paper/70"
+          set:html={enrichir(pied.texte_echanger, "text-sage")}
+        />
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a
+            href={href("/contact")}
+            class="btn border-1.5 border-sage bg-sage !px-5 !py-2.5 text-sm text-navy-deep hover:border-paper hover:bg-paper"
+          >
+            {pied.bouton_contact}
+          </a>
+          <a
+            href={commun.liens.linkedin}
+            rel="noopener noreferrer"
+            target="_blank"
+            class="btn btn-ghost !border-paper/30 !px-5 !py-2.5 text-sm !text-paper/85 hover:!border-sage hover:!text-sage"
+          >
+            {pied.bouton_linkedin}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="mt-12 flex flex-col items-start justify-between gap-2 border-t border-paper/15 pt-6 text-xs text-paper/50 sm:flex-row"
+    >
+      <p>© {year} {pied.copyright}</p>
+      <p>{commun.marque.signature}</p>
+    </div>
+  </div>
+</footer>

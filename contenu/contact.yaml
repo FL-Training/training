@@ -1,0 +1,54 @@
+# ============================================================
+# PAGE « CONTACT » (y compris tous les textes du formulaire)
+# ============================================================
+
+seo:
+  titre: "Contact"
+  description: "Contactez Fabien Lacombe (FL Training) pour un projet de formation à la prévention et à la gestion des conflits : premier échange sans engagement, proposition sur mesure."
+
+entete:
+  surtitre: "Contact"
+  titre: "Parlons de votre contexte."
+  texte: "Chaque demande reçoit une réponse. Décrivez simplement votre situation : inutile d'avoir déjà un cahier des charges."
+
+etapes:
+  - titre: "Un premier échange"
+    texte: "Vous décrivez vos équipes, vos situations réelles et vos contraintes. Sans engagement."
+  - titre: "Une analyse du besoin"
+    texte: "Fabien identifie les risques, les priorités et le dosage des quatre piliers adapté à votre contexte."
+  - titre: "Une proposition sur mesure"
+    texte: "Programme, durée, format (présentiel ou distanciel) et modalités pratiques, noir sur blanc."
+
+contact_direct:
+  texte: "Vous préférez un contact direct ?"
+  lien: "Écrivez à Fabien sur LinkedIn."
+
+formulaire:
+  champ_nom: "Nom"
+  champ_nom_exemple: "Votre nom"
+  champ_email: "Email"
+  champ_email_exemple: "vous@entreprise.fr"
+  champ_organisation: "Organisation"
+  champ_organisation_exemple: "Entreprise, collectivité…"
+  champ_sujet: "Sujet"
+  sujets:
+    - valeur: "formation"
+      label: "Demande de formation"
+    - valeur: "renseignement"
+      label: "Renseignement"
+    - valeur: "autre"
+      label: "Autre"
+  champ_message: "Votre message"
+  champ_message_exemple: "Décrivez votre contexte : équipes concernées, situations rencontrées, objectifs…"
+  bouton_envoyer: "Envoyer le message"
+  bouton_envoi_en_cours: "Envoi en cours…"
+  succes_titre: "Message envoyé"
+  succes_texte: "Merci pour votre message. Fabien vous répondra sur l'adresse indiquée, en général sous 48 h ouvrées."
+  erreur_generique: "L'envoi a échoué. Vous pouvez réessayer, ou écrire directement à Fabien via"
+  erreur_trop_de_messages: "Trop de messages ont été envoyés récemment depuis cette adresse. Merci de réessayer dans une heure, ou d'écrire directement à Fabien via"
+  erreur_saturation: "Le formulaire est très sollicité en ce moment. Merci de réessayer un peu plus tard, ou d'écrire directement à Fabien via"
+  erreur_invalide: "Un des champs n'a pas pu être accepté (message trop long ou adresse invalide). Vérifiez votre saisie, ou écrivez directement à Fabien via"
+  mention_donnees: "Les informations transmises ne servent qu'à répondre à votre demande. Elles ne sont ni cédées, ni utilisées à d'autres fins."
+  repli_titre: "Le formulaire arrive bientôt"
+  repli_texte: "En attendant sa mise en service, le plus simple est de contacter Fabien Lacombe directement via LinkedIn — réponse rapide assurée."
+  repli_bouton: "Écrire sur LinkedIn"

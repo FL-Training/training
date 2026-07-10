@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fl-training.github.io/training/sitemap-index.xml
