@@ -21,7 +21,8 @@ const { seo, entete, parcours, ton } = aPropos;
           {entete.titre}
         </h1>
         <p
-          class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft"
+          class="mt-6 max-w-2xl text-lg leading-relaxed text-ink"
+          data-mots
           set:html={enrichir(entete.texte)}
         />
       </div>

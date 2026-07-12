@@ -1,6 +1,6 @@
-# FL Training — site vitrine
+# Pacivis Academy — site vitrine
 
-Site vitrine de **Fabien Lacombe**, formateur indépendant en prévention et
+Site vitrine de **Pacivis Academy** (Fabien Lacombe), formateur indépendant en prévention et
 gestion des conflits, des agressions et des situations de violence en
 contexte professionnel.
 

@@ -1,6 +1,7 @@
 ---
 import "@fontsource-variable/fraunces";
 import "@fontsource-variable/archivo";
+import "lenis/dist/lenis.css";
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
@@ -96,6 +97,11 @@ const jsonLd = grapheSeo({
     />
 
     <ClientRouter />
+
+    <script>
+      import "../scripts/defilement";
+      import "../scripts/effets-scroll";
+    </script>
 
     <script
       is:inline

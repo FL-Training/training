@@ -1,13 +1,17 @@
 ---
 /**
  * Signature motif: a line that starts chaotic and settles into calm —
- * de-escalation, visualized. Draws itself on page load.
+ * de-escalation, visualized.
+ *
+ * mode="charge"      draws once on page load (CSS)
+ * mode="defilement"  drawn/un-drawn by scroll position (Motion, bidirectional)
+ * mode="statique"    no animation
  */
 interface Props {
   class?: string;
-  animated?: boolean;
+  mode?: "charge" | "defilement" | "statique";
 }
-const { class: className = "", animated = true } = Astro.props;
+const { class: className = "", mode = "charge" } = Astro.props;
 ---
 
 <svg
@@ -17,9 +21,14 @@ const { class: className = "", animated = true } = Astro.props;
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
   preserveAspectRatio="none"
+  data-trace-scroll={mode === "defilement" ? "" : undefined}
 >
   <path
-    class={animated ? "deescalation-path" : ""}
+    class={mode === "charge"
+      ? "deescalation-path"
+      : mode === "defilement"
+        ? "trace-defilement"
+        : ""}
     d="M0 55
        L36 14 L72 96 L108 22 L144 88 L180 30 L216 80
        L252 38 L288 72 L324 44 L360 66 L396 48 L432 62
@@ -30,7 +39,7 @@ const { class: className = "", animated = true } = Astro.props;
     stroke-linecap="round"
     stroke-linejoin="round"></path>
   <circle
-    class={animated ? "deescalation-dot" : ""}
+    class={mode === "charge" ? "deescalation-dot" : ""}
     cx="1160"
     cy="55"
     r="5"

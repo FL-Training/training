@@ -1,0 +1,35 @@
+# ============================================================
+# SECTEUR « ENTREPRISE » — porte d'entrée par contexte d'achat
+# ============================================================
+nom: "Entreprise"
+ordre: 1
+statut: "complet"
+
+seo:
+  titre: "Formations gestion des conflits pour les entreprises"
+  description: "Prévenir les incivilités, l'agressivité et les violences au travail : des formations sur mesure pour vos équipes exposées au public, par Pacivis Academy."
+
+entete:
+  surtitre: "Entreprise"
+  titre: "Vos équipes font face. Donnez-leur les bons réflexes."
+  texte: "Accueil, relation client, équipes de terrain, managers de proximité : quand la tension fait partie du quotidien, la réponse ne peut pas reposer sur le sang-froid improvisé de chacun. Pacivis Academy construit avec vous des formations ancrées dans les situations réelles de vos équipes."
+
+enjeux:
+  - titre: "Protéger vos collaborateurs"
+    texte: "L'exposition répétée aux incivilités et à l'agressivité use les équipes : stress, absentéisme, turnover. Former, c'est réduire l'impact humain et montrer que l'entreprise prend le sujet au sérieux — c'est aussi une composante de votre obligation de sécurité."
+  - titre: "Préserver la relation client"
+    texte: "Une situation tendue bien gérée peut renforcer la confiance ; mal gérée, elle dégénère et laisse des traces — pour la personne comme pour la marque. La désescalade est une compétence professionnelle, pas un talent inné."
+  - titre: "Un cadre clair pour agir"
+    texte: "Vos équipes doivent savoir ce qu'elles peuvent faire, doivent faire et ne doivent surtout pas faire — posture professionnelle, proportionnalité, passage de relais. La formation installe ce cadre, validé par votre organisation."
+
+programmes:
+  - "prevention-des-conflits"
+  - "desescalade-verbale"
+  - "posture-et-langage-corporel"
+  - "regulation-emotionnelle"
+
+paxi_en_avant: false
+
+cta:
+  titre: "Parlons de vos équipes"
+  texte: "Chaque entreprise a ses situations, ses contraintes et sa culture. Le programme définitif se construit après un échange sur votre réalité de terrain — sans engagement."

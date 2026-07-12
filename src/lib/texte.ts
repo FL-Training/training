@@ -22,5 +22,7 @@ export function enrichir(
   return escapeHtml(texte.trim())
     .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
     .replace(/\[(.+?)\]/g, `<span class="${accentClass}">$1</span>`)
-    .replace(/\n/g, "<br />");
+    .replace(/\n/g, "<br />")
+    .replace(/ ([:;!?»])/g, " $1")
+    .replace(/« /g, "« ");
 }

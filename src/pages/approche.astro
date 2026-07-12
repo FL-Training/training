@@ -19,7 +19,8 @@ const { seo, entete, piliers, cadre, appel_final } = approche;
       {entete.titre}
     </h1>
     <p
-      class="mt-6 max-w-2xl text-lg leading-relaxed text-ink-soft"
+      class="mt-6 max-w-2xl text-lg leading-relaxed text-ink"
+      data-mots
       set:html={enrichir(entete.texte)}
     />
     <DeescalationLine class="mt-12 h-14 md:h-20" />
@@ -51,7 +52,7 @@ const { seo, entete, piliers, cadre, appel_final } = approche;
     </ol>
   </section>
 
-  <section class="bg-navy-deep text-paper">
+  <section class="bg-abysse text-paper">
     <div class="mx-auto max-w-6xl px-6 py-20">
       <p class="eyebrow !text-sage">{cadre.surtitre}</p>
       <h2 class="display mt-4 max-w-2xl text-3xl md:text-4xl">

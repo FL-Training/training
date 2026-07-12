@@ -1,0 +1,47 @@
+# ============================================================
+# PAGE « ESPACE APPRENANT » — relais on-site vers la
+# communauté e-learning (Skool). Ne casse jamais : avant le
+# lancement = liste d'intérêt ; après = bouton vers Skool.
+#
+# ⚠️ AU LANCEMENT SKOOL : renseigner l'URL ci-dessous et
+# passer `lance` à true.
+# ============================================================
+
+lance: false
+url_skool: ""
+
+seo:
+  titre: "Espace apprenant"
+  description: "L'espace d'apprentissage en ligne de Pacivis Academy : e-learning, ressources et communauté pour les professionnels qui se forment à titre individuel à la gestion des conflits."
+
+entete:
+  surtitre: "Espace apprenant"
+  titre: "Se former à titre individuel."
+  texte: "PNC, agents de sécurité, professionnels au contact de publics difficiles : vous n'attendez pas que votre employeur vous forme. L'espace apprenant Pacivis Academy est fait pour vous — e-learning, ressources pratiques et communauté de professionnels."
+
+contenu:
+  titre: "Ce que vous y trouverez"
+  liste:
+    - titre: "Des parcours e-learning"
+      texte: "La théorie indispensable — émotions, signaux faibles, désescalade — en modules courts, accessibles à votre rythme."
+    - titre: "Des supports d'entraînement"
+      texte: "Les outils pour progresser entre les sessions et ancrer les réflexes dans la durée."
+    - titre: "Une communauté professionnelle"
+      texte: "Échanger avec des pairs confrontés aux mêmes situations, poser vos questions, partager le terrain."
+
+statut:
+  titre: "Ouverture prochaine"
+  texte: "Le premier parcours est en préparation active — lancement prévu à la mi-août. Laissez votre adresse email : vous serez averti·e dès l'ouverture, sans spam et sans engagement."
+  bouton_skool: "Accéder à l'espace apprenant"
+
+formulaire:
+  champ_email: "Votre adresse email"
+  champ_email_exemple: "vous@exemple.fr"
+  bouton: "Me prévenir au lancement"
+  bouton_en_cours: "Inscription…"
+  succes: "C'est noté ! Vous serez parmi les premiers informés du lancement."
+  deja_inscrit: "Cette adresse est déjà sur la liste — vous serez bien prévenu·e."
+  erreur: "L'inscription a échoué. Vous pouvez réessayer ou nous écrire via la page Contact."
+  mention: "Votre adresse ne sert qu'à vous prévenir du lancement. Pas de newsletter, pas de partage — voir notre politique de confidentialité."
+
+note_pro: "Vous cherchez une formation pour vos équipes ou votre organisme ? Rendez-vous sur nos formations professionnelles."

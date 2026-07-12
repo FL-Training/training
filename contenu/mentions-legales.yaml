@@ -9,15 +9,15 @@
 
 seo:
   titre: "Mentions légales"
-  description: "Mentions légales du site FL Training : éditeur, responsable de publication, hébergement."
+  description: "Mentions légales du site Pacivis Academy : éditeur, responsable de publication, hébergement."
 
 titre: "Mentions légales"
-intro: "Informations légales relatives au site FL Training."
+intro: "Informations légales relatives au site Pacivis Academy."
 
 sections:
   - titre: "Éditeur du site"
     texte: |
-      Le site FL Training est édité par **Fabien Lacombe**, formateur indépendant en prévention et gestion des conflits.
+      Le site Pacivis Academy est édité par **Fabien Lacombe**, formateur indépendant en prévention et gestion des conflits.
       Contact : via le formulaire de la page Contact ou le profil LinkedIn de Fabien Lacombe.
   - titre: "Directeur de la publication"
     texte: "Fabien Lacombe."

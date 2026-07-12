@@ -1,0 +1,29 @@
+# ============================================================
+# SECTEUR « COLLECTIVITÉ » — stub honnête (à étoffer avec le
+# vécu métier de Fabien : guichets, services publics, élus…)
+# ============================================================
+nom: "Collectivité"
+ordre: 3
+statut: "stub"
+
+seo:
+  titre: "Formations gestion des conflits pour les collectivités"
+  description: "Agents d'accueil, services publics, équipes de terrain : des formations à la prévention et à la gestion de l'agressivité, adaptées au service public."
+
+entete:
+  surtitre: "Collectivité"
+  titre: "Le service public en première ligne."
+  texte: "Guichets, accueil des usagers, médiation urbaine, services sociaux : les agents des collectivités sont parmi les plus exposés aux incivilités et à l'agressivité. Les programmes Pacivis s'adaptent aux spécificités du service public — continuité de service, cadre statutaire, publics en difficulté."
+
+enjeux: []
+
+programmes:
+  - "prevention-des-conflits"
+  - "desescalade-verbale"
+  - "gestion-situations-violentes"
+
+paxi_en_avant: false
+
+cta:
+  titre: "Un projet pour vos agents ?"
+  texte: "Décrivez vos services concernés et vos situations types : nous construisons la réponse ensemble, marchés publics compris."

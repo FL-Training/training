@@ -15,6 +15,8 @@ import aProposBrut from "../../contenu/a-propos.yaml";
 import contactBrut from "../../contenu/contact.yaml";
 import mentionsLegalesBrut from "../../contenu/mentions-legales.yaml";
 import confidentialiteBrut from "../../contenu/confidentialite.yaml";
+import paxiBrut from "../../contenu/paxi.yaml";
+import espaceApprenantBrut from "../../contenu/espace-apprenant.yaml";
 
 // Required text: an emptied or whitespace-only field must fail the build
 // (otherwise the CI would happily publish blank pages).
@@ -44,6 +46,12 @@ const communSchema = z.object({
   }),
   navigation: z.array(lien).min(1),
   boutonContact: texteRequis,
+  boutonEspace: texteRequis,
+  menu_formations: z.object({
+    tout: texteRequis,
+    paxi: texteRequis,
+    titre_secteurs: texteRequis,
+  }),
   menu: z.object({ ouvrir: texteRequis, fermer: texteRequis }),
   liens: z.object({ linkedin: z.url() }),
   photos: z.object({ portrait_alt: texteRequis, og_alt: texteRequis }),
@@ -56,6 +64,8 @@ const communSchema = z.object({
     bouton_contact: texteRequis,
     bouton_linkedin: texteRequis,
     copyright: texteRequis,
+    titre_secteurs: texteRequis,
+    liens_secteurs: z.array(lien).min(1),
     liens_legaux: z.array(lien).min(1),
   }),
   page_introuvable: z.object({
@@ -80,8 +90,26 @@ const accueilSchema = z.object({
     .min(1),
   publics: entete.extend({
     liste: z
-      .array(z.object({ label: texteRequis, picto: texteRequis }))
+      .array(
+        z.object({
+          label: texteRequis,
+          texte: texteRequis,
+          picto: texteRequis,
+          chemin: texteRequis,
+        }),
+      )
       .min(1),
+  }),
+  paxi: z.object({
+    surtitre: texteRequis,
+    titre: texteRequis,
+    texte: texteRequis,
+    bouton: texteRequis,
+  }),
+  journal: z.object({
+    surtitre: texteRequis,
+    titre: texteRequis,
+    bouton_tous: texteRequis,
   }),
   methode: z.object({
     surtitre: texteRequis,
@@ -111,7 +139,21 @@ const accueilSchema = z.object({
 const formationsPageSchema = z.object({
   seo,
   entete,
-  carte: z.object({ lien_programme: texteRequis }),
+  portes: z.object({
+    besoin: z.object({ titre: texteRequis, texte: texteRequis }),
+    secteur: z.object({ titre: texteRequis, texte: texteRequis }),
+  }),
+  paxi_banniere: z.object({
+    surtitre: texteRequis,
+    titre: texteRequis,
+    texte: texteRequis,
+    bouton: texteRequis,
+  }),
+  carte: z.object({
+    lien_programme: texteRequis,
+    lien_secteur: texteRequis,
+    badge_stub: texteRequis,
+  }),
   fiche: z.object({
     retour: texteRequis,
     titre_pratique: texteRequis,
@@ -203,6 +245,59 @@ const pageLegaleSchema = z.object({
     .min(1),
 });
 
+const paxiSchema = z.object({
+  seo,
+  entete,
+  preuve: texteRequis,
+  objectifs: z.object({
+    titre: texteRequis,
+    liste: z.array(texteRequis).min(1),
+  }),
+  modules: z.object({
+    titre: texteRequis,
+    liste: z
+      .array(z.object({ titre: texteRequis, texte: texteRequis }))
+      .min(1),
+  }),
+  publics: z.object({
+    titre: texteRequis,
+    liste: z
+      .array(z.object({ titre: texteRequis, texte: texteRequis }))
+      .min(1),
+  }),
+  pedagogie: texteRequis,
+  cta: z.object({ titre: texteRequis, texte: texteRequis }),
+});
+
+const espaceApprenantSchema = z.object({
+  lance: z.boolean(),
+  url_skool: z.string(),
+  seo,
+  entete,
+  contenu: z.object({
+    titre: texteRequis,
+    liste: z
+      .array(z.object({ titre: texteRequis, texte: texteRequis }))
+      .min(1),
+  }),
+  statut: z.object({
+    titre: texteRequis,
+    texte: texteRequis,
+    bouton_skool: texteRequis,
+  }),
+  formulaire: z.object({
+    champ_email: texteRequis,
+    champ_email_exemple: texteRequis,
+    bouton: texteRequis,
+    bouton_en_cours: texteRequis,
+    succes: texteRequis,
+    deja_inscrit: texteRequis,
+    erreur: texteRequis,
+    mention: texteRequis,
+  }),
+  note_pro: texteRequis,
+});
+
 function valider<T>(fichier: string, schema: z.ZodType<T>, data: unknown): T {
   const resultat = schema.safeParse(data);
   if (!resultat.success) {
@@ -237,6 +332,16 @@ export const confidentialite = valider(
   pageLegaleSchema,
   confidentialiteBrut,
 );
+export const paxi = valider("paxi.yaml", paxiSchema, paxiBrut);
+export const espaceApprenant = valider(
+  "espace-apprenant.yaml",
+  espaceApprenantSchema,
+  espaceApprenantBrut,
+);
+
+export type TextesWaitlist = z.infer<
+  typeof espaceApprenantSchema
+>["formulaire"];
 
 export type TextesFormulaire = z.infer<typeof contactSchema>["formulaire"] & {
   linkedin: string;

@@ -4,23 +4,30 @@
 # ============================================================
 
 marque:
-  nom: "FL Training"
+  nom: "Pacivis Academy"
   slogan: "Prévention & gestion des conflits"
   signature: "La maîtrise commence avant le conflit."
 
+# Navigation textuelle (Accueil = le logo ; Contact et Espace
+# apprenant sont des boutons d'action, définis plus bas)
 navigation:
-  - label: "Accueil"
-    chemin: "/"
   - label: "Formations"
     chemin: "/formations"
-  - label: "L'approche"
+  - label: "Notre approche"
     chemin: "/approche"
+  - label: "Le Journal"
+    chemin: "/journal"
   - label: "À propos"
     chemin: "/a-propos"
-  - label: "Contact"
-    chemin: "/contact"
+
+# Déroulé léger sous « Formations » (survol/focus, desktop)
+menu_formations:
+  tout: "Toutes les formations"
+  paxi: "PAXI — passagers indisciplinés"
+  titre_secteurs: "Par secteur"
 
 boutonContact: "Prendre contact"
+boutonEspace: "Espace apprenant"
 
 menu:
   ouvrir: "Ouvrir le menu"
@@ -31,7 +38,7 @@ liens:
 
 photos:
   portrait_alt: "Portrait de Fabien Lacombe, formateur en prévention et gestion des conflits"
-  og_alt: "FL Training — Fabien Lacombe, formation à la prévention et à la gestion des conflits en milieu professionnel"
+  og_alt: "Pacivis Academy — Fabien Lacombe, formation à la prévention et à la gestion des conflits en milieu professionnel"
 
 pied_de_page:
   description: "Formation à la prévention et à la gestion des conflits, des agressions et des situations de violence en contexte professionnel."
@@ -39,17 +46,33 @@ pied_de_page:
   liens_site:
     - label: "Formations"
       chemin: "/formations"
-    - label: "L'approche"
+    - label: "PAXI"
+      chemin: "/formations/paxi"
+    - label: "Notre approche"
       chemin: "/approche"
+    - label: "Le Journal"
+      chemin: "/journal"
     - label: "À propos de Fabien Lacombe"
       chemin: "/a-propos"
     - label: "Contact"
       chemin: "/contact"
+  titre_secteurs: "Par secteur"
+  liens_secteurs:
+    - label: "Entreprise"
+      chemin: "/formations/secteurs/entreprise"
+    - label: "Collectivité"
+      chemin: "/formations/secteurs/collectivite"
+    - label: "OF aéronautique"
+      chemin: "/formations/secteurs/organisme-aeronautique"
+    - label: "OF sécurité privée"
+      chemin: "/formations/secteurs/organisme-securite-privee"
+    - label: "En individuel"
+      chemin: "/espace-apprenant"
   titre_echanger: "Échanger"
   texte_echanger: "Un projet de formation, une question sur les formats ou les publics : le plus simple est d'en parler."
   bouton_contact: "Prendre contact"
   bouton_linkedin: "LinkedIn"
-  copyright: "FL Training — Fabien Lacombe. Tous droits réservés."
+  copyright: "Pacivis Academy — Fabien Lacombe. Tous droits réservés."
   # ⚠️ Quand les mentions légales seront complètes (SIREN, statut, adresse
   # de Fabien) : 1) compléter contenu/mentions-legales.yaml, 2) renommer
   # src/pages/_mentions-legales.astro en mentions-legales.astro,

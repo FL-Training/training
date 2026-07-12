@@ -25,4 +25,12 @@ export default defineSchema({
     fenetre: v.string(), // hour bucket, e.g. "2026-07-09T20"
     total: v.number(),
   }).index("by_fenetre", ["fenetre"]),
+
+  // Waitlist of the espace apprenant (e-learning launch)
+  interets: defineTable({
+    email: v.string(),
+    source: v.string(),
+    receivedAt: v.number(),
+    status: v.union(v.literal("new"), v.literal("notifie")),
+  }).index("by_email", ["email"]),
 });

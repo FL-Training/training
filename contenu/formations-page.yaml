@@ -10,10 +10,26 @@ seo:
 entete:
   surtitre: "Formations"
   titre: "Des programmes sur mesure, du désamorçage au dernier recours."
-  texte: "Chaque formation est adaptée à votre métier, vos situations réelles et vos contraintes. Les durées et formats indiqués sont des points de départ : le programme définitif se construit ensemble."
+  texte: "Chaque formation est adaptée à votre métier, vos situations réelles et vos contraintes. Deux façons de trouver la vôtre : par besoin, ou par secteur."
+
+portes:
+  besoin:
+    titre: "Par besoin"
+    texte: "Vous savez ce que vos équipes doivent savoir faire : explorez les programmes."
+  secteur:
+    titre: "Par secteur"
+    texte: "Vous voulez une réponse pensée pour votre contexte : entrez par votre situation."
+
+paxi_banniere:
+  surtitre: "Produit phare"
+  titre: "PAXI — gestion des passagers indisciplinés"
+  texte: "Le module de référence pour le transport aérien, déployé en CQP PNC. Classification des risques, cadre légal, désescalade et coordination équipage."
+  bouton: "Découvrir le PAXI"
 
 carte:
   lien_programme: "Programme"
+  lien_secteur: "Découvrir"
+  badge_stub: "Présentation détaillée à venir"
 
 fiche:
   retour: "Toutes les formations"

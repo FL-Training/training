@@ -1,0 +1,34 @@
+# ============================================================
+# SECTEUR « ORGANISME DE FORMATION AÉRONAUTIQUE »
+# Logique PARTENARIAT B2B2C : Pacivis intervient POUR l'OF,
+# dans son catalogue (ex. : PAXI réalisé pour le CQP PNC AFMAE).
+# ============================================================
+nom: "Organisme de formation aéronautique"
+ordre: 2
+statut: "complet"
+
+seo:
+  titre: "Intervenant PAXI pour organismes de formation aéronautique"
+  description: "Intégrez le module PAXI — gestion des passagers indisciplinés — à votre CQP PNC ou à vos formations aéronautiques : un intervenant expert, un programme clé en main conforme au cadre réglementaire."
+
+entete:
+  surtitre: "Organisme de formation aéronautique"
+  titre: "Intégrez le PAXI à votre catalogue."
+  texte: "Écoles PNC, centres de formation aéronautique : Pacivis Academy intervient dans vos cursus avec un module dédié à la gestion des passagers indisciplinés — déjà déployé en CQP PNC. Vous gardez la relation avec vos stagiaires ; nous apportons le module, l'expertise et l'animation."
+
+enjeux:
+  - titre: "Un module clé en main, conforme"
+    texte: "Classification des comportements en 4 niveaux de risque, cadre légal complet (Convention de Tokyo, Protocole de Montréal, règlements UE, circulaire OACI 288), ateliers pratiques : le module s'insère dans vos maquettes pédagogiques sans travail de conception de votre côté."
+  - titre: "Un intervenant crédible face aux stagiaires"
+    texte: "Ancien policier, formateur certifié, expérience directe de la sûreté aérienne en compagnie : la légitimité terrain qui fait la différence dans une salle de futurs navigants."
+  - titre: "La pédagogie de l'entraînement"
+    texte: "Reconnaissance des émotions, détection des signaux faibles, désescalade, coordination équipage : chaque notion est entraînée en atelier et en mise en situation — pas un cours magistral de plus."
+
+programmes:
+  - "surete-aerienne"
+
+paxi_en_avant: true
+
+cta:
+  titre: "Échangeons sur votre cursus"
+  texte: "Volume horaire, positionnement dans la maquette, effectifs, site : le module s'adapte à votre organisation. Premier échange sans engagement."

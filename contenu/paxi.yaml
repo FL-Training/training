@@ -1,0 +1,55 @@
+# ============================================================
+# PAGE PRODUIT PHARE « PAXI »
+# Gestion des passagers indisciplinés — contenu issu du module
+# réel déployé en CQP PNC (7 h). ⚠️ À faire relire par Fabien.
+# ============================================================
+
+seo:
+  titre: "PAXI — Formation gestion des passagers indisciplinés"
+  description: "Le module de référence pour anticiper, désamorcer et gérer les passagers indisciplinés : classification des risques, cadre légal aérien, désescalade et coordination équipage. Déployé en CQP PNC."
+
+entete:
+  surtitre: "Produit phare · Aérien"
+  titre: "PAXI — De la tension à la maîtrise, en cabine."
+  texte: "**PAXI** : tout passager refusant d'appliquer les consignes et règles de sécurité, ou auteur d'incivilités, de dégradations ou d'agressions. Ce module forme les équipages à anticiper, désamorcer et gérer ces situations — dans l'un des environnements les plus contraints qui soient : une cabine en vol."
+
+preuve: "Module déployé en CQP PNC — 7 heures de formation réalisées pour une école aéronautique."
+
+objectifs:
+  titre: "Agir en équipage face au conflit"
+  liste:
+    - "Identifier les comportements inappropriés et reconnaître les signaux faibles de dégradation d'une interaction"
+    - "Évaluer le niveau de risque et adapter sa réponse"
+    - "Gérer son stress et maintenir sa capacité d'analyse sous pression"
+    - "Désamorcer les tensions avant l'escalade, adapter sa communication au comportement observé"
+    - "Coordonner efficacement l'action de l'équipage en situation dégradée"
+
+modules:
+  titre: "Le programme en 5 modules"
+  liste:
+    - titre: "Classification des comportements"
+      texte: "Typologie des comportements à risque, classification en 4 niveaux (du comportement perturbateur à la tentative d'accès au poste de pilotage), cadre légal complet : Convention de Tokyo, Protocole de Montréal, règlements européens, circulaire OACI 288, Code des transports et Code pénal."
+    - titre: "Profilage prédictif et lecture comportementale"
+      texte: "Reconnaître les 7 émotions primaires, comprendre les facteurs de risque contextuels qui amplifient une tension, détecter les signaux faibles annonciateurs d'un passage à l'acte. Observer l'émotion, c'est anticiper le comportement."
+    - titre: "Gestion du stress et maîtrise de soi"
+      texte: "Comprendre les effets du stress sur l'intervention (vision tunnel, perte de motricité fine) et s'entraîner aux techniques de régulation utilisables en vol — corps et cognition."
+    - titre: "Désescalade conflictuelle et posture professionnelle"
+      texte: "Langage corporel, paraverbal et verbal : réguler l'échange, comprendre le besoin derrière l'émotion, poser un cadre ferme sans provoquer. Structurer son feedback face au passager."
+    - titre: "Coordination d'équipage en situation dégradée"
+      texte: "Sous stress, le risque est d'agir seul. Reconstruire une vision globale partagée, synchroniser l'action, communiquer entre PNC et avec le poste de pilotage."
+
+publics:
+  titre: "Pour qui"
+  liste:
+    - titre: "Organismes de formation aéronautique"
+      texte: "Intégrez le module à votre CQP PNC ou à vos cursus — programme clé en main, intervenant expert."
+    - titre: "Compagnies aériennes"
+      texte: "Formation continue de vos équipages, adaptée à vos procédures et à votre réseau."
+    - titre: "Navigants en individuel"
+      texte: "Préparation et montée en compétence à titre personnel — voir l'espace apprenant."
+
+pedagogie: "La pédagogie PAXI repose sur l'entraînement : ateliers de reconnaissance des émotions, détection des signaux faibles, mises en situation de désescalade et exercices de coordination d'équipage. Les cadres théoriques sont couverts dans la formation — mais c'est la répétition sous pression qui installe les réflexes."
+
+cta:
+  titre: "Déployer le PAXI chez vous"
+  texte: "École, compagnie ou centre de formation : le module s'adapte à votre maquette pédagogique, vos effectifs et vos contraintes. Premier échange sans engagement."

@@ -69,7 +69,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
       url: urlAbsolue(site, `${base.replace(/\/*$/, "")}/logo.png`),
     },
     // No sameAs here: the LinkedIn profile is Fabien's personal identity
-    // and is asserted on the Person node; FL Training has no brand page yet.
+    // and is asserted on the Person node; Pacivis Academy has no brand page yet.
     founder: { "@id": idPersonne },
   };
 

@@ -6,9 +6,19 @@ import { href } from "../lib/url";
 import { accueil, commun } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
 import { formationsTriees } from "../lib/formations";
+import { getCollection } from "astro:content";
 
 const formations = await formationsTriees();
 const featured = formations.slice(0, 3);
+const articles = (await getCollection("journal"))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+const nomsFlux: Record<string, string> = {
+  "revue-litteraire": "Revue littéraire",
+  "point-de-vue-actu": "Point de vue actu",
+  "terrain-et-pratiques": "Terrain & pratiques",
+  "methodes-et-reperes": "Méthodes & repères",
+};
 ---
 
 <Base title={accueil.seo.titre} description={accueil.seo.description}>
@@ -26,6 +36,7 @@ const featured = formations.slice(0, 3);
       <p class="eyebrow reveal reveal-1">{accueil.hero.surtitre}</p>
       <h1
         class="display reveal reveal-2 mt-4 max-w-3xl text-[2.6rem] text-navy-deep sm:text-5xl md:mt-5 md:text-[4.4rem]"
+        data-hero-titre
         set:html={enrichir(accueil.hero.titre)}
       />
       <p
@@ -89,17 +100,30 @@ const featured = formations.slice(0, 3);
           set:html={enrichir(accueil.publics.texte)}
         />
       </div>
-      <ul class="grid grid-cols-2 content-center gap-x-8 gap-y-7">
+      <ul class="grid grid-cols-1 content-center gap-4 sm:grid-cols-2">
         {
           accueil.publics.liste.map((p) => (
-            <li
-              class="min-h-22 rounded-[4px] border-t border-ink/15 pt-4"
-              data-reveal
-            >
-              <Picto nom={p.picto} />
-              <span class="mt-2.5 block text-[0.95rem] leading-snug font-medium text-navy-deep">
-                {p.label}
-              </span>
+            <li data-reveal>
+              <a
+                href={href(p.chemin)}
+                class="card group flex h-full flex-col p-6"
+              >
+                <Picto nom={p.picto} />
+                <span class="display mt-3 text-lg leading-snug text-navy-deep">
+                  {p.label}
+                </span>
+                <span class="mt-1.5 flex-1 text-sm leading-snug text-ink-soft">
+                  {p.texte}
+                </span>
+                <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
+                  <span
+                    aria-hidden="true"
+                    class="transition-transform duration-200 group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </span>
+              </a>
             </li>
           ))
         }
@@ -108,7 +132,7 @@ const featured = formations.slice(0, 3);
   </section>
 
   <!-- ============ Méthode : 4 piliers ============ -->
-  <section class="bg-navy-deep text-paper">
+  <section class="bg-abysse text-paper">
     <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
       <p class="eyebrow !text-sage" data-reveal>{accueil.methode.surtitre}</p>
       <h2 class="display mt-4 max-w-2xl text-3xl md:text-4xl" data-reveal>
@@ -132,11 +156,36 @@ const featured = formations.slice(0, 3);
         }
       </div>
       <p
-        class="mt-14 border-l-2 border-sage pl-5 text-lg leading-relaxed text-paper/90 md:max-w-2xl"
-        data-reveal
+        class="mt-14 border-l-2 border-sage pl-5 text-lg leading-relaxed text-paper md:max-w-2xl"
+        data-mots
         set:html={enrichir(accueil.methode.citation, "text-sage")}
       />
     </div>
+  </section>
+
+  <!-- ============ Spotlight PAXI ============ -->
+  <section class="mx-auto max-w-6xl px-6 pt-20">
+    <a
+      href={href("/formations/paxi")}
+      class="group flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between md:p-10"
+      data-reveal
+    >
+      <div>
+        <p class="eyebrow !text-sage">{accueil.paxi.surtitre}</p>
+        <h2 class="display mt-2 max-w-2xl text-2xl md:text-3xl">
+          {accueil.paxi.titre}
+        </h2>
+        <p class="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-paper/75">
+          {accueil.paxi.texte}
+        </p>
+      </div>
+      <span
+        class="btn shrink-0 self-start border-1.5 border-sage bg-sage !px-6 text-abysse group-hover:border-paper group-hover:bg-paper md:self-center"
+      >
+        {accueil.paxi.bouton}
+        <span aria-hidden="true">→</span>
+      </span>
+    </a>
   </section>
 
   <!-- ============ Formations en avant ============ -->
@@ -223,6 +272,48 @@ const featured = formations.slice(0, 3);
           {accueil.formateur.bouton}
         </a>
       </div>
+    </div>
+  </section>
+
+  <!-- ============ Teaser Journal ============ -->
+  <section class="mx-auto max-w-6xl px-6 py-20" data-reveal-group>
+    <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
+      <div>
+        <p class="eyebrow">{accueil.journal.surtitre}</p>
+        <h2 class="display mt-4 text-3xl text-navy-deep md:text-4xl">
+          {accueil.journal.titre}
+        </h2>
+      </div>
+      <a href={href("/journal")} class="btn btn-ghost">
+        {accueil.journal.bouton_tous} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    <div class="mt-10 grid gap-6 md:grid-cols-3">
+      {
+        articles.map((article) => (
+          <a
+            href={href(`/journal/${article.id}`)}
+            class="card group flex flex-col p-7"
+            data-reveal
+          >
+            <span class="self-start rounded-full bg-sage-faint px-3 py-1 text-xs font-semibold text-sage-deep">
+              {nomsFlux[article.data.flux]}
+            </span>
+            <h3 class="display mt-4 flex-1 text-lg leading-snug text-navy-deep">
+              {article.data.titre}
+            </h3>
+            <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
+              Lire
+              <span
+                aria-hidden="true"
+                class="transition-transform duration-200 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </span>
+          </a>
+        ))
+      }
     </div>
   </section>
 

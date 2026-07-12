@@ -1,34 +1,58 @@
 @import "tailwindcss";
 
 /*
-  FL Training — design system « autorité calme »
-  Encre marine + vert sauge sur papier crème, typographie éditoriale.
+  PACIVIS Academy — design system « autorité calme »
+  Charte officielle (Palette_Couleurs_Pacivis_Academy_OKLCH_V1) :
+  bleu nuit d'autorité, vert PA rare et signifiant, fond papier chaud
+  dominant (60-70 %), gris bleutés discrets. OKLCH = source de vérité.
   Motif signature : la ligne de désescalade (du chaos au calme).
 */
 
 @theme {
-  /* Palette — dérivée du logo (ensō, marine, sauge, crème) */
-  --color-paper: #f6f2ea;
-  --color-paper-deep: #ede7da;
-  --color-paper-dark: #e4dccb;
-  --color-ink: #17293b;
-  --color-ink-soft: #3d5165;
-  /* 4.65:1 on paper — keeps small helper text above the WCAG AA threshold */
-  --color-ink-faint: #5c6f80;
-  --color-navy: #1f3d5c;
-  --color-navy-deep: #16293f;
-  /* 5.15:1 on navy-deep — sage is only used as text on dark sections */
-  --color-sage: #7aa18f;
-  --color-sage-deep: #47685a;
-  --color-sage-faint: #d8e2da;
+  /* ---- Tokens de marque (verbatim charte) ---- */
+  /* --pa-paper #F8F3EE — fond principal, zones respirantes */
+  --color-paper: oklch(96.66% 0.0086 67.7);
+  /* --pa-grey-light #C7CFCE — fonds secondaires, séparateurs discrets */
+  --color-paper-deep: oklch(84.8% 0.0089 188.1);
+  /* --pa-blue-night #0A3653 — titres, navigation, éléments structurants */
+  --color-ink: oklch(32% 0.0691 243.1);
+  --color-navy: oklch(32% 0.0691 243.1);
+  /* --pa-blue-official #003058 — titres forts, cohérence stricte.
+     Trop chromatique pour de grands aplats : les surfaces utilisent
+     l'abysse ci-dessous. */
+  --color-navy-deep: oklch(30.45% 0.0862 250);
+  /* bleu abysse (dérivé v2, proposé à Fabien) — grands fonds sombres :
+     même famille de teinte, chroma divisée par deux, plus profond.
+     Papier 14:1, vert clair 6.6:1. */
+  --color-abysse: oklch(26% 0.045 246);
+  /* --pa-green-accent #3C786A — accent limité : validation, focus,
+     progression (4.66:1 en texte sur papier ✔ AA) */
+  --color-sage-deep: oklch(52.79% 0.0669 176.5);
+  /* --pa-grey-muted #8E9EA4 — décoratif uniquement (2.5:1) : traits,
+     séparateurs, jamais du texte */
+  --color-mist: oklch(68.85% 0.0202 222.3);
+
+  /* ---- Dérivés accessibles (mêmes familles de teinte, calculés) ---- */
+  /* vert PA éclairci — texte/accents sur fonds bleus (5.74:1 sur official) */
+  --color-sage: oklch(72.91% 0.0544 171.3);
+  /* teinte verte très claire — fonds de puces/badges */
+  --color-sage-faint: oklch(91.72% 0.0151 164.7);
+  /* bleu nuit éclairci — texte de second rang (6.58:1 sur papier) */
+  --color-ink-soft: oklch(45.4% 0.0499 241.9);
+  /* gris bleuté assombri — légendes, petits textes (4.9:1 sur papier) */
+  --color-ink-faint: oklch(52.25% 0.0268 228.2);
 
   /* Typographie */
   --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
   --font-body: "Archivo Variable", "Avenir Next", system-ui, sans-serif;
 
-  /* Ombres douces, teintées encre */
-  --shadow-card: 0 1px 2px rgb(23 41 59 / 0.05), 0 8px 24px -12px rgb(23 41 59 / 0.18);
-  --shadow-card-hover: 0 2px 4px rgb(23 41 59 / 0.06), 0 16px 40px -12px rgb(23 41 59 / 0.24);
+  /* Ombres douces, teintées bleu nuit */
+  --shadow-card:
+    0 1px 2px oklch(32% 0.0691 243.1 / 0.05),
+    0 8px 24px -12px oklch(32% 0.0691 243.1 / 0.18);
+  --shadow-card-hover:
+    0 2px 4px oklch(32% 0.0691 243.1 / 0.06),
+    0 16px 40px -12px oklch(32% 0.0691 243.1 / 0.24);
 }
 
 /* ---- Système de mouvement ----
@@ -313,7 +337,7 @@
     z-index: 1;
     pointer-events: none;
     opacity: 0.055;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.09 0 0 0 0 0.16 0 0 0 0 0.23 0.7 0 0 0 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.039 0 0 0 0 0.212 0 0 0 0 0.325 0.7 0 0 0 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* ---- Révélations à l'arrivée (hero) ---- */
@@ -536,6 +560,79 @@
     opacity: 0;
     animation: menu-item-in 240ms ease forwards;
     animation-delay: calc(50ms + var(--i, 0) * 35ms);
+  }
+
+  /* ---- Effets pilotés par le scroll (Motion) ---- */
+  /* Mots enveloppés par le script : bloc en ligne pour les transforms */
+  .mot {
+    display: inline-block;
+    will-change: opacity, transform;
+  }
+  /* Tracé scroll-linked : masqué seulement quand le JS est actif
+     (sans JS ou en motion réduit, la ligne reste pleinement visible) */
+  html.js-reveal .trace-defilement {
+    stroke-dasharray: 1400;
+    stroke-dashoffset: 1400;
+  }
+
+  /* ---- Déroulé « Formations » (desktop, survol + focus clavier) ---- */
+  .menu-panneau-deroulant {
+    position: absolute;
+    top: calc(100% + 0.65rem);
+    left: -1rem;
+    min-width: 15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem;
+    border-radius: 0.75rem;
+    border: 1px solid color-mix(in srgb, var(--color-ink) 10%, transparent);
+    background: var(--color-paper);
+    box-shadow: var(--shadow-card-hover);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition:
+      opacity var(--dur-menu) ease,
+      transform var(--dur-menu) ease,
+      visibility 0s linear var(--dur-menu);
+  }
+  .menu-deroulant:hover .menu-panneau-deroulant,
+  .menu-deroulant:focus-within .menu-panneau-deroulant {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-delay: 0s;
+  }
+  .menu-item {
+    display: flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--color-ink-soft);
+  }
+  .menu-item:hover {
+    background: var(--color-paper-deep);
+    color: var(--color-navy-deep);
+  }
+  .menu-item-paxi {
+    font-weight: 650;
+    color: var(--color-sage-deep);
+  }
+  .menu-item-paxi:hover {
+    background: var(--color-sage-faint);
+    color: var(--color-sage-deep);
+  }
+  .menu-titre {
+    padding: 0.55rem 0.75rem 0.15rem;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
   }
 
   /* ---- Ligne de progression sous le header (navigation) ---- */

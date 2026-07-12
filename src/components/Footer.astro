@@ -8,11 +8,11 @@ const pied = commun.pied_de_page;
 const year = new Date().getFullYear();
 ---
 
-<footer class="bg-navy-deep text-paper">
+<footer class="bg-abysse text-paper">
   <div class="mx-auto max-w-6xl px-6 pt-14 pb-8">
-    <DeescalationLine class="mb-12 h-10 opacity-40" animated={false} />
+    <DeescalationLine class="mb-12 h-10 opacity-55" mode="defilement" />
 
-    <div class="grid gap-10 md:grid-cols-3">
+    <div class="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
       <div>
         <div class="flex items-center gap-3">
           <span
@@ -39,6 +39,24 @@ const year = new Date().getFullYear();
         <ul class="mt-4 space-y-2 text-sm">
           {
             pied.liens_site.map((item) => (
+              <li>
+                <a
+                  class="text-paper/80 hover:text-paper"
+                  href={href(item.chemin)}
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <nav aria-label="Secteurs">
+        <h2 class="eyebrow !text-sage">{pied.titre_secteurs}</h2>
+        <ul class="mt-4 space-y-2 text-sm">
+          {
+            pied.liens_secteurs.map((item) => (
               <li>
                 <a
                   class="text-paper/80 hover:text-paper"

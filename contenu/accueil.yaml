@@ -16,9 +16,9 @@ hero:
   titre: |
     De la tension
     à la [maîtrise].
-  texte: "FL Training accompagne les professionnels exposés à l'agressivité : prévenir les conflits, désamorcer la violence, garder une posture stable — et ne recourir au geste qu'en **dernier recours**."
+  texte: "Pacivis Academy accompagne les professionnels exposés à l'agressivité : prévenir les conflits, désamorcer la violence, garder une posture stable — et ne recourir au geste qu'en **dernier recours**."
   bouton_principal: "Découvrir les formations"
-  bouton_secondaire: "L'approche"
+  bouton_secondaire: "Notre approche"
 
 chiffres:
   - valeur: "10 ans"
@@ -31,24 +31,39 @@ chiffres:
     texte: "licence — cadre légal maîtrisé"
 
 # Pictogrammes disponibles : messages-square, shield-check, plane,
-# landmark, building-2, users-round
+# landmark, building-2, users-round, graduation-cap, user-round
 publics:
-  surtitre: "Pour qui"
+  surtitre: "Votre situation"
   titre: "Pour celles et ceux qui font face, chaque jour."
-  texte: "Des équipes confrontées à des publics difficiles, à de l'agressivité verbale ou physique, ou à des situations de tension répétées."
+  texte: "Entreprises, collectivités, organismes de formation ou professionnels en individuel : entrez par votre situation — la réponse est construite pour votre contexte."
   liste:
-    - label: "Personnel d'accueil"
-      picto: "messages-square"
-    - label: "Sûreté & sécurité"
-      picto: "shield-check"
-    - label: "Transport aérien"
-      picto: "plane"
-    - label: "Institutions & collectivités"
-      picto: "landmark"
-    - label: "Établissements recevant du public"
+    - label: "Entreprise"
+      texte: "Former vos équipes exposées au public"
       picto: "building-2"
-    - label: "Équipes de terrain"
-      picto: "users-round"
+      chemin: "/formations/secteurs/entreprise"
+    - label: "Collectivité"
+      texte: "Protéger vos agents au contact des usagers"
+      picto: "landmark"
+      chemin: "/formations/secteurs/collectivite"
+    - label: "Organisme de formation"
+      texte: "Intégrer un module expert à vos cursus"
+      picto: "graduation-cap"
+      chemin: "/formations/secteurs/organisme-aeronautique"
+    - label: "En individuel"
+      texte: "Vous former à votre rythme, en ligne"
+      picto: "user-round"
+      chemin: "/espace-apprenant"
+
+paxi:
+  surtitre: "Produit phare"
+  titre: "PAXI — gestion des passagers indisciplinés"
+  texte: "Le module de référence pour le transport aérien, déployé en CQP PNC : classification des risques en 4 niveaux, cadre légal complet, désescalade et coordination d'équipage. Pour les écoles, les compagnies — et les navigants."
+  bouton: "Découvrir le PAXI"
+
+journal:
+  surtitre: "Le Journal Pacivis"
+  titre: "Comprendre avant d'agir."
+  bouton_tous: "Tous les articles"
 
 methode:
   surtitre: "La méthode"

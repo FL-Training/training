@@ -1,0 +1,139 @@
+---
+import Base from "../../layouts/Base.astro";
+import DeescalationLine from "../../components/DeescalationLine.astro";
+import { href } from "../../lib/url";
+import { paxi } from "../../lib/contenu";
+import { enrichir } from "../../lib/texte";
+import { racineSite } from "../../lib/seo";
+
+const { seo, entete, preuve, objectifs, modules, publics, pedagogie, cta } =
+  paxi;
+
+const racine = racineSite(Astro.site!, import.meta.env.BASE_URL);
+const noeudsSeo = [
+  {
+    "@type": "Course",
+    "@id": `${new URL(Astro.url.pathname, Astro.site).href}#course`,
+    name: "PAXI — Gestion des passagers indisciplinés",
+    description: seo.description,
+    provider: { "@id": `${racine}#organization` },
+    inLanguage: "fr-FR",
+    audience: publics.liste.map((p) => ({
+      "@type": "Audience",
+      audienceType: p.titre,
+    })),
+  },
+];
+---
+
+<Base
+  title={seo.titre}
+  description={seo.description}
+  fil={[
+    { label: "Formations", chemin: "/formations" },
+    { label: "PAXI", chemin: "/formations/paxi" },
+  ]}
+  noeudsSeo={noeudsSeo}
+>
+  <!-- Entête produit sur fond abysse -->
+  <section class="bg-abysse text-paper">
+    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-24">
+      <p class="eyebrow !text-sage">{entete.surtitre}</p>
+      <h1 class="display mt-4 max-w-3xl text-4xl md:text-[3.4rem]">
+        {entete.titre}
+      </h1>
+      <p
+        class="mt-6 max-w-2xl text-lg leading-relaxed text-paper/85"
+        set:html={enrichir(entete.texte, "text-sage")}
+      />
+      <p
+        class="mt-8 inline-block rounded-full border border-sage/40 px-5 py-2 text-sm font-medium text-sage"
+      >
+        {preuve}
+      </p>
+      <DeescalationLine class="mt-10 h-12 opacity-60 md:h-16" mode="defilement" />
+    </div>
+  </section>
+
+  <!-- Objectifs -->
+  <section class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
+    <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+      {objectifs.titre}
+    </h2>
+    <ul class="prose-site mt-6" data-reveal>
+      {objectifs.liste.map((o) => <li>{o}</li>)}
+    </ul>
+  </section>
+
+  <!-- Programme en 5 modules -->
+  <section class="border-y border-ink/10 bg-paper-deep/50">
+    <div class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
+      <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+        {modules.titre}
+      </h2>
+      <ol class="mt-10 space-y-8">
+        {
+          modules.liste.map((m, i) => (
+            <li
+              class="grid gap-4 border-t border-ink/10 pt-6 md:grid-cols-[90px_1fr] md:gap-8"
+              data-reveal
+            >
+              <span class="display text-4xl text-sage/60 md:text-5xl">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <h3 class="display text-xl text-navy-deep">{m.titre}</h3>
+                <p class="mt-2 max-w-3xl leading-relaxed text-ink-soft">
+                  {m.texte}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <!-- Publics -->
+  <section class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
+    <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+      {publics.titre}
+    </h2>
+    <div class="mt-8 grid gap-6 md:grid-cols-3">
+      {
+        publics.liste.map((p) => (
+          <div class="card p-7" data-reveal>
+            <h3 class="display text-lg text-navy-deep">{p.titre}</h3>
+            <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">
+              {p.texte}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <p
+      class="mt-10 max-w-3xl border-l-2 border-sage pl-5 leading-relaxed text-ink-soft"
+      data-reveal
+      set:html={enrichir(pedagogie)}
+    />
+  </section>
+
+  <!-- CTA -->
+  <section class="mx-auto max-w-6xl px-6 pb-24 text-center">
+    <h2 class="display mx-auto max-w-2xl text-3xl text-navy-deep md:text-4xl">
+      {cta.titre}
+    </h2>
+    <p class="mx-auto mt-4 max-w-xl text-ink-soft">{cta.texte}</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-4">
+      <a href={href("/contact")} class="btn btn-primary">
+        Prendre contact <span aria-hidden="true">→</span>
+      </a>
+      <a
+        href={href("/formations/secteurs/organisme-aeronautique")}
+        class="btn btn-ghost"
+      >
+        Organismes de formation aéronautique
+      </a>
+    </div>
+  </section>
+</Base>

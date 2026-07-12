@@ -1,0 +1,29 @@
+# ============================================================
+# SECTEUR « OF SÉCURITÉ PRIVÉE » — stub honnête (à étoffer :
+# TFP APS, MAC APS, positionnement vs formations réglementaires)
+# ============================================================
+nom: "Organisme de formation sécurité privée"
+ordre: 4
+statut: "stub"
+
+seo:
+  titre: "Intervenant gestion des conflits pour OF sécurité privée"
+  description: "Renforcez vos TFP APS et MAC APS avec un module comportemental d'approfondissement : désescalade, signaux faibles, proportionnalité — par un ancien policier formateur certifié."
+
+entete:
+  surtitre: "Organisme de formation — sécurité privée"
+  titre: "Au-delà du réglementaire, les réflexes."
+  texte: "Vos cursus TFP APS et MAC APS couvrent le cadre obligatoire. Pacivis Academy apporte le module d'approfondissement comportemental : lecture des signaux faibles, désescalade sous pression, sang-froid et proportionnalité — ce qui fait la différence sur le terrain, sans jamais prétendre remplacer les formations réglementaires."
+
+enjeux: []
+
+programmes:
+  - "lecture-de-l-environnement"
+  - "desescalade-verbale"
+  - "gestion-situations-violentes"
+
+paxi_en_avant: false
+
+cta:
+  titre: "Renforcez votre offre"
+  texte: "Un échange pour identifier où un module comportemental apporte le plus de valeur à vos cursus."
