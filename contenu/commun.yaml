@@ -8,26 +8,25 @@ marque:
   slogan: "Prévention & gestion des conflits"
   signature: "La maîtrise commence avant le conflit."
 
-# Navigation textuelle (Accueil = le logo ; Contact et Espace
-# apprenant sont des boutons d'action, définis plus bas)
+# Menu principal — architecture V2 : sept entrées, dans cet ordre.
+# « accent: true » met l'entrée en évidence (fond plein), comme sur le
+# schéma de Fabien où « Espace apprenant » se détache des autres.
 navigation:
+  - label: "Accueil"
+    chemin: "/"
   - label: "Formations"
     chemin: "/formations"
   - label: "Notre approche"
     chemin: "/approche"
-  - label: "Le Journal"
-    chemin: "/journal"
   - label: "À propos"
     chemin: "/a-propos"
-
-# Déroulé léger sous « Formations » (survol/focus, desktop)
-menu_formations:
-  tout: "Toutes les formations"
-  paxi: "PAXI — passagers indisciplinés"
-  titre_secteurs: "Par secteur"
-
-boutonContact: "Prendre contact"
-boutonEspace: "Espace apprenant"
+  - label: "Le Journal Pacivis"
+    chemin: "/journal"
+  - label: "Contact"
+    chemin: "/contact"
+  - label: "Espace apprenant"
+    chemin: "/espace-apprenant"
+    accent: true
 
 menu:
   ouvrir: "Ouvrir le menu"
@@ -50,24 +49,24 @@ pied_de_page:
       chemin: "/formations/paxi"
     - label: "Notre approche"
       chemin: "/approche"
-    - label: "Le Journal"
+    - label: "Le Journal Pacivis"
       chemin: "/journal"
     - label: "À propos de Fabien Lacombe"
       chemin: "/a-propos"
+    - label: "Espace apprenant"
+      chemin: "/espace-apprenant"
     - label: "Contact"
       chemin: "/contact"
-  titre_secteurs: "Par secteur"
+  titre_secteurs: "Formations"
   liens_secteurs:
     - label: "Entreprise"
-      chemin: "/formations/secteurs/entreprise"
-    - label: "Collectivité"
-      chemin: "/formations/secteurs/collectivite"
-    - label: "OF aéronautique"
-      chemin: "/formations/secteurs/organisme-aeronautique"
-    - label: "OF sécurité privée"
-      chemin: "/formations/secteurs/organisme-securite-privee"
+      chemin: "/formations/entreprise"
+    - label: "Secteur public"
+      chemin: "/formations/secteur-public"
+    - label: "Organisme de formation"
+      chemin: "/formations/organismes-de-formation"
     - label: "En individuel"
-      chemin: "/espace-apprenant"
+      chemin: "/formations/en-individuel"
   titre_echanger: "Échanger"
   texte_echanger: "Un projet de formation, une question sur les formats ou les publics : le plus simple est d'en parler."
   bouton_contact: "Prendre contact"

@@ -1,0 +1,31 @@
+# ============================================================
+# PORTE « SECTEUR PUBLIC » — stub honnête
+#
+# Aucun texte validé n'a été fourni pour cette porte (les livrables
+# couvrent Entreprise et Organismes de formation). Rien n'est inventé
+# ici : ni programme, ni durée, ni promesse commerciale. À remplacer
+# par les textes de Fabien dès réception.
+# ============================================================
+nom: "Secteur public"
+ordre: 2
+statut: "stub"
+picto: "landmark"
+
+seo:
+  titre: "Formations pour le secteur public"
+  description: "Pacivis Academy accompagne les acteurs du secteur public confrontés aux tensions, aux conflits et aux situations dégradées. Présentation détaillée en préparation."
+
+entete:
+  surtitre: "Secteur public"
+  titre: "Accompagner les agents et les services exposés aux tensions"
+  texte: "Pacivis Academy s'adresse aux professionnels directement exposés aux situations de tension, de conflit ou de crise, ainsi qu'aux organisations qui doivent les anticiper, les encadrer ou en assumer les effets — dont les acteurs du secteur public."
+
+# Le tracé de marque, à l'échelle de la page.
+signature: "oscillation"
+
+intro: "La présentation détaillée de cette rubrique est en cours de préparation. En attendant, un échange direct reste le moyen le plus simple de préciser vos besoins et les situations rencontrées par vos services."
+
+cta:
+  titre: "Décrire votre situation"
+  texte: "Un premier échange permet de préciser les services concernés, les publics accueillis, les situations rencontrées et les résultats attendus."
+  bouton: "Échanger sur votre situation"

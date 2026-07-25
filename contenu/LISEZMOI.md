@@ -1,10 +1,23 @@
 # ✏️ Modifier les textes du site — guide pour Fabien
 
 **Tous** les textes du site se trouvent dans ce dossier `contenu/`.
-Tu peux les modifier directement depuis GitHub, sans rien installer :
-le site se met à jour automatiquement quelques minutes après.
+Deux façons de les modifier. Dans les deux cas, ta modification est
+vérifiée puis **mise en ligne automatiquement** sur le site public,
+en quelques minutes, sans intervention d'Olivier. (Les évolutions du
+site lui-même — nouvelles pages, design — suivent leur propre cycle
+de publication, géré par Olivier.)
 
-## Comment modifier un texte (3 étapes)
+## La méthode recommandée : l'interface d'édition
+
+Va sur **`/keystatic`** (l'adresse du site suivie de `/keystatic`) et
+connecte-toi avec ton compte GitHub. Tu y trouveras chaque page du site
+sous forme de **formulaire** : chaque texte a son champ, les articles du
+Journal ont un vrai éditeur (gras, titres, listes…), et le bouton
+**Save** enregistre tout à ta place. Aucun risque de casser la mise en
+forme — c'est la même sécurité qu'en dessous : si quelque chose ne va
+pas, le site en ligne reste sur la version précédente.
+
+## L'autre méthode : modifier les fichiers depuis GitHub (3 étapes)
 
 1. Ouvre le fichier concerné (liste ci-dessous) et clique sur le
    **crayon** ✏️ en haut à droite du fichier.
@@ -13,20 +26,24 @@ le site se met à jour automatiquement quelques minutes après.
 3. Clique sur le bouton vert **« Commit changes »** (deux fois).
 
 C'est tout. Le site se reconstruit et se met en ligne tout seul
-(2 à 3 minutes). Si une modification casse quelque chose, le site
-en ligne **reste sur la version précédente** — aucun risque.
+(quelques minutes). Si une modification casse quelque chose, le site
+public **reste sur la version précédente** — aucun risque.
 
 ## Quel fichier pour quel texte ?
 
 | Fichier | Contient |
 |---|---|
 | `accueil.yaml` | Toute la page d'accueil |
-| `formations-page.yaml` | La page « Formations » et l'habillage des fiches |
-| `formations/` (dossier) | **Une fiche par formation** (voir plus bas) |
-| `approche.yaml` | La page « L'approche » |
+| `formations-page.yaml` | La page « Formations » (le sommaire des 4 portes) |
+| `portes/` (dossier) | **Une page par porte** : Entreprise, Secteur public, Organisme de formation, En individuel (voir plus bas) |
+| `paxi.yaml` | La page PAXI |
+| `approche.yaml` | La page « Notre approche » |
 | `a-propos.yaml` | La page « À propos » (ton parcours) |
+| `journal/` (dossier) | Un fichier par article du Journal |
 | `contact.yaml` | La page « Contact » et le formulaire |
+| `espace-apprenant.yaml` | La page « Espace apprenant » |
 | `commun.yaml` | Le menu, le pied de page, le slogan |
+| `formations/` (dossier) | Anciennes fiches — **plus publiées** depuis la V2, conservées au cas où |
 
 ## Les règles d'écriture
 
@@ -47,22 +64,34 @@ Ces marques ne fonctionnent **pas** dans les titres, les boutons et
 les libellés courts (`titre`, `label`, `bouton_…`, `champ_…`) : ils
 s'affichent tels quels.
 
-## Modifier ou ajouter une formation
+## Modifier une page « Formations »
 
-Chaque fichier du dossier `formations/` est une fiche complète.
+Chaque fichier du dossier `portes/` est une des quatre entrées de la
+rubrique Formations. La page est composée de **cartes dépliables** :
+une carte fermée montre son `titre` et son `resume`, et s'ouvre au clic
+sur le reste (`paragraphes`, `resultat`, `publics`). Une seule carte
+est ouverte à la fois.
 
-**Modifier** : ouvre le fichier, édite le haut (titre, accroche,
-publics, durée…) ou le bas (Objectifs, Contenu, L'approche — écrits
-en Markdown : `##` pour un titre, `-` pour une puce).
+- `statut: "stub"` affiche le badge « présentation détaillée à venir » —
+  passe-le à `"complet"` quand la page est prête.
+- `note_visuel:` est une note de travail sur l'illustration à produire :
+  **elle ne s'affiche jamais** sur le site.
+- `ordre:` définit la position dans le sommaire.
 
-**Ajouter** : dans le dossier `formations/`, bouton **« Add file →
-Create new file »**. Nomme-le en minuscules avec des tirets
-(ex. `gestion-de-crise.md`) — ce nom devient l'adresse de la page.
-Copie la structure d'une fiche existante et remplis. Le champ
-`ordre:` définit la position dans la liste.
+Deux images par carte, aux rôles distincts :
 
-**Retirer** une formation : supprime son fichier (bouton `⋯` →
-Delete file).
+- `visuel:` l'illustration, affichée dans la carte ouverte. Fichier PNG
+  à fond transparent — si la couleur de fond du site change un jour,
+  l'image n'est pas à refaire. `src_sombre:` est facultatif et sert le
+  jour où le site aura un thème sombre.
+- `ambiance:` le décor de l'univers métier, posé en filigrane très
+  léger derrière le texte, débordant du cadre de la carte. Un dessin au
+  trait suffit : sa couleur est appliquée par le site, pas par le
+  fichier.
+
+Les anciennes fiches du dossier `formations/` ne sont plus publiées :
+leurs adresses redirigent vers la page Formations, et PAXI reprend
+« Sûreté aérienne ». Les fichiers sont conservés — rien n'est perdu.
 
 ## En cas de doute
 

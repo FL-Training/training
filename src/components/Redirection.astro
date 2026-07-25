@@ -1,0 +1,41 @@
+---
+/**
+ * Standalone redirect page for a URL that no longer has content.
+ *
+ * Static hosting offers no server-side redirect rules, so the page ships
+ * a meta refresh plus a canonical pointing at the target — search engines
+ * follow the canonical, visitors follow the refresh, and the visible link
+ * keeps the page usable if either is blocked.
+ */
+import { href } from "../lib/url";
+
+interface Props {
+  /** Internal target path, e.g. "/formations/entreprise". */
+  vers: string;
+}
+
+const { vers } = Astro.props;
+const chemin = href(vers);
+const canonique = Astro.site
+  ? new URL(chemin, Astro.site).toString()
+  : chemin;
+---
+
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="refresh" content={`0; url=${chemin}`} />
+    <link rel="canonical" href={canonique} />
+    <meta name="robots" content="noindex, follow" />
+    <title>Page déplacée — Pacivis Academy</title>
+  </head>
+  <body
+    style="font-family: system-ui, sans-serif; margin: 0; display: grid; min-height: 100vh; place-items: center; background: #f8f3ee; color: #0a3653;"
+  >
+    <p style="text-align: center; padding: 2rem;">
+      Cette page a été déplacée.<br />
+      <a href={chemin} style="color: #3c786a;">Poursuivre vers la nouvelle page</a>
+    </p>
+  </body>
+</html>

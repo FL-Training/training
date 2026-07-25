@@ -1,4 +1,18 @@
 ---
+/**
+ * Menu principal — version A de l'architecture V2 : les sept entrées du
+ * schéma de Fabien, à plat, dans l'ordre du document.
+ *
+ * Contrainte de place : sept entrées textuelles réclament ~715 px à
+ * côté du logo. Elles tiennent dès 1024 px UNIQUEMENT parce que le
+ * slogan s'efface entre 1024 et 1536 px (mesuré : 87 px d'écart
+ * restant à 1024). En dessous, bouton hamburger.
+ *
+ * Si la densité gêne encore à l'usage, les leviers suivants sont, dans
+ * l'ordre : raccourcir « Le Journal Pacivis » en « Le Journal »,
+ * rendre « Accueil » implicite via le logo, ou revenir à un menu à
+ * quatre entrées plus deux boutons d'action.
+ */
 import { href } from "../lib/url";
 import { commun } from "../lib/contenu";
 
@@ -9,8 +23,6 @@ function isCurrent(path: string): boolean {
   if (path === "/") return current === "/";
   return current === path || current.startsWith(`${path}/`);
 }
-
-const secteursMenu = commun.pied_de_page.liens_secteurs;
 ---
 
 <header
@@ -19,7 +31,7 @@ const secteursMenu = commun.pied_de_page.liens_secteurs;
 >
   <span class="nav-progress" aria-hidden="true"></span>
   <div
-    class="mx-auto flex max-w-6xl items-center justify-between gap-6 px-6 py-4"
+    class="mx-auto flex max-w-6xl items-center justify-between gap-5 px-6 py-4"
   >
     <a href={href("/")} class="group flex items-center gap-3" aria-label="Accueil">
       <img
@@ -31,21 +43,33 @@ const secteursMenu = commun.pied_de_page.liens_secteurs;
       />
       <span class="flex flex-col leading-tight">
         <span class="display text-lg text-navy-deep">{commun.marque.nom}</span>
+        {/*
+          Le slogan s'efface entre 1024 et 1536 px : c'est la largeur
+          qu'il libère qui permet d'afficher les sept entrées du menu au
+          lieu de basculer sur le bouton hamburger.
+        */}
         <span
-          class="hidden text-[0.62rem] font-semibold tracking-[0.2em] text-ink-faint uppercase sm:block"
+          class="hidden text-[0.62rem] font-semibold tracking-[0.2em] text-ink-faint uppercase sm:block lg:hidden 2xl:block"
         >
           {commun.marque.slogan}
         </span>
       </span>
     </a>
 
-    <nav class="hidden items-center gap-7 lg:flex" aria-label="Navigation principale">
+    <nav
+      class="hidden items-center gap-3 lg:flex xl:gap-4"
+      aria-label="Navigation principale"
+    >
       {
-        commun.navigation.map((item) => (
-          <div class={item.chemin === "/formations" ? "menu-deroulant relative" : "contents"}>
+        commun.navigation.map((item) =>
+          item.accent ? (
+            <a href={href(item.chemin)} class="btn btn-primary !px-4 !py-2.5 text-sm">
+              {item.label}
+            </a>
+          ) : (
             <a
               href={href(item.chemin)}
-              class="nav-link"
+              class="nav-link !text-[0.92rem]"
               aria-current={isCurrent(item.chemin) ? "page" : undefined}
             >
               {item.label}
@@ -57,41 +81,10 @@ const secteursMenu = commun.pied_de_page.liens_secteurs;
                 />
               )}
             </a>
-            {item.chemin === "/formations" && (
-              <div class="menu-panneau-deroulant" role="menu">
-                <a href={href("/formations/paxi")} class="menu-item menu-item-paxi">
-                  ★ {commun.menu_formations.paxi}
-                </a>
-                <a href={href("/formations")} class="menu-item">
-                  {commun.menu_formations.tout}
-                </a>
-                <span class="menu-titre">{commun.menu_formations.titre_secteurs}</span>
-                {secteursMenu.map((s) => (
-                  <a href={href(s.chemin)} class="menu-item">
-                    {s.label}
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        ))
+          ),
+        )
       }
     </nav>
-
-    <div class="hidden items-center gap-3 lg:flex">
-      <a
-        href={href("/espace-apprenant")}
-        class="btn btn-ghost !px-5 !py-2.5 text-sm"
-      >
-        {commun.boutonEspace}
-      </a>
-      <a
-        href={href("/contact")}
-        class="btn btn-primary !px-5 !py-2.5 text-sm"
-      >
-        {commun.boutonContact}
-      </a>
-    </div>
 
     <details class="relative lg:hidden">
       <summary
@@ -129,48 +122,23 @@ const secteursMenu = commun.pied_de_page.liens_secteurs;
         class="menu-panneau absolute right-0 top-13 z-50 flex w-64 flex-col gap-1 rounded-xl border border-ink/10 bg-paper p-3 shadow-(--shadow-card-hover)"
         aria-label="Navigation mobile"
       >
-        <a
-          href={href("/")}
-          style="--i: 0"
-          class="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep"
-          aria-current={current === "/" ? "page" : undefined}
-        >
-          Accueil
-        </a>
         {
           commun.navigation.map((item, i) => (
             <a
               href={href(item.chemin)}
-              style={`--i: ${i + 1}`}
-              class="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep"
+              style={`--i: ${i}`}
+              class:list={[
+                "flex min-h-11 items-center rounded-lg px-3 py-2 text-sm",
+                item.accent
+                  ? "font-semibold text-navy-deep hover:bg-sage-faint"
+                  : "font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep",
+              ]}
               aria-current={isCurrent(item.chemin) ? "page" : undefined}
             >
               {item.label}
             </a>
           ))
         }
-        <a
-          href={href("/formations/paxi")}
-          style={`--i: ${commun.navigation.length + 1}`}
-          class="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-semibold text-sage-deep hover:bg-sage-faint"
-        >
-          ★ PAXI
-        </a>
-        <div class="my-1 border-t border-ink/10"></div>
-        <a
-          href={href("/espace-apprenant")}
-          style={`--i: ${commun.navigation.length + 2}`}
-          class="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep"
-        >
-          {commun.boutonEspace}
-        </a>
-        <a
-          href={href("/contact")}
-          style={`--i: ${commun.navigation.length + 3}`}
-          class="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-semibold text-navy-deep hover:bg-paper-deep"
-        >
-          {commun.boutonContact}
-        </a>
       </nav>
     </details>
   </div>

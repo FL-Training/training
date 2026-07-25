@@ -25,7 +25,12 @@ const texteRequis = z
   .trim()
   .min(1, "ce texte ne doit pas être vide");
 
-const lien = z.object({ label: texteRequis, chemin: texteRequis });
+const lien = z.object({
+  label: texteRequis,
+  chemin: texteRequis,
+  // Menu principal : met l'entrée en évidence (fond plein).
+  accent: z.boolean().default(false),
+});
 const seo = z.object({ titre: texteRequis, description: texteRequis });
 const pilier = z.object({
   numero: texteRequis,
@@ -45,13 +50,6 @@ const communSchema = z.object({
     signature: texteRequis,
   }),
   navigation: z.array(lien).min(1),
-  boutonContact: texteRequis,
-  boutonEspace: texteRequis,
-  menu_formations: z.object({
-    tout: texteRequis,
-    paxi: texteRequis,
-    titre_secteurs: texteRequis,
-  }),
   menu: z.object({ ouvrir: texteRequis, fermer: texteRequis }),
   liens: z.object({ linkedin: z.url() }),
   photos: z.object({ portrait_alt: texteRequis, og_alt: texteRequis }),
@@ -85,9 +83,11 @@ const accueilSchema = z.object({
     bouton_principal: texteRequis,
     bouton_secondaire: texteRequis,
   }),
-  chiffres: z
-    .array(z.object({ valeur: texteRequis, texte: texteRequis }))
-    .min(1),
+  reperes: z.object({
+    surtitre: texteRequis,
+    liste: z.array(texteRequis).min(1),
+    lien: texteRequis,
+  }),
   publics: entete.extend({
     liste: z
       .array(
@@ -117,12 +117,6 @@ const accueilSchema = z.object({
     piliers: z.array(pilier).min(1),
     citation: texteRequis,
   }),
-  formations: z.object({
-    surtitre: texteRequis,
-    titre: texteRequis,
-    bouton_tous: texteRequis,
-    lien_programme: texteRequis,
-  }),
   formateur: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
@@ -139,10 +133,7 @@ const accueilSchema = z.object({
 const formationsPageSchema = z.object({
   seo,
   entete,
-  portes: z.object({
-    besoin: z.object({ titre: texteRequis, texte: texteRequis }),
-    secteur: z.object({ titre: texteRequis, texte: texteRequis }),
-  }),
+  portes: z.object({ titre: texteRequis, texte: texteRequis }),
   paxi_banniere: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
@@ -150,31 +141,42 @@ const formationsPageSchema = z.object({
     bouton: texteRequis,
   }),
   carte: z.object({
-    lien_programme: texteRequis,
-    lien_secteur: texteRequis,
+    lien_porte: texteRequis,
     badge_stub: texteRequis,
   }),
-  fiche: z.object({
+  porte: z.object({
     retour: texteRequis,
-    titre_pratique: texteRequis,
-    libelle_duree: texteRequis,
-    libelle_format: texteRequis,
     libelle_publics: texteRequis,
-    bouton_demander: texteRequis,
-    note: texteRequis,
+    libelle_resultat: texteRequis,
+    libelle_ouvrir: texteRequis,
+    libelle_fermer: texteRequis,
+    encart_paxi_surtitre: texteRequis,
+    encart_paxi_titre: texteRequis,
   }),
 });
 
 const approcheSchema = z.object({
   seo,
   entete,
-  piliers: z.array(pilier).min(1),
-  cadre: z.object({
+  // Paragraphes de chapô qui suivent le texte d'entête.
+  intro: z.array(texteRequis).default([]),
+  methode: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
-    points: z.array(z.object({ titre: texteRequis, texte: texteRequis })).min(1),
+    intro: texteRequis,
+    piliers: z.array(pilier).min(1),
+    note: texteRequis,
   }),
-  appel_final: z.object({
+  sections: z
+    .array(
+      z.object({
+        titre: texteRequis,
+        paragraphes: z.array(texteRequis).min(1),
+      }),
+    )
+    .default([]),
+  conclusion: z.object({
+    surtitre: texteRequis,
     titre: texteRequis,
     texte: texteRequis,
     bouton_formations: texteRequis,
@@ -185,12 +187,16 @@ const approcheSchema = z.object({
 const aProposSchema = z.object({
   seo,
   entete,
-  parcours: z
-    .array(z.object({ periode: texteRequis, titre: texteRequis, texte: texteRequis }))
-    .min(1),
-  ton: z.object({
+  intro: z.array(texteRequis).default([]),
+  fondateur: z.object({
+    surtitre: texteRequis,
     titre: texteRequis,
-    texte: texteRequis,
+    paragraphes: z.array(texteRequis).min(1),
+  }),
+  engagement: z.object({
+    surtitre: texteRequis,
+    titre: texteRequis,
+    paragraphes: z.array(texteRequis).min(1),
     bouton_contact: texteRequis,
     bouton_linkedin: texteRequis,
   }),
@@ -283,7 +289,7 @@ const espaceApprenantSchema = z.object({
   statut: z.object({
     titre: texteRequis,
     texte: texteRequis,
-    bouton_skool: texteRequis,
+    bouton_acces: texteRequis,
   }),
   formulaire: z.object({
     champ_email: texteRequis,

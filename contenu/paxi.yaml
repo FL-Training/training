@@ -1,7 +1,14 @@
 # ============================================================
-# PAGE PRODUIT PHARE « PAXI »
-# Gestion des passagers indisciplinés — contenu issu du module
-# réel déployé en CQP PNC (7 h). ⚠️ À faire relire par Fabien.
+# PAGE « PAXI » — OFFRE TRANSVERSALE UNIQUE
+#
+# Architecture V2 : PAXI s'adresse aux compagnies et entreprises
+# aériennes et aéroportuaires COMME aux organismes de formation
+# aéronautique, et prépare deux publics — personnel navigant et
+# ground handling. Le croisement produit quatre configurations,
+# jamais quatre offres distinctes.
+#
+# Contenu issu du module réel déployé en CQP PNC (7 h).
+# ⚠️ Objectifs, modules et pédagogie restent à faire relire par Fabien.
 # ============================================================
 
 seo:
@@ -9,7 +16,7 @@ seo:
   description: "Le module de référence pour anticiper, désamorcer et gérer les passagers indisciplinés : classification des risques, cadre légal aérien, désescalade et coordination équipage. Déployé en CQP PNC."
 
 entete:
-  surtitre: "Produit phare · Aérien"
+  surtitre: "Offre transversale · Aéronautique et aéroportuaire"
   titre: "PAXI — De la tension à la maîtrise, en cabine."
   texte: "**PAXI** : tout passager refusant d'appliquer les consignes et règles de sécurité, ou auteur d'incivilités, de dégradations ou d'agressions. Ce module forme les équipages à anticiper, désamorcer et gérer ces situations — dans l'un des environnements les plus contraints qui soient : une cabine en vol."
 
@@ -39,14 +46,16 @@ modules:
       texte: "Sous stress, le risque est d'agir seul. Reconstruire une vision globale partagée, synchroniser l'action, communiquer entre PNC et avec le poste de pilotage."
 
 publics:
-  titre: "Pour qui"
+  titre: "Une seule offre, quatre configurations"
   liste:
+    - titre: "Compagnies et entreprises aériennes et aéroportuaires"
+      texte: "Formation de vos équipes, adaptée à vos procédures et à vos contraintes d'exploitation."
     - titre: "Organismes de formation aéronautique"
-      texte: "Intégrez le module à votre CQP PNC ou à vos cursus — programme clé en main, intervenant expert."
-    - titre: "Compagnies aériennes"
-      texte: "Formation continue de vos équipages, adaptée à vos procédures et à votre réseau."
-    - titre: "Navigants en individuel"
-      texte: "Préparation et montée en compétence à titre personnel — voir l'espace apprenant."
+      texte: "Intégrez PAXI à vos parcours : la formation s'adapte aux publics préparés, à leur niveau d'expérience et à vos objectifs pédagogiques."
+    - titre: "Personnel navigant"
+      texte: "Gestion des situations en cabine, coordination entre PNC et PNT, techniques de protection et d'immobilisation en équipe lorsque la situation l'exige."
+    - titre: "Ground handling"
+      texte: "Les mêmes mécanismes appliqués aux situations rencontrées au sol, dans l'environnement aéroportuaire."
 
 pedagogie: "La pédagogie PAXI repose sur l'entraînement : ateliers de reconnaissance des émotions, détection des signaux faibles, mises en situation de désescalade et exercices de coordination d'équipage. Les cadres théoriques sont couverts dans la formation — mais c'est la répétition sous pression qui installe les réflexes."
 

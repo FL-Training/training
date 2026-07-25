@@ -1,0 +1,180 @@
+---
+/**
+ * PAGE TEMPORAIRE — comparaison typographique.
+ *
+ * Fabien veut une typographie plus proche du logo, dont le mot
+ * « PACIVIS » est une capitale lapidaire romaine (axe Trajan,
+ * empattements fins, interlettrage large). Cette page applique quatre
+ * combinaisons au vrai contenu du site pour trancher sur pièce.
+ *
+ * À SUPPRIMER une fois le choix fait : elle est noindex et absente du
+ * sitemap et de la navigation, mais elle n'a pas vocation à rester.
+ */
+import Base from "../layouts/Base.astro";
+import "@fontsource-variable/fraunces";
+import "@fontsource/cinzel/400.css";
+import "@fontsource/cinzel/600.css";
+import "@fontsource/marcellus/400.css";
+import "@fontsource-variable/cormorant-garamond";
+import "@fontsource-variable/eb-garamond";
+
+const PISTES = [
+  {
+    id: "actuelle",
+    nom: "Référence — l'actuelle",
+    titres: "Fraunces",
+    corps: "Archivo",
+    note: "Serif éditoriale contemporaine + grotesque. Beaucoup de caractère, aucune référence romaine.",
+  },
+  {
+    id: "lapidaire",
+    nom: "Piste A — lapidaire",
+    titres: "Cinzel",
+    corps: "Archivo",
+    note: "Cinzel est directement dessinée d'après les inscriptions romaines : c'est l'écho le plus littéral au logo. Elle n'a que des capitales — les titres longs deviennent imposants.",
+  },
+  {
+    id: "romaine-douce",
+    nom: "Piste B — romaine douce",
+    titres: "Marcellus",
+    corps: "EB Garamond",
+    note: "Marcellus garde l'axe lapidaire mais possède des minuscules : la référence romaine reste lisible sur des titres longs. Corps en Garamond, romain historique.",
+  },
+  {
+    id: "mixte",
+    nom: "Piste B′ — romaine + grotesque (recommandée)",
+    titres: "Marcellus",
+    corps: "Archivo",
+    note: "Même titrage romain, mais le corps reste une grotesque : meilleure lisibilité des blocs longs, des libellés de formulaire et des boutons. L'identité se joue dans les titres et la marque, la lecture reste confortable.",
+  },
+  {
+    id: "garamond",
+    nom: "Piste C — humaniste",
+    titres: "Cormorant Garamond",
+    corps: "EB Garamond",
+    note: "Tout en Garamond : élégance classique, contraste marqué. Le plus « livre ancien », le moins institutionnel.",
+  },
+];
+
+const TITRE = "Préparer vos équipes à faire face aux tensions";
+const CORPS =
+  "Pacivis Academy accompagne les entreprises qui souhaitent renforcer la stabilité de leurs équipes, prévenir ou traiter les conflits et mieux préparer leurs managers et leurs salariés aux situations susceptibles de dégrader la coopération, la qualité de service, la sécurité ou la continuité de l'activité.";
+---
+
+<Base
+  title="Essai typographique (page de travail)"
+  description="Comparaison de quatre combinaisons typographiques pour Pacivis Academy."
+  noindex={true}
+>
+  <section class="mx-auto max-w-6xl px-6 pt-16 pb-20">
+    <p class="eyebrow">Page de travail</p>
+    <h1 class="display mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
+      Quelle typographie pour Pacivis&nbsp;Academy&nbsp;?
+    </h1>
+    <p class="mt-6 max-w-3xl leading-relaxed text-ink-soft">
+      Le logo est une capitale lapidaire romaine. Voici quatre façons de le
+      prolonger dans le texte du site, appliquées au même contenu réel. Le
+      logo, la palette et la mise en page ne changent pas.
+    </p>
+
+    <div class="mt-14 space-y-12">
+      {
+        PISTES.map((p) => (
+          <article class={`essai essai-${p.id} rounded-2xl border border-ink/12 p-8 md:p-10`}>
+            <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-ink/10 pb-4">
+              <p class="text-[0.7rem] font-semibold tracking-[0.18em] text-sage-deep uppercase">
+                {p.nom}
+              </p>
+              <p class="text-sm text-ink-faint">
+                titres&nbsp;: {p.titres} · corps&nbsp;: {p.corps}
+              </p>
+            </div>
+
+            <p class="essai-surtitre mt-8">Entreprise</p>
+            <h2 class="essai-titre mt-3 max-w-3xl">{TITRE}</h2>
+            <p class="essai-corps mt-5 max-w-2xl">{CORPS}</p>
+            <p class="essai-marque mt-8">PACIVIS ACADEMY</p>
+
+            <p class="mt-6 border-t border-ink/10 pt-4 text-sm leading-relaxed text-ink-faint">
+              {p.note}
+            </p>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .essai-surtitre {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-sage-deep);
+  }
+
+  .essai-titre {
+    font-size: clamp(1.9rem, 3.4vw, 2.75rem);
+    line-height: 1.12;
+    color: var(--color-navy-deep);
+  }
+
+  .essai-corps {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-ink-soft);
+  }
+
+  /* Le nom de marque tel qu'il apparaîtrait sous le logo. */
+  .essai-marque {
+    font-size: 1.35rem;
+    letter-spacing: 0.28em;
+    color: var(--color-navy-deep);
+  }
+
+  /* Référence : ce que fait le site aujourd'hui. */
+  .essai-actuelle .essai-titre,
+  .essai-actuelle .essai-marque {
+    font-family: "Fraunces Variable", Georgia, serif;
+  }
+  .essai-actuelle .essai-corps {
+    font-family: "Archivo Variable", system-ui, sans-serif;
+  }
+
+  .essai-lapidaire .essai-titre,
+  .essai-lapidaire .essai-marque {
+    font-family: "Cinzel", Georgia, serif;
+    font-weight: 600;
+  }
+  .essai-lapidaire .essai-corps {
+    font-family: "Archivo Variable", system-ui, sans-serif;
+  }
+
+  .essai-romaine-douce .essai-titre,
+  .essai-romaine-douce .essai-marque {
+    font-family: "Marcellus", Georgia, serif;
+  }
+  .essai-romaine-douce .essai-corps {
+    font-family: "EB Garamond Variable", Georgia, serif;
+    font-size: 1.12rem;
+  }
+
+  .essai-mixte .essai-titre,
+  .essai-mixte .essai-marque {
+    font-family: "Marcellus", Georgia, serif;
+  }
+  .essai-mixte .essai-corps {
+    font-family: "Archivo Variable", system-ui, sans-serif;
+  }
+
+  .essai-garamond .essai-titre,
+  .essai-garamond .essai-marque {
+    font-family: "Cormorant Garamond Variable", Georgia, serif;
+    font-weight: 600;
+  }
+  .essai-garamond .essai-corps {
+    font-family: "EB Garamond Variable", Georgia, serif;
+    font-size: 1.12rem;
+  }
+</style>

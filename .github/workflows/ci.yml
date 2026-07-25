@@ -1,0 +1,38 @@
+# Quality gate: every push to main (and every PR) must type-check and
+# build. Vercel builds independently for deploys; this gate is what keeps
+# a broken content edit (e.g. a malformed YAML saved through Keystatic)
+# visibly red on GitHub before anyone tags a release.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Node 24 LTS ships npm 11, matching the npm that generated
+      # package-lock.json — npm 10 (Node 22) rejects this lockfile.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check (astro check)
+        run: npm run check
+
+      # PUBLIC_CONVEX_URL is intentionally absent: the build must succeed
+      # without it (forms fall back to LinkedIn), and this also validates
+      # every /contenu file against the zod schemas.
+      - name: Build Astro site
+        run: npm run build

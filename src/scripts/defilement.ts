@@ -16,6 +16,11 @@ if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     anchors: true,
   });
 
+  // Exposed so other scripts can move the scroll position without being
+  // undone by the running animation loop (see cartes-depliables.ts).
+  // `window.lenis` is already taken by the library's own page metadata.
+  (window as unknown as { instanceLenis?: Lenis }).instanceLenis = lenis;
+
   document.addEventListener("astro:after-swap", () => {
     lenis.scrollTo(0, { immediate: true });
   });

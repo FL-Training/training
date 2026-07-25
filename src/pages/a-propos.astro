@@ -4,7 +4,7 @@ import { href } from "../lib/url";
 import { aPropos, commun } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
 
-const { seo, entete, parcours, ton } = aPropos;
+const { seo, entete, intro, fondateur, engagement } = aPropos;
 ---
 
 <Base
@@ -14,23 +14,51 @@ const { seo, entete, parcours, ton } = aPropos;
   fil={[{ label: "À propos", chemin: "/a-propos" }]}
 >
   <section class="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
-    <div class="grid items-start gap-10 md:grid-cols-[1fr_auto]" data-reveal-group>
+    <p class="eyebrow">{entete.surtitre}</p>
+    <h1 class="display mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
+      {entete.titre}
+    </h1>
+    <p
+      class="mt-6 max-w-3xl text-lg leading-relaxed text-ink"
+      data-mots
+      set:html={enrichir(entete.texte)}
+    />
+    <div class="mt-6 max-w-3xl space-y-4" data-reveal-group>
+      {
+        intro.map((p) => (
+          <p
+            class="leading-relaxed text-ink-soft"
+            data-reveal
+            set:html={enrichir(p)}
+          />
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- Le fondateur : texte à gauche, portrait à droite -->
+  <section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+    <div
+      class="grid items-start gap-10 md:grid-cols-[1fr_auto] md:gap-14"
+      data-reveal-group
+    >
       <div data-reveal>
-        <p class="eyebrow">{entete.surtitre}</p>
-        <h1 class="display mt-4 max-w-2xl text-4xl text-navy-deep md:text-5xl">
-          {entete.titre}
-        </h1>
-        <p
-          class="mt-6 max-w-2xl text-lg leading-relaxed text-ink"
-          data-mots
-          set:html={enrichir(entete.texte)}
-        />
+        <p class="eyebrow">{fondateur.surtitre}</p>
+        <h2 class="display mt-4 text-3xl text-navy-deep md:text-4xl">
+          {fondateur.titre}
+        </h2>
+        <div class="mt-6 max-w-2xl space-y-4">
+          {
+            fondateur.paragraphes.map((p) => (
+              <p
+                class="leading-relaxed text-ink-soft"
+                set:html={enrichir(p)}
+              />
+            ))
+          }
+        </div>
       </div>
-      <div
-        class="relative mx-auto w-60 md:mx-0 md:w-72"
-        data-portrait
-        data-reveal
-      >
+      <div class="relative mx-auto w-60 md:mx-0 md:w-72" data-portrait data-reveal>
         <span class="portrait-cadre" aria-hidden="true"></span>
         <img
           src={href("/fabien.webp")}
@@ -43,42 +71,22 @@ const { seo, entete, parcours, ton } = aPropos;
     </div>
   </section>
 
-  <section class="mx-auto max-w-6xl px-6 py-16">
-    <ol
-      class="timeline relative space-y-12 pl-8 md:pl-12"
-      data-timeline
-      data-reveal
-      data-reveal-group
-    >
-      {
-        parcours.map((etape) => (
-          <li class="timeline-item relative" data-reveal>
-            <span
-              class="timeline-node absolute -left-[2.375rem] top-2 h-3 w-3 rounded-full border-2 border-sage-deep bg-paper md:-left-[3.375rem]"
-              aria-hidden="true"
-            />
-            <p class="eyebrow">{etape.periode}</p>
-            <h2 class="display mt-2 text-2xl text-navy-deep">{etape.titre}</h2>
-            <p
-              class="mt-3 max-w-2xl leading-relaxed text-ink-soft"
-              set:html={enrichir(etape.texte)}
-            />
-          </li>
-        ))
-      }
-    </ol>
-  </section>
-
   <section class="border-y border-ink/10 bg-paper-deep/60">
-    <div class="mx-auto max-w-6xl px-6 py-16">
-      <h2 class="display max-w-2xl text-3xl text-navy-deep">{ton.titre}</h2>
-      <p
-        class="mt-5 max-w-2xl leading-relaxed text-ink-soft"
-        set:html={enrichir(ton.texte)}
-      />
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+      <p class="eyebrow">{engagement.surtitre}</p>
+      <h2 class="display mt-4 max-w-2xl text-3xl text-navy-deep">
+        {engagement.titre}
+      </h2>
+      <div class="mt-6 max-w-2xl space-y-4">
+        {
+          engagement.paragraphes.map((p) => (
+            <p class="leading-relaxed text-ink-soft" set:html={enrichir(p)} />
+          ))
+        }
+      </div>
       <div class="mt-8 flex flex-wrap gap-4">
         <a href={href("/contact")} class="btn btn-primary">
-          {ton.bouton_contact}
+          {engagement.bouton_contact}
         </a>
         <a
           href={commun.liens.linkedin}
@@ -86,7 +94,7 @@ const { seo, entete, parcours, ton } = aPropos;
           target="_blank"
           class="btn btn-ghost"
         >
-          {ton.bouton_linkedin}
+          {engagement.bouton_linkedin}
         </a>
       </div>
     </div>

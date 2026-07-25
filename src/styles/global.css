@@ -43,7 +43,10 @@
   --color-ink-faint: oklch(52.25% 0.0268 228.2);
 
   /* Typographie */
-  --font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  /* Marcellus : capitale lapidaire romaine, en écho au logo. Un seul
+     poids (400) — les titres jouent sur la taille et l'espace, pas sur
+     la graisse. */
+  --font-display: "Marcellus", "Iowan Old Style", Georgia, serif;
   --font-body: "Archivo Variable", "Avenir Next", system-ui, sans-serif;
 
   /* Ombres douces, teintées bleu nuit */
@@ -60,6 +63,12 @@
    puis se stabilisent. Uniquement transform / opacity / clip-path,
    jamais en boucle, ~20 % plus court sur mobile. */
 :root {
+  /* Autorise l'interpolation vers `auto` : c'est ce qui rend l'ouverture
+     d'un <details> animable en hauteur, sans mesurer quoi que ce soit en
+     JavaScript. Ignoré par les navigateurs qui ne le connaissent pas —
+     l'accordéon s'ouvre alors d'un coup, comme avant. */
+  interpolate-size: allow-keywords;
+
   --dur-vt-out: 160ms;
   --dur-vt-in: 400ms;
   --dur-section: 450ms;
@@ -121,10 +130,11 @@
   /* ---- Titres éditoriaux ---- */
   .display {
     font-family: var(--font-display);
-    font-variation-settings: "SOFT" 40, "WONK" 0;
-    font-weight: 560;
-    line-height: 1.08;
-    letter-spacing: -0.015em;
+    font-weight: 400;
+    line-height: 1.14;
+    /* Marcellus a des contreformes larges : le resserrement hérité de
+       Fraunces la rendrait compacte. On laisse respirer. */
+    letter-spacing: 0;
     text-wrap: balance;
   }
 
@@ -145,7 +155,7 @@
   }
   .prose-site h2 {
     font-family: var(--font-display);
-    font-weight: 580;
+    font-weight: 400;
     font-size: 1.65rem;
     line-height: 1.2;
     margin-top: 2.2em;
@@ -154,7 +164,7 @@
   }
   .prose-site h3 {
     font-family: var(--font-display);
-    font-weight: 560;
+    font-weight: 400;
     font-size: 1.25rem;
     margin-top: 1.8em;
     margin-bottom: 0.5em;

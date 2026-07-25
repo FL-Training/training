@@ -1,0 +1,163 @@
+---
+/**
+ * La signature d'une situation — déclinaison du motif de marque.
+ *
+ * Le site porte déjà un motif signature : une ligne qui part agitée et
+ * se stabilise (« de la tension à la maîtrise »). Plutôt que d'ajouter
+ * des images qui concurrencent le logo, chaque carte reçoit SA variante
+ * de ce tracé : la forme raconte la dynamique dont parle le texte.
+ *
+ * Le tracé se dessine à l'ouverture de la carte, puis ne bouge plus.
+ * Un trait de 2 px reste très en dessous du logo dans la hiérarchie
+ * visuelle — c'est le but.
+ */
+interface Props {
+  /** Quelle dynamique la carte décrit. */
+  forme:
+    | "oscillation"
+    | "pic"
+    | "endurance"
+    | "paliers"
+    | "greffe"
+    | "referentiel"
+    | "construction"
+    | "progression";
+  class?: string;
+}
+
+// `rest` laisse passer les attributs de la page hôte — notamment
+// `data-reveal`, qui déclenche le tracé au défilement là où il n'y a pas
+// d'accordéon pour le faire.
+const { forme, class: className = "", ...rest } = Astro.props;
+
+/*
+  Toutes les courbes partent et finissent sur la même ligne d'horizon :
+  posées les unes sous les autres, elles se lisent comme une famille.
+
+  ⚠️ Le SVG est étiré en largeur (`preserveAspectRatio="none"`) : un
+  tracé de 600 unités de large rendu sur ~1000 px et 36 px de haut voit
+  ses amplitudes verticales divisées par deux et ses pentes aplaties.
+  Les valeurs ci-dessous sont donc volontairement amples — vérifiées sur
+  planche, pas seulement calculées.
+*/
+const TRACES: Record<Props["forme"], string> = {
+  // Tension qui monte, s'installe, puis se dénoue : le conflit interne.
+  oscillation:
+    "M0 30 L54 30 L90 6 L126 54 L162 10 L198 50 L234 16 L270 44 C310 34, 350 30, 396 30 L600 30",
+  // Un incident bref et violent, puis retour au calme : l'incivilité.
+  pic: "M0 30 L192 30 L214 2 L236 58 L258 14 L276 36 C312 32, 348 30, 384 30 L600 30",
+  // Une amplitude franche qui ne s'effondre jamais : tenir l'intensité
+  // dans la durée sans jamais rompre.
+  endurance:
+    "M0 30 C30 4, 90 56, 120 30 C150 4, 210 56, 240 30 C270 4, 330 56, 360 30 C390 4, 450 56, 480 30 C510 12, 560 30, 600 30",
+  // Une dégradation par paliers : chaque secousse repart d'un niveau
+  // plus bas que la précédente, puis la remontée s'installe.
+  paliers:
+    "M0 26 L72 26 L100 4 L128 44 L156 20 L184 56 L212 32 L240 58 L268 40 L300 52 C370 46, 480 34, 600 30",
+  // Un parcours qui existe déjà, et un module qui vient s'y poser puis
+  // s'y fondre : intégrer PAXI à une formation en place. La branche
+  // plonge franchement pour que la jonction se lise.
+  greffe: "M0 38 L600 38 M120 2 C176 2, 176 34, 228 38",
+  // Un cadre donné : des paliers réguliers, tous de même hauteur,
+  // jusqu'à un niveau tenu. Le référentiel impose sa progression.
+  referentiel:
+    "M0 54 L84 54 L84 42 L180 42 L180 30 L276 30 L276 18 L372 18 L372 6 L468 6 L600 6",
+  // Des séquences d'abord distinctes, dont les écarts se resserrent
+  // jusqu'à former un parcours continu : l'intervention sur mesure.
+  construction:
+    "M0 30 L88 30 M112 30 L232 30 M250 30 L390 30 M402 30 L600 30",
+  // Une montée régulière qui finit par se stabiliser : la progression
+  // d'une personne qui se forme à son rythme.
+  progression:
+    "M0 56 C90 55, 150 46, 220 36 C290 26, 350 14, 430 8 C490 5, 545 4, 600 4",
+};
+---
+
+<svg
+  class={`signature-carte ${className}`}
+  viewBox="0 0 600 60"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  preserveAspectRatio="none"
+  {...rest}
+>
+  <path
+    d={TRACES[forme]}
+    pathLength="1"
+    stroke="currentColor"
+    stroke-width="1.6"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    vector-effect="non-scaling-stroke"></path>
+</svg>
+
+<style>
+  /*
+    Styles portés par le composant lui-même : un style scopé au parent
+    n'atteindrait pas ce SVG.
+  */
+  .signature-carte {
+    display: block;
+    width: 100%;
+    /* 1,75rem écrasait les tracés au point de les rendre plats. */
+    height: 2.5rem;
+    color: var(--color-sage-deep);
+    opacity: 0.55;
+  }
+
+  /* Signature portée par la page entière : plus ample, plus aérée. */
+  .signature-carte.signature-page {
+    height: 3.5rem;
+    margin-top: 3rem;
+    max-width: 44rem;
+  }
+
+  /*
+    Sur ces pages il n'y a pas d'accordéon pour déclencher le tracé :
+    c'est l'entrée dans le champ de vision qui s'en charge, via le
+    système de révélation du site.
+
+    Une animation, et non une transition : la signature étant souvent
+    visible dès le chargement, la classe `revealed` arrive dans le même
+    souffle que `js-reveal` et l'état de départ ne serait jamais rendu.
+    `backwards` garantit qu'il l'est. Sans JavaScript, la ligne est
+    simplement là, tracée.
+  */
+  :global(html.js-reveal) .signature-page:global(.revealed) path {
+    animation: signature-tracer 1400ms cubic-bezier(0.45, 0.05, 0.3, 1)
+      backwards;
+    animation-delay: 220ms;
+  }
+
+  @keyframes signature-tracer {
+    from {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  /*
+    Le tracé se dessine à l'ouverture de la carte. `@starting-style` est
+    indispensable : <details> ne rend pas son contenu tant qu'il est
+    fermé, donc sans état de départ déclaré il n'y a rien à interpoler.
+    Les navigateurs qui l'ignorent affichent la ligne déjà tracée — la
+    carte reste correcte.
+  */
+  .signature-carte path {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @starting-style {
+    :global(details[open]) .signature-carte path {
+      stroke-dashoffset: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .signature-carte path {
+      transition: none;
+    }
+  }
+</style>

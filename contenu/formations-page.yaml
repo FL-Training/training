@@ -1,41 +1,43 @@
 # ============================================================
-# PAGE « FORMATIONS » (la liste) ET FICHES FORMATION
-# Les fiches elles-mêmes sont dans le dossier formations/
+# PAGE « FORMATIONS » — le hub des quatre portes
+#
+# Architecture V2 : la rubrique est segmentée par type de visiteur
+# (Entreprise, Secteur public, Organisme de formation, En individuel).
+# PAXI est une offre TRANSVERSALE unique, présentée à part — jamais
+# comme une cinquième porte.
+#
+# Le contenu de chaque porte vit dans contenu/portes/*.yaml.
 # ============================================================
 
 seo:
   titre: "Formations"
-  description: "Prévention des conflits, désescalade verbale, gestion des violences, sûreté aérienne : des formations construites sur mesure pour vos équipes."
+  description: "Prévention et gestion des conflits, stabilité opérationnelle, situations dégradées et de crise : des interventions construites avec les entreprises, le secteur public, les organismes de formation, ou suivies à titre individuel."
 
 entete:
   surtitre: "Formations"
-  titre: "Des programmes sur mesure, du désamorçage au dernier recours."
-  texte: "Chaque formation est adaptée à votre métier, vos situations réelles et vos contraintes. Deux façons de trouver la vôtre : par besoin, ou par secteur."
+  titre: "Des interventions construites à partir de vos situations réelles."
+  texte: "Pacivis Academy intervient auprès des organisations comme des professionnels engageant eux-mêmes leur démarche. Choisissez l'entrée qui correspond à votre situation."
 
 portes:
-  besoin:
-    titre: "Par besoin"
-    texte: "Vous savez ce que vos équipes doivent savoir faire : explorez les programmes."
-  secteur:
-    titre: "Par secteur"
-    texte: "Vous voulez une réponse pensée pour votre contexte : entrez par votre situation."
+  titre: "Votre situation"
+  texte: "Quatre entrées, selon que vous formez vos équipes, vos agents, les publics que vous préparez — ou que vous vous formez vous-même."
 
 paxi_banniere:
-  surtitre: "Produit phare"
-  titre: "PAXI — gestion des passagers indisciplinés"
-  texte: "Le module de référence pour le transport aérien, déployé en CQP PNC. Classification des risques, cadre légal, désescalade et coordination équipage."
-  bouton: "Découvrir le PAXI"
+  surtitre: "Offre transversale"
+  titre: "PAXI — prévention et gestion des passagers indisciplinés"
+  texte: "Une seule offre pour les compagnies et entreprises aériennes et aéroportuaires comme pour les organismes de formation aéronautique, du personnel navigant aux équipes de ground handling."
+  bouton: "Découvrir PAXI"
 
 carte:
-  lien_programme: "Programme"
-  lien_secteur: "Découvrir"
+  lien_porte: "Découvrir"
   badge_stub: "Présentation détaillée à venir"
 
-fiche:
+# Libellés communs aux quatre pages de porte
+porte:
   retour: "Toutes les formations"
-  titre_pratique: "En pratique"
-  libelle_duree: "Durée"
-  libelle_format: "Format"
-  libelle_publics: "Publics"
-  bouton_demander: "Demander un programme"
-  note: "Contenu, durée et intensité sont ajustés à vos équipes après un échange sur vos situations réelles."
+  libelle_publics: "Publics concernés"
+  libelle_resultat: "Ce que la formation change"
+  libelle_ouvrir: "Afficher le détail"
+  libelle_fermer: "Masquer le détail"
+  encart_paxi_surtitre: "Offre transversale"
+  encart_paxi_titre: "PAXI — passagers indisciplinés"

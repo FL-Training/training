@@ -23,7 +23,7 @@ sections:
     texte: "Fabien Lacombe."
   - titre: "Hébergement"
     texte: |
-      Le site est hébergé par **GitHub, Inc.** (GitHub Pages), 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis — https://pages.github.com.
+      Le site est hébergé par **Vercel Inc.**, 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis — https://vercel.com.
       Les données du formulaire de contact sont hébergées par **Convex, Inc.** sur une infrastructure située en Union européenne (Irlande) — https://www.convex.dev.
   - titre: "Propriété intellectuelle"
     texte: "L'ensemble des contenus du site (textes, logo, photographies, identité visuelle) est la propriété de Fabien Lacombe, sauf mention contraire. Toute reproduction sans autorisation préalable est interdite."

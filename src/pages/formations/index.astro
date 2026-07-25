@@ -1,24 +1,20 @@
 ---
+/**
+ * Hub « Formations » : les quatre portes de l'architecture V2, plus
+ * PAXI présenté comme offre transversale (jamais comme une cinquième
+ * porte).
+ */
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import Picto from "../../components/Picto.astro";
 import { href } from "../../lib/url";
 import { formationsPage } from "../../lib/contenu";
 import { enrichir } from "../../lib/texte";
-import { formationsTriees } from "../../lib/formations";
 
-const formations = await formationsTriees();
-const secteurs = (await getCollection("secteurs")).sort(
+const portes = (await getCollection("portes")).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
-const { seo, entete, portes, paxi_banniere, carte } = formationsPage;
-
-const pictosSecteurs: Record<string, string> = {
-  entreprise: "building-2",
-  collectivite: "landmark",
-  "organisme-aeronautique": "plane",
-  "organisme-securite-privee": "shield-check",
-};
+const { seo, entete, portes: intro, paxi_banniere, carte } = formationsPage;
 ---
 
 <Base
@@ -37,10 +33,46 @@ const pictosSecteurs: Record<string, string> = {
       set:html={enrichir(entete.texte)}
     />
 
-    <!-- Bannière produit phare PAXI -->
+    <!-- Les quatre portes : par type de visiteur -->
+    <div class="mt-14" data-reveal-group data-reveal-stagger="120">
+      <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+        {intro.titre}
+      </h2>
+      <p class="mt-2 max-w-2xl text-ink-soft" data-reveal>{intro.texte}</p>
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          portes.map((p) => (
+            <a
+              href={href(`/formations/${p.id}`)}
+              class="card carte-porte flex flex-col p-6"
+              data-reveal
+            >
+              <Picto nom={p.data.picto} />
+              <h3 class="display mt-3 text-lg leading-snug text-navy-deep">
+                {p.data.nom}
+              </h3>
+              <p class="mt-2 text-[0.92rem] leading-relaxed text-ink-soft">
+                {p.data.entete.titre}
+              </p>
+              {p.data.statut === "stub" && (
+                <span class="mt-3 inline-block self-start rounded-full bg-paper-deep/60 px-3 py-1 text-[0.68rem] font-semibold tracking-wide text-ink-faint uppercase">
+                  {carte.badge_stub}
+                </span>
+              )}
+              <span class="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-sage-deep">
+                {carte.lien_porte}
+                <span aria-hidden="true">→</span>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- PAXI : offre transversale unique -->
     <a
       href={href("/formations/paxi")}
-      class="group mt-12 flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between"
+      class="group mt-16 flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between"
       data-reveal
     >
       <div>
@@ -57,89 +89,70 @@ const pictosSecteurs: Record<string, string> = {
         <span aria-hidden="true">→</span>
       </span>
     </a>
-
-    <!-- Porte 1 : par secteur -->
-    <div class="mt-16" data-reveal-group data-reveal-stagger="50">
-      <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-        {portes.secteur.titre}
-      </h2>
-      <p class="mt-2 max-w-xl text-ink-soft" data-reveal>
-        {portes.secteur.texte}
-      </p>
-      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        {
-          secteurs.map((s) => (
-            <a
-              href={href(`/formations/secteurs/${s.id}`)}
-              class="card flex flex-col p-6"
-              data-reveal
-            >
-              <Picto nom={pictosSecteurs[s.id] ?? "users-round"} />
-              <h3 class="display mt-3 text-lg leading-snug text-navy-deep">
-                {s.data.nom}
-              </h3>
-              {s.data.statut === "stub" && (
-                <span class="mt-2 inline-block self-start rounded-full bg-paper-deep/60 px-3 py-1 text-[0.68rem] font-semibold tracking-wide text-ink-faint uppercase">
-                  {carte.badge_stub}
-                </span>
-              )}
-              <span class="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-sage-deep">
-                {carte.lien_secteur}
-                <span aria-hidden="true">→</span>
-              </span>
-            </a>
-          ))
-        }
-      </div>
-    </div>
-
-    <!-- Porte 2 : par besoin -->
-    <div class="mt-16" data-reveal-group>
-      <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-        {portes.besoin.titre}
-      </h2>
-      <p class="mt-2 max-w-xl text-ink-soft" data-reveal>
-        {portes.besoin.texte}
-      </p>
-      <div class="mt-8 grid gap-6 md:grid-cols-2">
-        {
-          formations.map((f) => (
-            <a
-              href={href(`/formations/${f.id}`)}
-              class="card group flex flex-col p-8"
-              data-reveal
-            >
-              <h3 class="display text-[1.45rem] leading-snug text-navy-deep">
-                {f.data.titre}
-              </h3>
-              <p class="mt-3 flex-1 leading-relaxed text-ink-soft">
-                {f.data.accroche}
-              </p>
-              <ul class="mt-6 flex flex-wrap gap-2">
-                {f.data.publics.map((p) => (
-                  <li class="rounded-full bg-sage-faint px-3.5 py-1.5 text-xs font-semibold text-sage-deep">
-                    {p}
-                  </li>
-                ))}
-              </ul>
-              <div class="mt-6 flex items-center justify-between border-t border-ink/10 pt-5 text-sm">
-                <span class="text-ink-faint">
-                  {f.data.duree} · {f.data.format}
-                </span>
-                <span class="inline-flex items-center gap-2 font-semibold text-sage-deep">
-                  {carte.lien_programme}
-                  <span
-                    aria-hidden="true"
-                    class="transition-transform duration-200 group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </span>
-              </div>
-            </a>
-          ))
-        }
-      </div>
-    </div>
   </section>
 </Base>
+
+<style>
+  /*
+    Les quatre portes sont le premier choix demandé au visiteur : elles
+    doivent accrocher l'œil sans se mettre à clignoter.
+
+    Un seul geste, discret : un liseré vert se trace sur le bord
+    supérieur de chaque carte, l'une après l'autre. Il reprend le
+    vocabulaire des bordures d'accordéon et des signatures — même
+    langage, même retenue. Le pictogramme monte d'un cheveu en même
+    temps, ce qui suffit à faire vivre la carte.
+  */
+  .carte-porte {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .carte-porte::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-sage-deep) 0%,
+      color-mix(in oklab, var(--color-sage-deep) 35%, transparent) 70%,
+      transparent 100%
+    );
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /*
+    Le tracé suit la cascade du groupe : `--reveal-delay` est posé par
+    le script de révélation, une valeur par carte. On lui ajoute un
+    temps mort pour que le liseré arrive après l'apparition, jamais
+    pendant.
+  */
+  :global(html.js-reveal) .carte-porte:global(.revealed)::before {
+    transform: scaleX(1);
+    transition: transform 640ms cubic-bezier(0.16, 1, 0.3, 1)
+      calc(var(--reveal-delay, 0ms) + 220ms);
+  }
+
+  .carte-porte :global(svg) {
+    transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  :global(html.js-reveal) .carte-porte:not(:global(.revealed)) :global(svg) {
+    transform: translateY(4px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carte-porte::before {
+      transform: scaleX(1);
+      transition: none;
+    }
+    .carte-porte :global(svg) {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

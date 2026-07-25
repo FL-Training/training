@@ -53,19 +53,19 @@ const pictosContenu = ["graduation-cap", "shield-check", "users-round"];
     >
       {
         lance && url_skool ? (
-          <div class="text-center">
-            <h2 class="display text-2xl md:text-3xl">{statut.bouton_skool}</h2>
+          <div>
+            <h2 class="display text-2xl md:text-3xl">{statut.bouton_acces}</h2>
             <a
               href={url_skool}
               rel="noopener noreferrer"
               target="_blank"
               class="btn mt-6 border-1.5 border-sage bg-sage !px-8 text-abysse hover:border-paper hover:bg-paper"
             >
-              {statut.bouton_skool} <span aria-hidden="true">→</span>
+              {statut.bouton_acces} <span aria-hidden="true">→</span>
             </a>
           </div>
         ) : (
-          <div class="mx-auto max-w-xl">
+          <div class="max-w-xl">
             <h2 class="display text-2xl md:text-3xl">{statut.titre}</h2>
             <p class="mt-3 leading-relaxed text-paper/80">{statut.texte}</p>
             <div class="mt-7">

@@ -1,0 +1,62 @@
+# ============================================================
+# PORTE « ORGANISME DE FORMATION »
+#
+# Textes VALIDÉS par Fabien (livrable « Rubrique Formations —
+# Organismes de formation », 22 juillet 2026).
+#
+# Consignes du livrable : une seule section, trois cartes de MÊME
+# niveau, aucune sous-rubrique ni page séparée sans nouvel arbitrage,
+# aucun programme / durée / certification inventé.
+# ============================================================
+nom: "Organisme de formation"
+ordre: 3
+statut: "complet"
+picto: "graduation-cap"
+
+seo:
+  titre: "Interventions auprès des organismes de formation"
+  description: "Pacivis Academy conçoit et anime des contenus intégrés aux parcours des organismes de formation : PAXI en aéronautique et aéroportuaire, TFP et MAC APS en sécurité privée, interventions sur mesure pour d'autres métiers."
+
+entete:
+  surtitre: "Organisme de formation"
+  titre: "Intégrer nos interventions à vos parcours de formation"
+  texte: "Pacivis Academy accompagne les organismes de formation dans la conception et l'animation de contenus adaptés aux métiers qu'ils préparent."
+
+intro: "Pacivis Academy accompagne les organismes de formation dans la conception et l'animation de contenus adaptés aux métiers qu'ils préparent. Elle peut proposer un module spécialisé, prendre en charge certaines séquences d'un parcours existant ou contribuer à un dispositif plus large, dans le respect des objectifs pédagogiques et, lorsqu'ils s'appliquent, des référentiels réglementaires.\n\nLes interventions sont construites avec chaque organisme et peuvent s'inscrire dans des parcours de formation initiale ou continue."
+
+cartes:
+  - titre: "Aéronautique et aéroportuaire — Intégrer la formation PAXI à vos parcours"
+    resume: "Préparer les professionnels de l'aéronautique et de l'environnement aéroportuaire aux situations relationnelles difficiles ou dégradées."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "greffe"
+    paragraphes:
+      - "La formation PAXI prépare les professionnels de l'aéronautique et de l'environnement aéroportuaire aux situations relationnelles difficiles ou dégradées qu'ils peuvent rencontrer dans l'exercice de leur métier."
+      - "La formation s'intègre aux parcours existants et s'adapte aux publics préparés, à leur niveau d'expérience et aux objectifs pédagogiques de chaque organisme."
+    bouton:
+      label: "Découvrir PAXI"
+      chemin: "/formations/paxi"
+
+  - titre: "Sécurité privée — Faire appel à un formateur APS"
+    resume: "Prendre en charge les enseignements confiés dans les parcours TFP APS et MAC APS, dans le respect de vos référentiels et de votre progression."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "referentiel"
+    paragraphes:
+      - "Pacivis Academy intervient auprès des organismes de formation dans le cadre des parcours TFP APS et MAC APS. Le formateur prend en charge les enseignements qui lui sont confiés dans le respect des référentiels, de la progression et des modalités pédagogiques définies par l'organisme, afin de s'intégrer pleinement à la cohérence du parcours."
+      - "Sa formation juridique et ses dix années d'expérience au sein de la Police nationale lui permettent d'ancrer les apports réglementaires dans les réalités du métier. Le cadre légal est travaillé comme un repère pour analyser une situation, apprécier sa marge d'action et prendre une décision adaptée."
+      - "L'ensemble des enseignements est abordé avec une pédagogie concrète, nourrie par l'expérience opérationnelle et la pratique de la formation professionnelle. La gestion des conflits et des situations conflictuelles dégradées fait l'objet d'une attention particulière, sans constituer l'unique dimension de l'intervention."
+      - "Pacivis Academy dispose de l'agrément de dirigeant et de l'autorisation d'exercice délivrés par le CNAPS."
+
+  - titre: "Autres secteurs professionnels — Construire une intervention adaptée à vos parcours métiers"
+    resume: "Préparer à un métier, c'est aussi préparer à ce qui peut en perturber l'exercice."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "construction"
+    paragraphes:
+      - "Préparer à un métier, c'est aussi préparer à ce qui peut en perturber l'exercice."
+      - "Pacivis Academy intervient auprès des organismes qui forment à des métiers dans lesquels la qualité de la relation, la stabilité sous pression, la coopération ou la continuité de l'action sont déterminantes. L'objectif est de préparer les participants aux situations susceptibles de mettre leurs compétences techniques à l'épreuve, sans dissocier ces apprentissages des réalités de leur futur environnement professionnel."
+      - "À partir du métier visé et des situations auxquelles les participants pourront être confrontés, Pacivis Academy construit des contenus consacrés notamment aux tensions et aux conflits, à la communication sous pression, à la régulation du stress, aux facteurs humains, à la coopération ou au leadership en situation dégradée."
+      - "L'intervention peut prendre la forme d'une séquence ciblée, d'un module ou d'une contribution à un parcours plus large. Elle est conçue avec l'organisme afin de respecter ses objectifs, sa progression et ses modalités pédagogiques."
+
+cta:
+  titre: "Construire l'intervention avec votre organisme"
+  texte: "Un premier échange permet de préciser les parcours concernés, les publics préparés, les objectifs pédagogiques et les modalités d'intégration."
+  bouton: "Échanger sur votre parcours"

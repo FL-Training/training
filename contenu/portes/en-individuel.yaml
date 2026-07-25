@@ -1,0 +1,45 @@
+# ============================================================
+# PORTE « EN INDIVIDUEL »
+#
+# Libellé et périmètre VALIDÉS (document de décisions V2, point 5).
+# Deux règles issues de cette décision :
+#   - cette offre est DISTINCTE de l'Espace apprenant et ne doit
+#     jamais être présentée comme y conduisant ;
+#   - elle vise en priorité des professionnels engageant eux-mêmes
+#     leur démarche, sans exclure des particuliers.
+# Le détail des trois axes reste à écrire par Fabien : rien n'est
+# inventé ici (ni contenu de parcours, ni tarif, ni format).
+# ============================================================
+nom: "En individuel"
+ordre: 4
+statut: "stub"
+picto: "user-round"
+
+seo:
+  titre: "Se former ou être accompagné à titre individuel"
+  description: "Parcours en ligne, ressources pratiques et accompagnement individuel pour les professionnels qui engagent eux-mêmes leur démarche, et pour les personnes confrontées à une situation de conflit."
+
+entete:
+  surtitre: "En individuel"
+  titre: "Se former ou être accompagné à titre individuel"
+  texte: "Cette rubrique présente les possibilités offertes aux personnes souhaitant se former ou être accompagnées à titre individuel. Elle vise en priorité des professionnels engageant eux-mêmes leur démarche, sans exclure des particuliers souhaitant comprendre et résoudre une situation de conflit personnelle."
+
+# Le tracé de marque, à l'échelle de la page.
+signature: "progression"
+
+intro: "Relèvent de cette rubrique les parcours en ligne, les ressources pratiques, les supports d'entraînement, une éventuelle communauté professionnelle et l'accompagnement individuel. Le détail de ces propositions est en cours de préparation."
+
+cartes:
+  - titre: "Parcours en ligne"
+    resume: "Des parcours à suivre à son rythme, en cours de préparation."
+
+  - titre: "Ressources pratiques"
+    resume: "Des ressources et des supports d'entraînement à utiliser entre deux temps de formation."
+
+  - titre: "Accompagnement individuel"
+    resume: "Un accompagnement construit à partir de la situation de la personne."
+
+cta:
+  titre: "Rester informé de l'ouverture"
+  texte: "Cette offre est en préparation. Un message suffit pour poser votre question ou être prévenu de son ouverture."
+  bouton: "Nous écrire"

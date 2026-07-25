@@ -20,15 +20,20 @@ hero:
   bouton_principal: "Découvrir les formations"
   bouton_secondaire: "Notre approche"
 
-chiffres:
-  - valeur: "10 ans"
-    texte: "de terrain en Police nationale"
-  - valeur: "Depuis 1999"
-    texte: "arts martiaux & sports de combat"
-  - valeur: "Certifié"
-    texte: "conception & animation de formations"
-  - valeur: "Droit public"
-    texte: "licence — cadre légal maîtrisé"
+# Repères de crédibilité, en lecture éditoriale.
+#
+# La charte proscrit « l'effet dashboard » et demande qu'un chiffre soit
+# accompagné de son contexte : ce ne sont donc plus quatre grands
+# nombres alignés, mais trois phrases dont l'élément saillant est mis en
+# gras. Chaque fait vient de la biographie validée (« À propos »), vers
+# laquelle renvoie le lien — c'est la source.
+reperes:
+  surtitre: "Repères"
+  liste:
+    - "**Dix années** d'expérience de terrain au sein de la Police nationale, avec des responsabilités d'encadrement et de management d'effectifs."
+    - "**Plus de vingt-cinq ans** de pratique des arts de combat, dont l'enseignement de la boxe française et de l'aïkido."
+    - "Formé à la **négociation d'influence**, à la **communication non violente** et aux **techniques d'optimisation du potentiel**."
+  lien: "Le parcours complet"
 
 # Pictogrammes disponibles : messages-square, shield-check, plane,
 # landmark, building-2, users-round, graduation-cap, user-round
@@ -38,21 +43,21 @@ publics:
   texte: "Entreprises, collectivités, organismes de formation ou professionnels en individuel : entrez par votre situation — la réponse est construite pour votre contexte."
   liste:
     - label: "Entreprise"
-      texte: "Former vos équipes exposées au public"
+      texte: "Préparer vos équipes aux tensions et aux situations dégradées"
       picto: "building-2"
-      chemin: "/formations/secteurs/entreprise"
-    - label: "Collectivité"
-      texte: "Protéger vos agents au contact des usagers"
+      chemin: "/formations/entreprise"
+    - label: "Secteur public"
+      texte: "Accompagner les agents et les services exposés"
       picto: "landmark"
-      chemin: "/formations/secteurs/collectivite"
+      chemin: "/formations/secteur-public"
     - label: "Organisme de formation"
-      texte: "Intégrer un module expert à vos cursus"
+      texte: "Intégrer nos interventions à vos parcours"
       picto: "graduation-cap"
-      chemin: "/formations/secteurs/organisme-aeronautique"
+      chemin: "/formations/organismes-de-formation"
     - label: "En individuel"
-      texte: "Vous former à votre rythme, en ligne"
+      texte: "Vous former ou être accompagné à titre individuel"
       picto: "user-round"
-      chemin: "/espace-apprenant"
+      chemin: "/formations/en-individuel"
 
 paxi:
   surtitre: "Produit phare"
@@ -65,34 +70,32 @@ journal:
   titre: "Comprendre avant d'agir."
   bouton_tous: "Tous les articles"
 
+# Résumés dérivés du texte validé « Notre approche » (version 7).
+# La page /approche porte les formulations complètes de Fabien.
 methode:
   surtitre: "La méthode"
-  titre: "Quatre piliers, un ordre précis."
+  titre: "[ARCA] : quatre piliers qui s'ajustent."
   piliers:
-    - numero: "01"
+    - numero: "A"
       titre: "Anticiper"
-      texte: "Lire l'environnement et les comportements pour détecter la tension avant qu'elle n'éclate."
-    - numero: "02"
-      titre: "Se tenir"
-      texte: "Posture, langage corporel, régulation émotionnelle : un corps stable pour un esprit clair."
-    - numero: "03"
-      titre: "Dire"
-      texte: "Désescalade verbale, écoute et cadre ferme — inspirés de la communication non violente et de la négociation d'influence."
-    - numero: "04"
+      texte: "Observer l'environnement et les comportements pour repérer suffisamment tôt les signes d'une évolution."
+    - numero: "R"
+      titre: "Réguler"
+      texte: "Préserver ou retrouver une stabilité suffisante lorsque la pression augmente, pour conserver lucidité et capacité de décision."
+    - numero: "C"
+      titre: "Communiquer"
+      texte: "Écouter, formuler une intention claire et poser un cadre adapté — en verbal, paraverbal et non verbal."
+    - numero: "A"
       titre: "Agir"
-      texte: "Des gestes simples, proportionnés et légaux — uniquement lorsque tous les autres leviers sont épuisés."
-  citation: "Le geste physique n'est jamais le point de départ. C'est la dernière marche d'un escalier que la formation apprend, précisément, à ne pas gravir."
+      texte: "Choisir une réponse adaptée au niveau de criticité : graduée, proportionnée et inscrite dans le cadre applicable."
+  citation: "ARCA n'est pas une procédure rigide. Ses quatre piliers interagissent et s'ajustent à mesure que la situation évolue."
 
-formations:
-  surtitre: "Formations"
-  titre: "Des programmes construits sur mesure."
-  bouton_tous: "Toutes les formations"
-  lien_programme: "Voir le programme"
-
+# Résumé dérivé de la biographie validée (« À propos », V1 consolidée) :
+# ne pas y réintroduire de discipline ou de diplôme qui n'y figure pas.
 formateur:
-  surtitre: "Le formateur"
-  titre: "Une double école : le terrain et le tatami."
-  texte: "Fabien Lacombe a passé une dizaine d'années en Police nationale, au contact des situations sensibles, et pratique les arts martiaux depuis 1999 — ceinture noire 1er dan d'aïkido, boxe française, krav maga, escrime, canne de combat. De cette double expérience est née une conviction : la vraie maîtrise est celle qui évite l'affrontement."
+  surtitre: "Le fondateur"
+  titre: "Le terrain, la pédagogie et la lecture du conflit."
+  texte: "Fabien Lacombe s'appuie sur **dix années d'expérience de terrain au sein de la Police nationale**, avec des responsabilités d'encadrement, et sur plus de vingt-cinq ans de pratique des arts de combat — dont l'enseignement de la boxe française et de l'aïkido. Il s'est formé à la négociation d'influence, à la communication non violente et aux techniques d'optimisation du potentiel."
   bouton: "Découvrir son parcours"
 
 appel_final:
