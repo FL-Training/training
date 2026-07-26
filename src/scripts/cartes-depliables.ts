@@ -1,157 +1,192 @@
 /**
  * Progressive enhancement for the "porte" cards.
  *
- * Two behaviours asked for by Fabien, on top of the native <details>
+ * Deux comportements, en complément du <details>
  * accordion (which already handles the exclusive open state through the
  * shared `name` attribute, keyboard included):
  *
- *  1. On a real pointer device, hovering a card opens it — the previous
- *     one closes on its own. Never a replacement for the click: touch,
- *     keyboard and no-JS all keep working through the native element.
+ *  1. Ouverture au CLIC uniquement — décision d'Olivier du 26/07. Le
+ *     survol ouvrait les cartes au simple passage de la souris, ce qui
+ *     déclenchait des ouvertures non voulues en traversant la grille.
+ *     Le livrable « Organismes de formation » décrit un déploiement au
+ *     survol : écart signalé, à trancher avec Fabien.
  *
- *  2. No abrupt page movement. Closing a card located ABOVE the one
- *     being opened shortens the document and shifts everything up.
- *     Chrome and Firefox absorb this with native scroll anchoring;
- *     Safari does not implement it at all. We record where the target
- *     card sits on screen before the toggle and cancel any residual
- *     shift afterwards — a no-op where the browser already did it.
+ *  2. À l'ouverture, la carte est amenée juste sous l'en-tête et
+ *     maintenue là pendant tout son déploiement : le lecteur voit le
+ *     maximum de contenu, et la page ne saute pas quand la carte
+ *     voisine se referme au-dessus.
+ *
+ *  3. Le tracé de la signature est rejoué à chaque ouverture.
  */
 
-/** Lenis owns the scroll position when smooth scrolling is active. */
-type FenetreAvecLenis = Window & {
-  instanceLenis?: { scrollTo: (cible: number, options?: object) => void };
-};
-
-// Small delay so merely crossing a card on the way to another one does
-// not open it.
-const DELAI_SURVOL = 120;
-
 let nettoyages: Array<() => void> = [];
-
-/** Marge laissée entre l'en-tête collant et le haut de la carte. */
-const MARGE_CADRAGE = 14;
 
 /** Where the card the user acted on sat, just before the toggle. */
 let ancre: {
   carte: HTMLDetailsElement;
   haut: number;
-  recadrer: boolean;
+  /** Hauteur qui va disparaître au-dessus, une fois la voisine refermée. */
+  reduction: number;
 } | null = null;
 let correctionPlanifiee = false;
 
 /**
- * @param recadrer  Vrai pour une ouverture voulue (clic, clavier) : la
- *   carte sera ramenée sous l'en-tête si elle ne tient pas à l'écran.
- *   Faux pour le survol — repositionner la page au passage de la souris
- *   serait insupportable.
+ * Retient où la carte se trouve, et ce qui va disparaître au-dessus.
+ *
+ * Ouvrir une carte en referme une autre. Si cette autre est SITUÉE PLUS
+ * HAUT dans la page, elle va se rétracter pendant le déplacement et
+ * tout ce qui la suit remontera d'autant. Viser la position mesurée
+ * maintenant conduisait donc à dépasser la cible, puis à redescendre —
+ * le va-et-vient. On mesure la hauteur qui va être libérée pour viser
+ * du premier coup le bon endroit.
+ *
+ * La mesure se fait au `pointerdown`, avant la bascule : c'est le
+ * dernier instant où la carte voisine est encore pleinement déployée.
  */
-function poserAncre(carte: HTMLDetailsElement, recadrer = false): void {
-  ancre = { carte, haut: carte.getBoundingClientRect().top, recadrer };
+function poserAncre(carte: HTMLDetailsElement): void {
+  let reduction = 0;
+
+  const ouverte = document.querySelector<HTMLDetailsElement>(
+    "details.carte-depliable[open]",
+  );
+  if (ouverte && ouverte !== carte) {
+    const boiteOuverte = ouverte.getBoundingClientRect();
+    const estAuDessus = boiteOuverte.top < carte.getBoundingClientRect().top;
+    const resume = ouverte.querySelector("summary");
+    if (estAuDessus && resume) {
+      // Refermée, il ne restera que son résumé : la différence est
+      // exactement ce que le document va perdre en hauteur.
+      reduction = boiteOuverte.height - resume.getBoundingClientRect().height;
+    }
+  }
+
+  ancre = { carte, haut: carte.getBoundingClientRect().top, reduction };
 }
 
-/** Hauteur de l'en-tête collant, qui masque le haut du document. */
-function hauteurEntete(): number {
+/**
+ * Courbe du déplacement : départ doux, arrivée posée.
+ *
+ * Une courbe qui démarre sec donnerait l'impression d'un saut, même
+ * animé. `easeInOutCubic` fait naître le mouvement et l'éteint aux deux
+ * bouts — c'est ce qui le rend discret.
+ */
+function adoucir(t: number): number {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+/** Durée du déplacement principal, en secondes. */
+const DUREE_DEPLACEMENT = 0.85;
+
+/** Marge laissée entre l'en-tête collant et le haut de la carte. */
+const MARGE_CADRAGE = 14;
+
+let accompagnementEnCours = false;
+
+/**
+ * Où le haut de la carte doit se trouver : juste sous l'en-tête.
+ *
+ * @param reduction  Hauteur qui va encore disparaître au-dessus de la
+ *   carte. Retranchée de la cible, elle évite de viser une position que
+ *   la mise en page est en train de rendre caduque.
+ */
+function positionVisee(carte: HTMLDetailsElement, reduction = 0): number {
   const entete = document.querySelector<HTMLElement>("header");
-  return entete ? entete.offsetHeight : 0;
+  const hauteurEntete = entete ? entete.offsetHeight : 0;
+  const cible =
+    window.scrollY +
+    carte.getBoundingClientRect().top -
+    hauteurEntete -
+    MARGE_CADRAGE -
+    reduction;
+  const maximum = document.documentElement.scrollHeight - window.innerHeight;
+  return Math.max(0, Math.min(cible, maximum));
 }
 
-function deplacerVers(cible: number): void {
+type FenetreAvecLenis = Window & {
+  instanceLenis?: {
+    scrollTo: (cible: number, options?: Record<string, unknown>) => void;
+  };
+};
+
+/**
+ * Un seul mouvement animé vers la cible.
+ *
+ * Confié à Lenis, qui possède la position de défilement et l'anime dans
+ * sa propre boucle. Piloter le défilement image par image en parallèle
+ * de la sienne — ce que faisait la version précédente — produisait deux
+ * boucles concurrentes et un mouvement saccadé.
+ */
+function glisserVers(cible: number, duree: number): void {
   const fenetre = window as unknown as FenetreAvecLenis;
   if (fenetre.instanceLenis) {
-    fenetre.instanceLenis.scrollTo(cible, { immediate: true });
+    fenetre.instanceLenis.scrollTo(cible, {
+      duration: duree,
+      easing: adoucir,
+      // Le défilement du visiteur reprend la main sur l'animation.
+      lock: false,
+    });
   } else {
-    window.scrollTo({ top: cible, behavior: "instant" });
+    window.scrollTo({ top: cible, behavior: "smooth" });
   }
 }
 
 /**
- * Amène le haut de la carte juste sous l'en-tête.
+ * Amène le haut de la carte sous l'en-tête, en douceur.
  *
- * Une carte ouverte mesure jusqu'à 683 px : sur un portable, elle ne
- * tient pas dans la zone visible. Si on la laisse là où elle est, son
- * titre part hors de l'écran dès qu'on descend dans le texte, et on
- * perd de quoi on parle. On ne recadre que lorsque c'est nécessaire —
- * si la carte tient déjà entièrement à l'écran, rien ne bouge.
+ * En deux temps, parce que la bonne position n'est pas connue tout de
+ * suite : la carte se déploie et la voisine se referme pendant un demi-
+ * seconde, ce qui peut décaler le haut visé.
+ *
+ *   1. Un mouvement long et amorti part immédiatement vers la position
+ *      estimée — c'est lui que l'œil suit.
+ *   2. Une fois tout stabilisé, on rattrape le reliquat s'il dépasse
+ *      deux pixels, sur une durée courte : imperceptible, mais la carte
+ *      finit exactement où il faut.
  */
-function recadrer(carte: HTMLDetailsElement): void {
-  const entete = hauteurEntete();
-  const boite = carte.getBoundingClientRect();
-  const zoneVisible = window.innerHeight - entete;
+function accompagner(carte: HTMLDetailsElement, reduction: number): void {
+  accompagnementEnCours = true;
+  glisserVers(positionVisee(carte, reduction), DUREE_DEPLACEMENT);
 
-  const titreMasque = boite.top < entete + 1;
-  const tropGrande = boite.height > zoneVisible;
-  const depasseEnBas = boite.bottom > window.innerHeight;
-
-  if (!titreMasque && !(tropGrande && depasseEnBas) && !depasseEnBas) return;
-
-  deplacerVers(window.scrollY + boite.top - entete - MARGE_CADRAGE);
+  // 620 ms : le déploiement (520 ms) est terminé, le mouvement
+  // principal est encore en cours et absorbe la correction.
+  window.setTimeout(() => {
+    accompagnementEnCours = false;
+    if (!carte.open) return;
+    const reste = positionVisee(carte) - window.scrollY;
+    if (Math.abs(reste) > 2) glisserVers(positionVisee(carte), 0.4);
+  }, 620);
 }
 
 /**
- * Durée pendant laquelle la carte est tenue en place.
+ * Redémarre le tracé de la signature.
  *
- * Doit couvrir le déploiement en hauteur (520 ms) et la fermeture
- * simultanée de la carte voisine, plus une marge.
+ * `@starting-style` ne suffit pas : selon la façon dont le navigateur
+ * conserve le contenu d'un <details> déjà ouvert une fois, la
+ * transition peut ne pas se rejouer à la réouverture — la ligne apparaît
+ * alors déjà tracée. On remet donc explicitement le trait à zéro, on
+ * force le navigateur à en prendre acte, puis on le laisse se dessiner.
  */
-const DUREE_MAINTIEN = 640;
+function rejouerSignature(carte: HTMLDetailsElement): void {
+  const trace = carte.querySelector<SVGPathElement>(".signature-carte path");
+  if (!trace) return;
 
-let maintienEnCours = false;
-
-/**
- * Garde le haut de la carte à la même place pendant toute l'ouverture.
- *
- * Une correction ponctuelle ne suffit pas : la carte du dessus se
- * referme *progressivement*, sur un demi-seconde. Le document se
- * raccourcit donc frame après frame et la carte visée remonte d'autant
- * — jusqu'à passer sous l'en-tête. On la rattrape à chaque image, et on
- * s'efface dès que le visiteur touche lui-même au défilement.
- */
-function maintenirEnPlace(
-  carte: HTMLDetailsElement,
-  hautVise: number,
-  ensuite: (interrompu: boolean) => void,
-): void {
-  const depart = performance.now();
-  let interrompu = false;
-  const interrompre = () => {
-    interrompu = true;
-  };
-
-  window.addEventListener("wheel", interrompre, { passive: true });
-  window.addEventListener("touchstart", interrompre, { passive: true });
-  window.addEventListener("keydown", interrompre);
-
-  maintienEnCours = true;
-  const image = () => {
-    const ecart = carte.getBoundingClientRect().top - hautVise;
-    if (!interrompu && Math.abs(ecart) >= 1) {
-      deplacerVers(window.scrollY + ecart);
-    }
-    if (!interrompu && performance.now() - depart < DUREE_MAINTIEN) {
-      requestAnimationFrame(image);
-      return;
-    }
-    maintienEnCours = false;
-    window.removeEventListener("wheel", interrompre);
-    window.removeEventListener("touchstart", interrompre);
-    window.removeEventListener("keydown", interrompre);
-    ensuite(interrompu);
-  };
-  requestAnimationFrame(image);
+  trace.style.transition = "none";
+  trace.style.strokeDashoffset = "1";
+  // Lecture forcée : sans elle, les deux écritures qui suivent seraient
+  // regroupées et rien ne serait animé.
+  void trace.getBoundingClientRect();
+  trace.style.transition = "";
+  trace.style.strokeDashoffset = "0";
 }
 
 function corriger(): void {
   if (!ancre) return;
-  const { carte, haut, recadrer: aRecadrer } = ancre;
+  const { carte, reduction } = ancre;
   ancre = null;
-  if (maintienEnCours) return;
+  if (accompagnementEnCours || !carte.open) return;
 
-  maintenirEnPlace(carte, haut, (interrompu) => {
-    // Le cadrage final n'a lieu que pour une ouverture voulue, et
-    // seulement si le visiteur n'a pas repris la main entre-temps.
-    if (interrompu || !aRecadrer || !carte.open) return;
-    recadrer(carte);
-  });
+  rejouerSignature(carte);
+  accompagner(carte, reduction);
 }
 
 /**
@@ -187,17 +222,13 @@ function initialiser(): void {
     document.removeEventListener("toggle", surToggle, true),
   );
 
-  const survolPossible = window.matchMedia(
-    "(hover: hover) and (pointer: fine)",
-  ).matches;
-
   cartes.forEach((carte) => {
     const resume = carte.querySelector("summary");
     if (!resume) return;
 
     // Pointer down rather than click: the anchor must be recorded while
     // the layout is still the one the user is looking at.
-    const surPointeur = () => poserAncre(carte, true);
+    const surPointeur = () => poserAncre(carte);
     resume.addEventListener("pointerdown", surPointeur);
     resume.addEventListener("keydown", surPointeur);
     nettoyages.push(() => {
@@ -205,25 +236,6 @@ function initialiser(): void {
       resume.removeEventListener("keydown", surPointeur);
     });
 
-    if (!survolPossible) return;
-
-    let minuteur: number | undefined;
-    const surEntree = (event: PointerEvent) => {
-      if (event.pointerType !== "mouse" || carte.open) return;
-      minuteur = window.setTimeout(() => {
-        poserAncre(carte);
-        carte.open = true;
-      }, DELAI_SURVOL);
-    };
-    const surSortie = () => window.clearTimeout(minuteur);
-
-    carte.addEventListener("pointerenter", surEntree);
-    carte.addEventListener("pointerleave", surSortie);
-    nettoyages.push(() => {
-      window.clearTimeout(minuteur);
-      carte.removeEventListener("pointerenter", surEntree);
-      carte.removeEventListener("pointerleave", surSortie);
-    });
   });
 }
 

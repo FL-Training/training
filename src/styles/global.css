@@ -247,7 +247,47 @@
     color: var(--color-sage-deep);
   }
 
-  /* ---- Liens de navigation : soulignement glissant ---- */
+  /* ---- Liens de navigation ---- */
+  /*
+    ENTRÉES DU MENU
+
+    Ni trait au survol, ni trait sous l'entrée courante : le
+    soulignement ajoutait une ligne de plus dans un bandeau qui en
+    compte déjà (la bordure basse de l'en-tête, le filet des
+    sous-menus), et il tirait l'œil vers le bas.
+
+    Le repère est désormais un petit losange vert posé devant l'entrée
+    courante. Il vient du logo, où le même losange sépare PACIVIS
+    d'ACADEMY : la marque signale elle-même où l'on se trouve. Le libellé
+    passe en bleu profond, un cran plus gras — la position se lit donc
+    de deux façons, forme et couleur, ce qui vaut aussi pour qui
+    distingue mal les nuances.
+
+    Au survol, pas de losange : seule la couleur s'assombrit. Le repère
+    reste la propriété exclusive de la page où l'on est.
+  */
+  /*
+    ENTRÉES DU MENU
+
+    Ni trait au survol, ni trait sous l'entrée courante : le
+    soulignement ajoutait une ligne de plus dans un bandeau qui en
+    compte déjà (la bordure basse de l'en-tête, le filet des
+    sous-menus), et il tirait l'œil vers le bas.
+
+    Le repère est un petit losange vert posé après l'entrée courante. Il
+    vient du logo, où le même losange sépare PACIVIS d'ACADEMY : la
+    marque signale elle-même où l'on se trouve.
+
+    ⚠️ AUCUNE ENTRÉE NE DOIT BOUGER quand le losange se pose sur elle.
+    Deux précautions pour cela :
+      — le losange est en position absolue, donc hors du flux : il
+        n'élargit pas le lien et ne pousse pas ses voisins ;
+      — la graisse ne change pas d'un état à l'autre. Archivo est une
+        police variable : passer de 540 à 640 rallongeait le mot de
+        quelques pixels et faisait glisser toute la rangée.
+    Le repère tient donc à la couleur et au losange, jamais à la
+    métrique du texte.
+  */
   .nav-link {
     position: relative;
     padding-block: 0.35rem;
@@ -256,35 +296,28 @@
     color: var(--color-ink-soft);
     transition: color 180ms ease;
   }
-  .nav-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 1.5px;
-    width: 100%;
-    background: var(--color-sage-deep);
-    transform: scaleX(0);
-    transform-origin: right;
-    transition: transform 260ms ease;
-  }
   .nav-link:hover,
   .nav-link[aria-current="page"] {
     color: var(--color-navy-deep);
   }
-  .nav-link:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-  /* soulignement actif : élément dédié qui glisse d'un lien à l'autre
-     entre les pages grâce à sa view transition (nav-actif) */
+
+  /* Le losange du logo, repris comme marqueur de position. Il glisse
+     d'une entrée à l'autre au changement de page grâce à sa view
+     transition (nav-actif). Collé au mot qu'il désigne plutôt que
+     centré dans l'espace qui suit : au milieu, on ne savait plus à
+     laquelle des deux entrées il appartenait. */
   .nav-souligne {
     position: absolute;
-    left: 0;
-    bottom: 0;
-    height: 1.5px;
-    width: 100%;
+    /* ESSAI EN COURS — losange sous l'entrée plutôt qu'à sa droite.
+       Centré horizontalement et posé sous la ligne de base : toujours
+       hors du flux, donc sans effet sur la largeur du lien. */
+    left: 50%;
+    bottom: -0.28rem;
+    width: 0.36rem;
+    height: 0.36rem;
     background: var(--color-sage-deep);
+    transform: translateX(-50%) rotate(45deg);
+    border-radius: 0.5px;
   }
 
   /* ---- Pictogrammes (Lucide inline) ---- */
@@ -330,6 +363,23 @@
   .card:hover::before,
   .card:focus-visible::before {
     transform: scaleX(1);
+  }
+
+  /* ---- Cibles des ancres du menu ----
+     Un saut vers une ancre place la cible tout en haut de la fenêtre,
+     donc SOUS l'en-tête collant (4,8 rem) : le titre visé se retrouve
+     masqué et le lien paraît cassé. On réserve sa hauteur, plus une
+     respiration. Sur « Notre approche », le titre ARCA se fige lui aussi
+     sous l'en-tête : la marge y est augmentée d'autant, sinon le pilier
+     visé arrive derrière deux bandeaux empilés. */
+  .cible-ancre {
+    scroll-margin-top: 6.4rem;
+  }
+  #anticiper,
+  #reguler,
+  #communiquer,
+  #agir {
+    scroll-margin-top: 11rem;
   }
 
   /* ---- Grain papier (texture globale, très discrète) ---- */
@@ -573,11 +623,6 @@
   }
 
   /* ---- Effets pilotés par le scroll (Motion) ---- */
-  /* Mots enveloppés par le script : bloc en ligne pour les transforms */
-  .mot {
-    display: inline-block;
-    will-change: opacity, transform;
-  }
   /* Tracé scroll-linked : masqué seulement quand le JS est actif
      (sans JS ou en motion réduit, la ligne reste pleinement visible) */
   html.js-reveal .trace-defilement {

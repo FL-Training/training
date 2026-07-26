@@ -11,17 +11,82 @@ marque:
 # Menu principal — architecture V2 : sept entrées, dans cet ordre.
 # « accent: true » met l'entrée en évidence (fond plein), comme sur le
 # schéma de Fabien où « Espace apprenant » se détache des autres.
+# Les sept entrées de l'architecture V2 restent inchangées. Certaines
+# portent un `sous_menu` : un raccourci vers le contenu de la page, qui
+# donne aussi à voir la structure du site d'un coup d'œil.
+#
+# Deux natures de raccourcis, volontairement mêlées :
+#   — un `chemin` mène à une autre page (les quatre portes Formations) ;
+#   — une `ancre` descend dans la page de l'entrée (#anticiper…).
+#
+# ⚠️ Une ancre doit exister dans la page visée, sinon le lien ne fait
+# rien. Les cibles sont posées dans `approche.astro` (ANCRES_PILIERS) et
+# `a-propos.astro`.
+#
+# Pas de sous-menu pour « Le Journal Pacivis » : ses quatre flux sont
+# une promesse éditoriale, mais un seul a des articles aujourd'hui — un
+# raccourci vers une liste vide est une impasse. À rouvrir quand les
+# rubriques seront alimentées.
 navigation:
   - label: "Accueil"
     chemin: "/"
   - label: "Formations"
     chemin: "/formations"
+    sous_menu:
+      - label: "Entreprise"
+        chemin: "/formations/entreprise"
+        picto: "building-2"
+      - label: "Secteur public"
+        chemin: "/formations/secteur-public"
+        picto: "landmark"
+      - label: "Organisme de formation"
+        chemin: "/formations/organismes-de-formation"
+        picto: "graduation-cap"
+      - label: "En individuel"
+        chemin: "/formations/en-individuel"
+        picto: "user-round"
+  # Un raccourci par moment de la page, ARCA compris — et non les quatre
+  # piliers, qui laissaient les fondations, la pédagogie et l'ambition
+  # hors du menu. Les ancres des piliers (#anticiper…) existent toujours
+  # dans la page : elles restent utilisables pour un lien profond.
   - label: "Notre approche"
     chemin: "/approche"
+    sous_menu:
+      - label: "La méthode ARCA"
+        ancre: "arca"
+      # Fondations et pédagogie sont côte à côte dans la même bande sur
+      # grand écran : deux raccourcis y mèneraient au même pixel. Un seul
+      # libellé, qui nomme les deux — l'ancre « pedagogie » existe
+      # toujours dans la page pour un lien profond.
+      - label: "Fondations et pédagogie"
+        ancre: "fondations"
+      - label: "Notre ambition"
+        ancre: "notre-ambition"
+  # Un seul raccourci ici, par choix éditorial d'Olivier : la page se lit
+  # d'un trait. Les ancres « fabien-lacombe » et « notre-engagement »
+  # restent posées dans la page pour un lien profond depuis ailleurs.
   - label: "À propos"
     chemin: "/a-propos"
-  - label: "Le Journal Pacivis"
+    sous_menu:
+      - label: "Qui sommes nous"
+        ancre: "pacivis-academy"
+  # Les quatre rubriques éditoriales de l'architecture V2. Le raccourci
+  # ouvre le Journal déjà filtré (`?flux=…`) plutôt qu'une page séparée :
+  # rien à créer, et l'adresse reste partageable.
+  #
+  # Trois d'entre elles n'ont pas encore d'article ; elles mènent donc
+  # pour l'instant à une liste vide, qui l'annonce clairement.
+  - label: "Le Journal"
     chemin: "/journal"
+    sous_menu:
+      - label: "Revue littéraire"
+        chemin: "/journal?flux=revue-litteraire"
+      - label: "Point de vue actu"
+        chemin: "/journal?flux=point-de-vue-actu"
+      - label: "Terrain & pratiques"
+        chemin: "/journal?flux=terrain-et-pratiques"
+      - label: "Méthodes & repères"
+        chemin: "/journal?flux=methodes-et-reperes"
   - label: "Contact"
     chemin: "/contact"
   - label: "Espace apprenant"
@@ -31,6 +96,12 @@ navigation:
 menu:
   ouvrir: "Ouvrir le menu"
   fermer: "Fermer le menu"
+
+journal:
+  # Le nombre de minutes est calculé automatiquement à partir du texte
+  # de l'article : il n'y a rien à saisir, et il ne peut pas se
+  # désynchroniser d'une relecture. Seul ce libellé est modifiable.
+  duree_lecture: "min de lecture"
 
 liens:
   linkedin: "https://www.linkedin.com/in/fabien-lacombe/"
@@ -49,7 +120,7 @@ pied_de_page:
       chemin: "/formations/paxi"
     - label: "Notre approche"
       chemin: "/approche"
-    - label: "Le Journal Pacivis"
+    - label: "Le Journal"
       chemin: "/journal"
     - label: "À propos de Fabien Lacombe"
       chemin: "/a-propos"

@@ -24,6 +24,13 @@ entete:
   titre: "Se former ou être accompagné à titre individuel"
   texte: "Cette rubrique présente les possibilités offertes aux personnes souhaitant se former ou être accompagnées à titre individuel. Elle vise en priorité des professionnels engageant eux-mêmes leur démarche, sans exclure des particuliers souhaitant comprendre et résoudre une situation de conflit personnelle."
 
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/en-individuel.webp"
+  alt: "Une personne seule près d'une fenêtre, prenant un temps de recul avant d'agir."
 # Le tracé de marque, à l'échelle de la page.
 signature: "progression"
 

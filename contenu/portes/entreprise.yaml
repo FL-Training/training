@@ -23,6 +23,13 @@ entete:
   texte: "Pacivis Academy accompagne les entreprises qui souhaitent renforcer la stabilité de leurs équipes, prévenir ou traiter les conflits et mieux préparer leurs managers et leurs salariés aux situations susceptibles de dégrader la coopération, la qualité de service, la sécurité ou la continuité de l'activité."
   bouton: "Échanger sur votre situation"
 
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/entreprise.webp"
+  alt: "Deux collègues en discussion autour d'une table de réunion, dans un échange redevenu praticable."
 cartes:
   - titre: "Prévenir, désamorcer et gérer les conflits entre vos collaborateurs ou vos services"
     resume: "Agir sur les tensions émergentes, les conflits déclarés ou les situations durablement bloquées afin de rétablir les conditions nécessaires au travail et à la coopération."

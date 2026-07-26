@@ -2,6 +2,10 @@
 import { getCollection, render } from "astro:content";
 import Base from "../../layouts/Base.astro";
 import { href } from "../../lib/url";
+import { commun } from "../../lib/contenu";
+import { tempsDeLecture } from "../../lib/texte";
+import { nomLabel, ordonnerLabels } from "../../lib/labels";
+import { nomFlux } from "../../lib/flux";
 import { racineSite, urlAbsolue } from "../../lib/seo";
 
 export async function getStaticPaths() {
@@ -15,12 +19,9 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const nomsFlux: Record<string, string> = {
-  "revue-litteraire": "Revue littéraire",
-  "point-de-vue-actu": "Point de vue actu",
-  "terrain-et-pratiques": "Terrain & pratiques",
-  "methodes-et-reperes": "Méthodes & repères",
-};
+// Estimé sur le markdown source : aucune saisie, et la valeur suit
+// automatiquement les relectures de Fabien.
+const minutes = tempsDeLecture(entry.body ?? "");
 
 const formatDate = new Intl.DateTimeFormat("fr-FR", {
   day: "numeric",
@@ -39,7 +40,7 @@ const noeudsSeo = [
     author: { "@id": `${racine}#fabien-lacombe` },
     publisher: { "@id": `${racine}#organization` },
     mainEntityOfPage: urlAbsolue(Astro.site!, Astro.url.pathname),
-    articleSection: nomsFlux[entry.data.flux],
+    articleSection: nomFlux(entry.data.flux),
     inLanguage: "fr-FR",
   },
 ];
@@ -66,7 +67,7 @@ const noeudsSeo = [
       <span
         class="rounded-full bg-sage-faint px-3 py-1 font-semibold text-sage-deep"
       >
-        {nomsFlux[entry.data.flux]}
+        {nomFlux(entry.data.flux)}
       </span>
       <time
         datetime={entry.data.date.toISOString().slice(0, 10)}
@@ -75,6 +76,9 @@ const noeudsSeo = [
         {formatDate.format(entry.data.date)}
       </time>
       <span class="text-ink-faint">· {entry.data.auteur}</span>
+      <span class="text-ink-faint">
+        · {minutes}&nbsp;{commun.journal.duree_lecture}
+      </span>
     </div>
 
     <h1 class="display mt-4 text-3xl text-navy-deep md:text-[2.8rem]">
@@ -83,6 +87,24 @@ const noeudsSeo = [
     <p class="mt-5 text-lg leading-relaxed text-ink-soft">
       {entry.data.resume}
     </p>
+
+    {/*
+      Les labels renvoient au Journal déjà filtré : c'est le même
+      mécanisme que n'importe quel autre lien du site pourra utiliser.
+    */}
+    {
+      entry.data.labels.length > 0 && (
+        <ul class="mt-6 flex flex-wrap items-baseline gap-x-1 gap-y-1">
+          {ordonnerLabels(entry.data.labels).map((id) => (
+            <li>
+              <a href={`${href("/journal")}?label=${id}`} class="lien-label">
+                {nomLabel(id)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
 
     <div class="prose-site mt-10">
       <Content />
@@ -127,3 +149,34 @@ const noeudsSeo = [
     </div>
   </article>
 </Base>
+
+<style>
+  /*
+    Labels de l'article : des mots cliquables, pas des boutons. Ils
+    renvoient au Journal filtré sur ce label. Même langage que la rangée
+    de filtres du Journal — un cadre par étiquette alourdissait le haut
+    de l'article, juste sous le titre.
+  */
+  .lien-label {
+    display: inline-block;
+    padding: 0.2rem 0.55rem;
+    border-radius: 0.45rem;
+    font-size: 0.82rem;
+    color: var(--color-ink-faint);
+    transition:
+      color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .lien-label:hover,
+  .lien-label:focus-visible {
+    color: var(--color-sage-deep);
+    background: var(--color-sage-faint);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lien-label {
+      transition: none;
+    }
+  }
+</style>

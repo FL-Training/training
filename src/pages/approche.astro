@@ -16,6 +16,27 @@ const { seo, entete, intro, methode, sections, conclusion } = approche;
   lettres ne sont plus isolées et la page reste correcte, simplement
   sans échos.
 */
+/*
+  Ancres des quatre piliers, cibles du sous-menu « Notre approche ».
+
+  Fixées ici plutôt que dérivées des titres : si Fabien reformule
+  « Anticiper » en « Anticiper la dégradation », le lien du menu doit
+  continuer de désigner le même bloc. L'ordre suit celui des piliers
+  dans le contenu.
+*/
+const ANCRES_PILIERS = ["anticiper", "reguler", "communiquer", "agir"];
+
+/*
+  Ancres des sections de second niveau, dans l'ordre du contenu. Le
+  sous-menu s'appuie dessus pour couvrir TOUTE la page : la méthode
+  n'est qu'un de ses quatre moments, et les fondations, la pédagogie et
+  l'ambition ne doivent pas rester hors d'atteinte.
+
+  Même principe que les piliers : figées ici, pas dérivées des titres,
+  pour qu'une reformulation de Fabien ne casse aucun lien.
+*/
+const ANCRES_SECTIONS = ["fondations", "pedagogie"];
+
 const MOT = "ARCA";
 const posMot = methode.titre.indexOf(MOT);
 const titreMethode =
@@ -40,7 +61,6 @@ const titreMethode =
     </h1>
     <p
       class="mt-6 max-w-3xl text-lg leading-relaxed text-ink"
-      data-mots
       set:html={enrichir(entete.texte)}
     />
     {
@@ -55,7 +75,7 @@ const titreMethode =
   </section>
 
   <!-- ARCA : les quatre piliers -->
-  <section class="mx-auto max-w-6xl px-6 py-16">
+  <section id="arca" class="cible-ancre mx-auto max-w-6xl px-6 py-16">
     <p class="eyebrow">{methode.surtitre}</p>
     {/*
       Le titre reste à l'écran pendant toute la traversée des piliers :
@@ -92,7 +112,8 @@ const titreMethode =
       {
         methode.piliers.map((p) => (
           <li
-            class="grid gap-5 border-t border-ink/10 pt-8 md:grid-cols-[110px_1fr] md:gap-10"
+            id={ANCRES_PILIERS[methode.piliers.indexOf(p)]}
+            class="cible-ancre grid gap-5 border-t border-ink/10 pt-8 md:grid-cols-[110px_1fr] md:gap-10"
             data-reveal
             data-pilier={methode.piliers.indexOf(p)}
           >
@@ -135,7 +156,11 @@ const titreMethode =
     <div class="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-2">
       {
         sections.map((s) => (
-          <div data-reveal-group>
+          <div
+            id={ANCRES_SECTIONS[sections.indexOf(s)]}
+            class="cible-ancre"
+            data-reveal-group
+          >
             <h2
               class="display text-2xl text-navy-deep md:text-[1.75rem]"
               data-reveal
@@ -157,7 +182,7 @@ const titreMethode =
     </div>
   </section>
 
-  <section class="bg-abysse text-paper">
+  <section id="notre-ambition" class="cible-ancre bg-abysse text-paper">
     <div class="mx-auto max-w-6xl px-6 py-20">
       <p class="eyebrow !text-sage">{conclusion.surtitre}</p>
       <h2 class="display mt-4 max-w-2xl text-3xl md:text-4xl">

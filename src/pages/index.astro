@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
 import Picto from "../components/Picto.astro";
 import { href } from "../lib/url";
+import { nomFlux } from "../lib/flux";
 import { accueil, commun } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
 import { getCollection } from "astro:content";
@@ -10,24 +11,21 @@ import { getCollection } from "astro:content";
 const articles = (await getCollection("journal"))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 3);
-const nomsFlux: Record<string, string> = {
-  "revue-litteraire": "Revue littéraire",
-  "point-de-vue-actu": "Point de vue actu",
-  "terrain-et-pratiques": "Terrain & pratiques",
-  "methodes-et-reperes": "Méthodes & repères",
-};
 ---
 
 <Base title={accueil.seo.titre} description={accueil.seo.description}>
   <!-- ============ Hero ============ -->
   <section class="hero-section relative overflow-hidden">
     {/*
-      Le logo en filigrane, toujours ancré au MÊME endroit : le coin
-      supérieur droit. Seules sa taille et la part qui sort du cadre
-      varient avec la largeur — il ne change jamais de place, sans quoi
-      on le voit sauter en redimensionnant. Il déborde par le haut,
-      dans la bande libre au-dessus du surtitre, et s'estompe du côté
-      de la colonne de lecture.
+      Le logo en filigrane occupe la colonne laissée libre à droite de
+      l'accroche, à sa hauteur — il fait face au titre au lieu de fuir
+      hors du cadre par le coin.
+
+      Il reste ancré au MÊME repère à toutes les largeurs (milieu du
+      bord droit) : seuls sa taille et son retrait varient, sinon on le
+      voit sauter en redimensionnant. Plus l'écran est large, plus il
+      rentre dans la page — sur les formats étroits il déborde encore un
+      peu, faute de colonne libre.
     */}
     <img
       src={href("/logo-400.webp")}
@@ -35,7 +33,7 @@ const nomsFlux: Record<string, string> = {
       width="420"
       height="420"
       aria-hidden="true"
-      class="logo-filigrane pointer-events-none absolute top-[-5rem] right-[-2.5rem] h-32 w-32 opacity-[0.11] select-none sm:top-[-4rem] sm:right-[-3.5rem] sm:h-52 sm:w-52 md:top-[-4rem] md:right-[-5rem] md:h-72 md:w-72 lg:h-88 lg:w-88 xl:top-[-5rem] xl:right-[-8rem] xl:h-120 xl:w-120"
+      class="logo-filigrane pointer-events-none absolute top-1/2 right-[-2rem] h-36 w-36 -translate-y-1/2 opacity-[0.11] select-none sm:right-[-1rem] sm:h-56 sm:w-56 md:right-[1rem] md:h-80 md:w-80 lg:right-[3rem] lg:h-88 lg:w-88 xl:right-[6rem] xl:h-96 xl:w-96"
     />
     <div class="mx-auto max-w-6xl px-6 pt-14 pb-8 sm:pt-20 md:pt-28 md:pb-10">
       <p class="eyebrow reveal reveal-1">{accueil.hero.surtitre}</p>
@@ -166,7 +164,6 @@ const nomsFlux: Record<string, string> = {
       </div>
       <p
         class="mt-14 border-l-2 border-sage pl-5 text-lg leading-relaxed text-paper md:max-w-2xl"
-        data-mots
         set:html={enrichir(accueil.methode.citation, "text-sage")}
       />
     </div>
@@ -264,7 +261,7 @@ const nomsFlux: Record<string, string> = {
             data-reveal
           >
             <span class="self-start rounded-full bg-sage-faint px-3 py-1 text-xs font-semibold text-sage-deep">
-              {nomsFlux[article.data.flux]}
+              {nomFlux(article.data.flux)}
             </span>
             <h3 class="display mt-4 flex-1 text-lg leading-snug text-navy-deep">
               {article.data.titre}

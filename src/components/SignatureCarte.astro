@@ -31,51 +31,109 @@ interface Props {
 const { forme, class: className = "", ...rest } = Astro.props;
 
 /*
-  Toutes les courbes partent et finissent sur la même ligne d'horizon :
-  posées les unes sous les autres, elles se lisent comme une famille.
+  UN SEUL DESSIN, DÉCLINÉ.
 
-  ⚠️ Le SVG est étiré en largeur (`preserveAspectRatio="none"`) : un
-  tracé de 600 unités de large rendu sur ~1000 px et 36 px de haut voit
-  ses amplitudes verticales divisées par deux et ses pentes aplaties.
-  Les valeurs ci-dessous sont donc volontairement amples — vérifiées sur
-  planche, pas seulement calculées.
+  La page d'accueil porte le motif de la marque : une ligne qui part en
+  dents anguleuses, dont l'amplitude décroît à chaque aller-retour,
+  jusqu'à s'apaiser en une horizontale tenue — « de la tension à la
+  maîtrise ». Les signatures des cartes reprennent exactement cette
+  grammaire, au lieu des huit formes séparées d'avant : le tracé est
+  généré ici par le même calcul, seuls les réglages changent.
+
+  Même repère que l'accueil (viewBox 1200 × 110) : c'est ce qui garantit
+  que les dents ont la même pente et la même vigueur. Un repère plus
+  plat, étiré par `preserveAspectRatio="none"`, écrasait les tracés —
+  c'est ce qui les faisait paraître mal dessinés.
 */
-const TRACES: Record<Props["forme"], string> = {
-  // Tension qui monte, s'installe, puis se dénoue : le conflit interne.
-  oscillation:
-    "M0 30 L54 30 L90 6 L126 54 L162 10 L198 50 L234 16 L270 44 C310 34, 350 30, 396 30 L600 30",
-  // Un incident bref et violent, puis retour au calme : l'incivilité.
-  pic: "M0 30 L192 30 L214 2 L236 58 L258 14 L276 36 C312 32, 348 30, 384 30 L600 30",
-  // Une amplitude franche qui ne s'effondre jamais : tenir l'intensité
-  // dans la durée sans jamais rompre.
-  endurance:
-    "M0 30 C30 4, 90 56, 120 30 C150 4, 210 56, 240 30 C270 4, 330 56, 360 30 C390 4, 450 56, 480 30 C510 12, 560 30, 600 30",
-  // Une dégradation par paliers : chaque secousse repart d'un niveau
-  // plus bas que la précédente, puis la remontée s'installe.
-  paliers:
-    "M0 26 L72 26 L100 4 L128 44 L156 20 L184 56 L212 32 L240 58 L268 40 L300 52 C370 46, 480 34, 600 30",
-  // Un parcours qui existe déjà, et un module qui vient s'y poser puis
-  // s'y fondre : intégrer PAXI à une formation en place. La branche
-  // plonge franchement pour que la jonction se lise.
-  greffe: "M0 38 L600 38 M120 2 C176 2, 176 34, 228 38",
-  // Un cadre donné : des paliers réguliers, tous de même hauteur,
-  // jusqu'à un niveau tenu. Le référentiel impose sa progression.
-  referentiel:
-    "M0 54 L84 54 L84 42 L180 42 L180 30 L276 30 L276 18 L372 18 L372 6 L468 6 L600 6",
-  // Des séquences d'abord distinctes, dont les écarts se resserrent
-  // jusqu'à former un parcours continu : l'intervention sur mesure.
-  construction:
-    "M0 30 L88 30 M112 30 L232 30 M250 30 L390 30 M402 30 L600 30",
-  // Une montée régulière qui finit par se stabiliser : la progression
-  // d'une personne qui se forme à son rythme.
-  progression:
-    "M0 56 C90 55, 150 46, 220 36 C290 26, 350 14, 430 8 C490 5, 545 4, 600 4",
+const LARGEUR = 1200;
+const HORIZON = 55;
+
+interface Reglages {
+  /** Nombre d'aller-retours avant l'apaisement. */
+  dents: number;
+  /** Écart vertical de la première dent, en unités du repère. */
+  amplitude: number;
+  /** Ce qu'il reste de l'amplitude à chaque dent (0,82 = -18 %). */
+  amortissement: number;
+  /** Portion de la largeur occupée par la partie agitée. */
+  part: number;
+  /** Décalage vertical de la ligne d'arrivée, pour les fins qui dérivent. */
+  derive?: number;
+  /** Départ calme avant la première dent, en portion de largeur. */
+  attente?: number;
+}
+
+const REGLAGES: Record<Props["forme"], Reglages> = {
+  // Le motif de référence : une agitation franche qui se dénoue.
+  oscillation: { dents: 12, amplitude: 41, amortissement: 0.86, part: 0.42 },
+  // Long calme, un éclat bref et violent, retour immédiat au calme.
+  pic: { dents: 4, amplitude: 48, amortissement: 0.6, part: 0.16, attente: 0.4 },
+  // L'amplitude ne s'effondre pas : tenir l'intensité dans la durée.
+  endurance: { dents: 14, amplitude: 30, amortissement: 0.985, part: 0.72 },
+  // L'agitation s'apaise, mais la ligne d'arrivée reste plus basse
+  // qu'au départ : la dégradation a laissé une trace.
+  paliers: { dents: 10, amplitude: 38, amortissement: 0.85, part: 0.45, derive: 16 },
+  // Une secousse contenue, vite reprise : le module qui vient se poser
+  // sur un parcours déjà en place.
+  greffe: { dents: 6, amplitude: 34, amortissement: 0.78, part: 0.3, attente: 0.12 },
+  // Peu de dents, largement amorties : le cadre impose sa mesure.
+  referentiel: { dents: 8, amplitude: 26, amortissement: 0.8, part: 0.34 },
+  // L'agitation s'étale, puis se resserre : l'intervention se construit.
+  construction: { dents: 9, amplitude: 36, amortissement: 0.88, part: 0.52 },
+  // Départ bas, apaisement, et la ligne finit plus haut : on progresse.
+  progression: {
+    dents: 8,
+    amplitude: 32,
+    amortissement: 0.83,
+    part: 0.4,
+    derive: -18,
+  },
 };
+
+/**
+ * Construit le tracé : plateau d'attente, dents d'amplitude
+ * décroissante, puis raccord courbe vers l'horizontale finale.
+ *
+ * La courbe de raccord est ce qui distingue l'apaisement d'une coupure
+ * nette — c'est elle qui donne au motif de l'accueil sa fin « posée ».
+ */
+function tracer(r: Reglages): string {
+  const attente = LARGEUR * (r.attente ?? 0);
+  const finAgitation = attente + LARGEUR * r.part;
+  const pas = (finAgitation - attente) / r.dents;
+  const arrivee = HORIZON + (r.derive ?? 0);
+
+  const points: string[] = [`M0 ${HORIZON}`];
+  if (attente > 0) points.push(`L${Math.round(attente)} ${HORIZON}`);
+
+  let amplitude = r.amplitude;
+  for (let i = 0; i < r.dents; i++) {
+    const x = attente + pas * (i + 1);
+    // Une dent sur deux vers le haut : c'est l'alternance qui fait le
+    // motif, pas la seule décroissance.
+    const y = HORIZON + (i % 2 === 0 ? -amplitude : amplitude);
+    points.push(`L${Math.round(x)} ${Math.round(y)}`);
+    amplitude *= r.amortissement;
+  }
+
+  // Raccord : deux points de contrôle qui absorbent la dernière dent.
+  const c1 = finAgitation + (LARGEUR - finAgitation) * 0.12;
+  const c2 = finAgitation + (LARGEUR - finAgitation) * 0.3;
+  points.push(
+    `C${Math.round(c1)} ${Math.round(arrivee)}, ${Math.round(c2)} ${Math.round(arrivee)}, ${Math.round(c2 + 40)} ${Math.round(arrivee)}`,
+  );
+  points.push(`L${LARGEUR} ${Math.round(arrivee)}`);
+  return points.join(" ");
+}
+
+const TRACES = Object.fromEntries(
+  Object.entries(REGLAGES).map(([nom, r]) => [nom, tracer(r)]),
+) as Record<Props["forme"], string>;
 ---
 
 <svg
   class={`signature-carte ${className}`}
-  viewBox="0 0 600 60"
+  viewBox="0 0 1200 110"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   aria-hidden="true"
@@ -86,7 +144,7 @@ const TRACES: Record<Props["forme"], string> = {
     d={TRACES[forme]}
     pathLength="1"
     stroke="currentColor"
-    stroke-width="1.6"
+    stroke-width="2.5"
     stroke-linecap="round"
     stroke-linejoin="round"
     vector-effect="non-scaling-stroke"></path>
@@ -100,15 +158,17 @@ const TRACES: Record<Props["forme"], string> = {
   .signature-carte {
     display: block;
     width: 100%;
-    /* 1,75rem écrasait les tracés au point de les rendre plats. */
-    height: 2.5rem;
+    /* Le repère du motif fait 1200 × 110. Rendu sur ~64 rem de large,
+       il lui faut ~4,5 rem de haut pour garder la pente de l'accueil ;
+       en dessous, les dents s'aplatissent. */
+    height: 4.5rem;
     color: var(--color-sage-deep);
     opacity: 0.55;
   }
 
   /* Signature portée par la page entière : plus ample, plus aérée. */
   .signature-carte.signature-page {
-    height: 3.5rem;
+    height: 5.5rem;
     margin-top: 3rem;
     max-width: 44rem;
   }

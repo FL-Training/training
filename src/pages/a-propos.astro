@@ -13,14 +13,13 @@ const { seo, entete, intro, fondateur, engagement } = aPropos;
   typePage="AboutPage"
   fil={[{ label: "À propos", chemin: "/a-propos" }]}
 >
-  <section class="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
+  <section id="pacivis-academy" class="cible-ancre mx-auto max-w-6xl px-6 pt-16 md:pt-24">
     <p class="eyebrow">{entete.surtitre}</p>
     <h1 class="display mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
       {entete.titre}
     </h1>
     <p
       class="mt-6 max-w-3xl text-lg leading-relaxed text-ink"
-      data-mots
       set:html={enrichir(entete.texte)}
     />
     <div class="mt-6 max-w-3xl space-y-4" data-reveal-group>
@@ -37,7 +36,7 @@ const { seo, entete, intro, fondateur, engagement } = aPropos;
   </section>
 
   <!-- Le fondateur : texte à gauche, portrait à droite -->
-  <section class="mx-auto max-w-6xl px-6 py-16 md:py-20">
+  <section id="fabien-lacombe" class="cible-ancre mx-auto max-w-6xl px-6 py-16 md:py-20">
     <div
       class="grid items-start gap-10 md:grid-cols-[1fr_auto] md:gap-14"
       data-reveal-group
@@ -71,7 +70,7 @@ const { seo, entete, intro, fondateur, engagement } = aPropos;
     </div>
   </section>
 
-  <section class="border-y border-ink/10 bg-paper-deep/60">
+  <section id="notre-engagement" class="cible-ancre border-y border-ink/10 bg-paper-deep/60">
     <div class="mx-auto max-w-6xl px-6 py-16 md:py-20">
       <p class="eyebrow">{engagement.surtitre}</p>
       <h2 class="display mt-4 max-w-2xl text-3xl text-navy-deep">

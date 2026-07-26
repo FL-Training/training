@@ -1,0 +1,100 @@
+---
+/**
+ * Sélection d'articles du Journal portant un label donné.
+ *
+ * Prévu pour être posé n'importe où sur le site — une page de porte,
+ * PAXI, l'accueil — sans dupliquer de logique : le composant relit la
+ * collection lui-même et se tait s'il n'a rien à montrer.
+ *
+ * ⚠️ Volontairement placé nulle part pour l'instant : les livrables de
+ * Fabien énumèrent précisément le contenu de chaque page, et y ajouter
+ * un bloc non demandé irait contre sa consigne. À insérer une fois les
+ * emplacements décidés avec lui.
+ *
+ * Exemple :
+ *   <ArticlesParLabel
+ *     label="gestion-des-conflits"
+ *     titre="À lire dans le Journal"
+ *   />
+ */
+import { getCollection } from "astro:content";
+import { href } from "../lib/url";
+import { nomLabel } from "../lib/labels";
+import type { IdLabel } from "../lib/labels";
+import { commun } from "../lib/contenu";
+import { tempsDeLecture } from "../lib/texte";
+
+interface Props {
+  label: IdLabel;
+  titre?: string;
+  /** Au-delà de trois, le bloc concurrence la page qui l'accueille. */
+  limite?: number;
+  class?: string;
+}
+
+const { label, titre, limite = 3, class: classe } = Astro.props;
+
+const articles = (await getCollection("journal"))
+  .filter((a) => a.data.labels.includes(label))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, limite);
+
+const formatDate = new Intl.DateTimeFormat("fr-FR", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+---
+
+{
+  articles.length > 0 && (
+    <section class:list={["mt-16", classe]} data-reveal-group>
+      <div class="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+          {titre ?? `À lire sur le thème « ${nomLabel(label)} »`}
+        </h2>
+        <a
+          href={`${href("/journal")}?label=${label}`}
+          class="text-sm font-semibold text-sage-deep hover:text-navy-deep"
+        >
+          Tous les articles <span aria-hidden="true">→</span>
+        </a>
+      </div>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        {articles.map((article) => (
+          <a
+            href={href(`/journal/${article.id}`)}
+            class="card group flex flex-col p-6"
+            data-reveal
+          >
+            <div class="flex flex-wrap items-center gap-2 text-xs text-ink-faint">
+              <time datetime={article.data.date.toISOString().slice(0, 10)}>
+                {formatDate.format(article.data.date)}
+              </time>
+              <span>
+                · {tempsDeLecture(article.body ?? "")}&nbsp;
+                {commun.journal.duree_lecture}
+              </span>
+            </div>
+            <h3 class="display mt-3 text-lg leading-snug text-navy-deep">
+              {article.data.titre}
+            </h3>
+            <p class="mt-2 flex-1 text-[0.9rem] leading-relaxed text-ink-soft">
+              {article.data.resume}
+            </p>
+            <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
+              Lire l'article
+              <span
+                aria-hidden="true"
+                class="transition-transform duration-200 group-hover:translate-x-1"
+              >
+                →
+              </span>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+  )
+}

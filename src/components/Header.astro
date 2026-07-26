@@ -4,17 +4,40 @@
  * schéma de Fabien, à plat, dans l'ordre du document.
  *
  * Contrainte de place : sept entrées textuelles réclament ~715 px à
- * côté du logo. Elles tiennent dès 1024 px UNIQUEMENT parce que le
- * slogan s'efface entre 1024 et 1536 px (mesuré : 87 px d'écart
- * restant à 1024). En dessous, bouton hamburger.
+ * côté du logo. Deux décisions leur font de la place — le slogan a été
+ * retiré de la marque (26/07) et « Le Journal Pacivis » est raccourci
+ * en « Le Journal » dans le menu comme dans le pied de page, la
+ * rubrique gardant son nom complet en tête de sa propre page. En
+ * dessous de 1024 px, bouton hamburger.
  *
- * Si la densité gêne encore à l'usage, les leviers suivants sont, dans
- * l'ordre : raccourcir « Le Journal Pacivis » en « Le Journal »,
- * rendre « Accueil » implicite via le logo, ou revenir à un menu à
- * quatre entrées plus deux boutons d'action.
+ * Si la densité gêne encore, les leviers restants sont : rendre
+ * « Accueil » implicite via le logo, ou revenir à un menu à quatre
+ * entrées plus deux boutons d'action.
  */
 import { href } from "../lib/url";
 import { commun } from "../lib/contenu";
+import Picto from "./Picto.astro";
+
+/**
+ * Isole le mot ARCA dans un libellé de raccourci.
+ *
+ * La page « Notre approche » fait vivre ce mot : ses quatre lettres
+ * s'illuminent une à une, chacune parcourue d'une étincelle, à mesure
+ * que le pilier correspondant se dévoile. Le menu reprend l'écho de ce
+ * geste — les capitales espacées, la teinte verte, et la même lueur au
+ * survol. Le lien et sa destination parlent ainsi la même langue, sans
+ * que le visiteur ait à le remarquer.
+ *
+ * Découpage tolérant : un libellé sans le mot traverse la fonction sans
+ * rien changer.
+ */
+function decouperArca(
+  label: string,
+): { avant: string; apres: string } | null {
+  const i = label.indexOf("ARCA");
+  if (i === -1) return null;
+  return { avant: label.slice(0, i), apres: label.slice(i + 4) };
+}
 
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const current = Astro.url.pathname.replace(base, "").replace(/\/+$/, "") || "/";
@@ -41,19 +64,7 @@ function isCurrent(path: string): boolean {
         height="44"
         class="h-11 w-11 transition-transform duration-300 group-hover:rotate-6"
       />
-      <span class="flex flex-col leading-tight">
-        <span class="display text-lg text-navy-deep">{commun.marque.nom}</span>
-        {/*
-          Le slogan s'efface entre 1024 et 1536 px : c'est la largeur
-          qu'il libère qui permet d'afficher les sept entrées du menu au
-          lieu de basculer sur le bouton hamburger.
-        */}
-        <span
-          class="hidden text-[0.62rem] font-semibold tracking-[0.2em] text-ink-faint uppercase sm:block lg:hidden 2xl:block"
-        >
-          {commun.marque.slogan}
-        </span>
-      </span>
+      <span class="display text-lg text-navy-deep">{commun.marque.nom}</span>
     </a>
 
     <nav
@@ -66,6 +77,63 @@ function isCurrent(path: string): boolean {
             <a href={href(item.chemin)} class="btn btn-primary !px-4 !py-2.5 text-sm">
               {item.label}
             </a>
+          ) : item.sous_menu.length > 0 ? (
+            /*
+              Entrée à raccourcis. L'entrée reste un lien ordinaire vers
+              sa page — le sous-menu ne s'interpose jamais entre le
+              visiteur et la page. Il se déploie au survol et à la mise
+              au clavier, et se referme dès que le groupe perd le focus.
+            */
+            <div class="groupe-nav relative">
+              <a
+                href={href(item.chemin)}
+                class="nav-link !text-[0.92rem]"
+                aria-current={isCurrent(item.chemin) ? "page" : undefined}
+              >
+                {item.label}
+                {isCurrent(item.chemin) && (
+                  <span
+                    class="nav-souligne"
+                    transition:name="nav-actif"
+                    aria-hidden="true"
+                  />
+                )}
+              </a>
+              <div class="sous-menu" role="group" aria-label={item.label}>
+                <ul class="sous-menu-liste">
+                  {item.sous_menu.map((r) => (
+                    <li>
+                      <a
+                        href={
+                          r.ancre
+                            ? `${href(item.chemin)}#${r.ancre}`
+                            : href(r.chemin!)
+                        }
+                        class="sous-menu-lien"
+                      >
+                        {r.picto && (
+                          <span class="sous-menu-picto" aria-hidden="true">
+                            <Picto nom={r.picto} />
+                          </span>
+                        )}
+                        {(() => {
+                          const parts = decouperArca(r.label);
+                          return parts ? (
+                            <span>
+                              {parts.avant}
+                              <span class="mot-arca">ARCA</span>
+                              {parts.apres}
+                            </span>
+                          ) : (
+                            <span>{r.label}</span>
+                          );
+                        })()}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           ) : (
             <a
               href={href(item.chemin)}
@@ -124,22 +192,235 @@ function isCurrent(path: string): boolean {
       >
         {
           commun.navigation.map((item, i) => (
-            <a
-              href={href(item.chemin)}
-              style={`--i: ${i}`}
-              class:list={[
-                "flex min-h-11 items-center rounded-lg px-3 py-2 text-sm",
-                item.accent
-                  ? "font-semibold text-navy-deep hover:bg-sage-faint"
-                  : "font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep",
-              ]}
-              aria-current={isCurrent(item.chemin) ? "page" : undefined}
-            >
-              {item.label}
-            </a>
+            <div style={`--i: ${i}`}>
+              <a
+                href={href(item.chemin)}
+                class:list={[
+                  "flex min-h-11 items-center rounded-lg px-3 py-2 text-sm",
+                  item.accent
+                    ? "font-semibold text-navy-deep hover:bg-sage-faint"
+                    : "font-medium text-ink-soft hover:bg-paper-deep hover:text-navy-deep",
+                ]}
+                aria-current={isCurrent(item.chemin) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+              {/*
+                Sur mobile, pas de survol : les raccourcis sont
+                simplement listés sous leur entrée, en retrait. Le
+                panneau reste une seule liste que l'on parcourt d'un
+                coup, sans niveau à ouvrir.
+              */}
+              {item.sous_menu.length > 0 && (
+                <ul class="mt-0.5 mb-1 ml-3 border-l border-ink/10 pl-3">
+                  {item.sous_menu.map((r) => (
+                    <li>
+                      <a
+                        href={
+                          r.ancre
+                            ? `${href(item.chemin)}#${r.ancre}`
+                            : href(r.chemin!)
+                        }
+                        class="flex min-h-9 items-center rounded-lg px-2 py-1 text-[0.82rem] text-ink-faint hover:bg-paper-deep hover:text-navy-deep"
+                      >
+                        {r.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           ))
         }
       </nav>
     </details>
   </div>
 </header>
+
+<style>
+  /*
+    Sous-menus du bandeau de navigation.
+
+    Ils n'ajoutent aucune entrée de premier niveau : les sept entrées de
+    l'architecture V2 restent les sept mêmes. Ce sont des raccourcis vers
+    l'intérieur des pages, qui donnent aussi à voir la structure du site
+    d'un coup d'œil.
+
+    Ouverture au survol ET au focus clavier : la tabulation traverse les
+    liens du sous-menu sans qu'il faille cliquer quoi que ce soit.
+    `:focus-within` suffit, sans JavaScript.
+  */
+  /*
+    Le panneau ne flotte pas : il descend du bandeau.
+
+    Version précédente — une carte arrondie détachée, posée sous le lien
+    avec une ombre franche — se lisait comme un objet étranger déposé sur
+    la page. Ici, le panneau démarre exactement au bas de l'en-tête,
+    reprend son fond et son flou, et ne s'arrondit que par le bas :
+    l'ensemble se lit comme une extension du bandeau qui se déplie.
+
+    Le filet vert du haut prolonge le soulignement du lien parent — le
+    même trait, qui court du mot au panneau.
+
+    Le `padding-top` vaut exactement la distance entre le bas du lien et
+    le bas de l'en-tête, mesurée à l'exécution (voir le script en fin de
+    fichier). Une valeur figée se décalait dès que la hauteur du lien
+    changeait — l'ajout du losange l'a fait de 4 px, et le changement de
+    typographie à venir le referait. Ce padding sert aussi de pont :
+    sans lui, le pointeur qui descend traverse un vide et le panneau se
+    referme sous le doigt.
+  */
+  .sous-menu {
+    position: absolute;
+    top: 100%;
+    /* Aligné sur le début du mot, et non centré : le filet du panneau
+       prolonge alors exactement le soulignement du lien parent. Centré,
+       il débordait à gauche et la continuité se perdait. */
+    left: 0;
+    z-index: 60;
+    padding-top: var(--pont-sous-menu, 22px);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 200ms ease,
+      visibility 0s linear 200ms;
+  }
+
+  .groupe-nav:hover .sous-menu,
+  .groupe-nav:focus-within .sous-menu {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  .sous-menu-liste {
+    min-width: 15rem;
+    padding: 0.5rem;
+    /* Même matière que l'en-tête : le panneau en est la suite. */
+    background: color-mix(in oklab, var(--color-paper) 96%, transparent);
+    /* Le dernier menu de la rangée ne doit pas sortir de la fenêtre. */
+    max-width: min(20rem, calc(100vw - 2rem));
+    backdrop-filter: blur(12px);
+    border: 1px solid color-mix(in oklab, var(--color-ink) 8%, transparent);
+    border-top: 2px solid var(--color-sage-deep);
+    border-radius: 0 0 0.85rem 0.85rem;
+    /* Une ombre à peine posée : elle donne la profondeur sans détacher. */
+    box-shadow: 0 14px 28px -22px color-mix(in oklab, var(--color-ink) 55%, transparent);
+    /* Le panneau se déroule vers le bas depuis le filet. */
+    transform-origin: top center;
+    animation: sous-menu-derouler 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes sous-menu-derouler {
+    from {
+      opacity: 0;
+      transform: scaleY(0.94) translateY(-4px);
+    }
+  }
+
+  .sous-menu-lien {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.65rem;
+    border-radius: 0.5rem;
+    font-size: 0.87rem;
+    line-height: 1.3;
+    color: var(--color-ink-soft);
+    transition:
+      background-color 180ms ease,
+      color 180ms ease;
+  }
+
+  .sous-menu-lien:hover,
+  .sous-menu-lien:focus-visible {
+    background: var(--color-sage-faint);
+    color: var(--color-navy-deep);
+  }
+
+  /* Le pictogramme de la page visée, à la même échelle que le texte. */
+  .sous-menu-picto {
+    display: inline-flex;
+    flex: none;
+    color: var(--color-sage-deep);
+    opacity: 0.75;
+    transition: opacity 180ms ease;
+  }
+
+  .sous-menu-picto :global(svg) {
+    width: 1.05rem;
+    height: 1.05rem;
+  }
+
+  .sous-menu-lien:hover .sous-menu-picto {
+    opacity: 1;
+  }
+
+  /*
+    ARCA dans le menu : l'écho du traitement que le mot reçoit sur la
+    page — capitales espacées, vert profond. Au survol, la même lueur
+    que celle qui parcourt les lettres du titre quand un pilier se
+    dévoile.
+  */
+  .mot-arca {
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--color-sage-deep);
+    transition:
+      color 200ms ease,
+      text-shadow 320ms ease;
+  }
+
+  .sous-menu-lien:hover .mot-arca,
+  .sous-menu-lien:focus-visible .mot-arca {
+    animation: arca-lueur-menu 900ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  @keyframes arca-lueur-menu {
+    30% {
+      text-shadow:
+        0 0 0.5em color-mix(in oklab, var(--color-sage) 70%, transparent),
+        0 0 0.12em rgb(255 255 255 / 0.85);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sous-menu,
+    .sous-menu-lien,
+    .sous-menu-picto,
+    .mot-arca {
+      transition: none;
+    }
+    .sous-menu-liste,
+    .sous-menu-lien:hover .mot-arca {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  /*
+    Cale le sommet des sous-menus sur la ligne basse de l'en-tête.
+
+    La distance dépend de la hauteur du lien, donc de la police et de la
+    taille du texte : elle ne peut pas être écrite en dur sans se
+    décaler au premier changement. On la mesure et on la publie en
+    variable CSS — le style fait le reste.
+  */
+  function calerSousMenus() {
+    const entete = document.querySelector<HTMLElement>("header");
+    const lien = document.querySelector<HTMLElement>(".groupe-nav .nav-link");
+    if (!entete || !lien) return;
+
+    const pont = entete.getBoundingClientRect().bottom - lien.getBoundingClientRect().bottom;
+    entete.style.setProperty("--pont-sous-menu", `${Math.max(0, Math.round(pont))}px`);
+  }
+
+  calerSousMenus();
+  document.addEventListener("astro:page-load", calerSousMenus);
+  window.addEventListener("resize", calerSousMenus);
+  // Les polices arrivent après le premier rendu et changent la hauteur
+  // du lien : sans cette reprise, la mesure resterait celle de la police
+  // de secours.
+  document.fonts?.ready.then(calerSousMenus);
+</script>

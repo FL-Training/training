@@ -33,6 +33,13 @@ entete:
   titre: "Préparer les agents, les encadrants et les collectifs à agir face aux tensions, aux conflits et aux situations de crise"
   texte: "Les professionnels du secteur public doivent assurer la continuité et la qualité du service, accueillir et accompagner des publics aux attentes multiples, coopérer entre métiers et décider dans des cadres parfois fortement contraints. Lorsque la pression augmente, les tensions relationnelles, les incivilités, les conflits ou les situations dégradées peuvent affecter la sécurité, la qualité de l'action et la capacité du collectif à remplir sa mission."
 
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/secteur-public.webp"
+  alt: "Un agent d'accueil accompagne un usager au guichet d'un service public."
 # Le tracé de marque, à l'échelle de la page. « oscillation » : la
 # tension qui monte et redescend, motif du premier axe.
 signature: "oscillation"

@@ -39,5 +39,13 @@ export function href(path: string): string {
     return `${base}${clean}${marque}`;
   }
 
-  return `${base}${clean}${clean.endsWith("/") ? "" : "/"}`;
+  // Un chemin peut porter une requête ou un fragment : le slash final
+  // doit se poser sur le chemin, pas après. Sans cela, un lien comme
+  // « /journal?flux=… » deviendrait « /journal?flux=…/ » et ne
+  // désignerait plus rien.
+  const coupure = clean.search(/[?#]/);
+  const chemin = coupure === -1 ? clean : clean.slice(0, coupure);
+  const suite = coupure === -1 ? "" : clean.slice(coupure);
+
+  return `${base}${chemin}${chemin.endsWith("/") ? "" : "/"}${suite}`;
 }

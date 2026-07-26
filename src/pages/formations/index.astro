@@ -41,30 +41,49 @@ const { seo, entete, portes: intro, carte } = formationsPage;
         {intro.titre}
       </h2>
       <p class="mt-2 max-w-2xl text-ink-soft" data-reveal>{intro.texte}</p>
-      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="mt-8 grid gap-6 sm:grid-cols-2">
         {
           portes.map((p) => (
             <a
               href={href(`/formations/${p.id}`)}
-              class="card carte-porte flex flex-col p-6"
+              class="card carte-porte flex flex-col overflow-hidden"
               data-reveal
             >
-              <Picto nom={p.data.picto} />
-              <h3 class="display mt-3 text-lg leading-snug text-navy-deep">
-                {p.data.nom}
-              </h3>
-              <p class="mt-2 text-[0.92rem] leading-relaxed text-ink-soft">
-                {p.data.entete.titre}
-              </p>
-              {p.data.statut === "stub" && (
-                <span class="mt-3 inline-block self-start rounded-full bg-paper-deep/60 px-3 py-1 text-[0.68rem] font-semibold tracking-wide text-ink-faint uppercase">
-                  {carte.badge_stub}
-                </span>
+              {p.data.visuel && (
+                <div class="carte-visuel" aria-hidden="true">
+                  <img
+                    src={href(p.data.visuel.src)}
+                    alt=""
+                    width="1000"
+                    height="667"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
               )}
-              <span class="mt-auto inline-flex items-center gap-2 pt-4 text-sm font-semibold text-sage-deep">
-                {carte.lien_porte}
-                <span aria-hidden="true">→</span>
-              </span>
+              <div class="flex flex-1 flex-col p-7">
+                {/*
+                  Le pictogramme se lit AVEC le nom de la porte, sur la
+                  même ligne : posé au-dessus, il flottait comme une
+                  vignette sans rattachement.
+                */}
+                <h3 class="carte-titre display text-xl leading-snug text-navy-deep">
+                  <Picto nom={p.data.picto} />
+                  {p.data.nom}
+                </h3>
+                <p class="mt-2 leading-relaxed text-ink-soft">
+                  {p.data.entete.titre}
+                </p>
+                {p.data.statut === "stub" && (
+                  <span class="mt-3 inline-block self-start rounded-full bg-paper-deep/60 px-3 py-1 text-[0.68rem] font-semibold tracking-wide text-ink-faint uppercase">
+                    {carte.badge_stub}
+                  </span>
+                )}
+                <span class="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-semibold text-sage-deep">
+                  {carte.lien_porte}
+                  <span aria-hidden="true">→</span>
+                </span>
+              </div>
             </a>
           ))
         }
@@ -92,6 +111,123 @@ const { seo, entete, portes: intro, carte } = formationsPage;
     langage, même retenue. Le pictogramme monte d'un cheveu en même
     temps, ce qui suffit à faire vivre la carte.
   */
+  /*
+    LE VISUEL DE LA PORTE
+
+    Fabien veut une photographie réelle, mais qui ne prenne pas le pas
+    sur le texte. D'où le parti pris : l'image n'a pas de cadre. Ses
+    bords ne sont pas adoucis — ils n'existent pas. Un masque en dégradé
+    la fait naître au centre et se dissoudre dans le papier de la carte
+    sur ses quatre côtés, si bien qu'on ne peut pas dire où elle
+    s'arrête.
+
+    Au repos elle est en retrait : peu contrastée, désaturée, discrète.
+    Au survol elle revient à la vie — le masque s'ouvre, les couleurs
+    reprennent, comme si la situation se précisait à mesure qu'on s'y
+    intéresse.
+  */
+  .carte-visuel {
+    position: relative;
+    /* Un bandeau large : la photo doit se lire comme une ambiance, pas
+       comme une vignette. */
+    aspect-ratio: 16 / 8.5;
+    overflow: hidden;
+  }
+
+  .carte-visuel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Le fondu : opaque au centre, transparent sur les bords. Les deux
+       axes sont traités séparément pour que le haut se dissolve plus
+       franchement que les côtés — l'image doit sembler émerger du
+       papier, pas y flotter. */
+    mask-image:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgb(0 0 0 / 0.55) 18%,
+        #000 55%,
+        rgb(0 0 0 / 0.35) 88%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        transparent 0%,
+        #000 22%,
+        #000 78%,
+        transparent 100%
+      );
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+    opacity: 0.5;
+    filter: saturate(0.55) contrast(0.92);
+    transform: scale(1.04);
+    transition:
+      opacity 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      filter 620ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 900ms cubic-bezier(0.16, 1, 0.3, 1),
+      mask-image 620ms ease;
+  }
+
+  .carte-porte:hover .carte-visuel img,
+  .carte-porte:focus-visible .carte-visuel img {
+    opacity: 0.92;
+    filter: saturate(1.05) contrast(1);
+    transform: scale(1);
+    /* Le masque se resserre sur les bords : l'image se découvre. */
+    mask-image:
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgb(0 0 0 / 0.8) 8%,
+        #000 32%,
+        rgb(0 0 0 / 0.72) 94%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to right,
+        transparent 0%,
+        #000 9%,
+        #000 91%,
+        transparent 100%
+      );
+  }
+
+  /* Le texte ne doit jamais buter contre l'image : le bas du fondu se
+     prolonge derrière lui. */
+  .carte-visuel::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px 0;
+    height: 2.5rem;
+    background: linear-gradient(to bottom, transparent, var(--color-paper));
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .carte-visuel img {
+      transition: none;
+      transform: none;
+    }
+  }
+
+  /* Pictogramme et nom sur une même ligne, alignés sur la base du
+     texte plutôt que centrés : la toque et le fronton n'ont pas la même
+     hauteur visuelle, un centrage les ferait danser d'une carte à
+     l'autre. */
+  .carte-titre {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .carte-titre :global(svg) {
+    flex: none;
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
   .carte-porte {
     position: relative;
     overflow: hidden;

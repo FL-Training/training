@@ -1,6 +1,8 @@
 import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+import { IDS_LABELS } from "./lib/labels";
+import { IDS_FLUX } from "./lib/flux";
 
 // An emptied or whitespace-only field must fail the build, so the live
 // site never publishes incomplete cards or pages.
@@ -51,13 +53,13 @@ const journal = defineCollection({
   schema: z.object({
     titre: texteRequis,
     resume: texteRequis,
-    flux: z.enum([
-      "revue-litteraire",
-      "point-de-vue-actu",
-      "terrain-et-pratiques",
-      "methodes-et-reperes",
-    ]),
+    flux: z.enum(IDS_FLUX),
     date: z.coerce.date(),
+    // Thèmes de l'article, servant aux filtres. Sans minimum et avec
+    // une liste vide par défaut : Keystatic écrit `labels: []` dès
+    // qu'aucune case n'est cochée, et un article non étiqueté doit
+    // rester publiable.
+    labels: z.array(z.enum(IDS_LABELS)).default([]),
     auteur: texteRequis.default("Fabien Lacombe"),
     sources: z.array(z.object({ titre: texteRequis, url: z.url() })).default([]),
   }),
@@ -98,6 +100,13 @@ const portes = defineCollection({
         "progression",
       ])
       .optional(),
+    // Visuel de la porte sur le carrefour « Formations ». Il n'illustre
+    // pas la page elle-même : il aide le visiteur à se reconnaître dans
+    // une situation avant de choisir son entrée. Affiché en fondu, bords
+    // évanouis — jamais comme une photo posée dans un cadre.
+    visuel: blocFacultatif(
+      z.object({ src: texteRequis, alt: texteRequis }),
+    ),
     intro: texteFacultatif,
     cartes: z
       .array(

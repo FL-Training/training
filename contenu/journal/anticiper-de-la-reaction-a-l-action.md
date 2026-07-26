@@ -3,6 +3,9 @@ titre: "Anticiper : ce qui permet de passer de la réaction à l'action"
 resume: "Anticiper, ce n'est pas prévoir. C'est apprendre à lire ce qui commence à bouger avant que la situation ne se ferme — et distinguer ce que l'on observe de ce que l'on interprète."
 flux: "methodes-et-reperes"
 date: 2026-07-16
+labels:
+  - "anticiper"
+  - "gestion-des-conflits"
 auteur: "Fabien Lacombe"
 sources: []
 ---

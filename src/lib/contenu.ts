@@ -31,6 +31,38 @@ const lien = z.object({
   // Menu principal : met l'entrée en évidence (fond plein).
   accent: z.boolean().default(false),
 });
+/**
+ * Raccourci d'un sous-menu : soit une autre page (`chemin`), soit une
+ * section de la page portée par l'entrée parente (`ancre`).
+ *
+ * L'un des deux, jamais les deux : un raccourci qui désignerait à la
+ * fois une page et une ancre serait ambigu à construire comme à lire.
+ */
+// Même contrat que côté collections : une chaîne vide vaut « absent »,
+// puisque Keystatic écrit `""` au lieu d'omettre la clé.
+const texteFacultatif = z.preprocess(
+  (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+  texteRequis.optional(),
+);
+
+const raccourci = z
+  .object({
+    label: texteRequis,
+    chemin: texteFacultatif,
+    ancre: texteFacultatif,
+    // Repris de la page visée : la même icône que sur sa carte et son
+    // entête, pour que le raccourci et sa destination se reconnaissent.
+    picto: texteFacultatif,
+  })
+  .refine(
+    (r) => Boolean(r.chemin) !== Boolean(r.ancre),
+    "indiquer soit un chemin, soit une ancre — pas les deux, pas aucun",
+  );
+
+const lienNavigation = lien.extend({
+  sous_menu: z.array(raccourci).default([]),
+});
+
 const seo = z.object({ titre: texteRequis, description: texteRequis });
 const pilier = z.object({
   numero: texteRequis,
@@ -49,8 +81,9 @@ const communSchema = z.object({
     slogan: texteRequis,
     signature: texteRequis,
   }),
-  navigation: z.array(lien).min(1),
+  navigation: z.array(lienNavigation).min(1),
   menu: z.object({ ouvrir: texteRequis, fermer: texteRequis }),
+  journal: z.object({ duree_lecture: texteRequis }),
   liens: z.object({ linkedin: z.url() }),
   photos: z.object({ portrait_alt: texteRequis, og_alt: texteRequis }),
   pied_de_page: z.object({

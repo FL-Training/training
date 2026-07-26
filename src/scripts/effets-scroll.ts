@@ -1,15 +1,17 @@
 /**
  * Scroll-driven effects (Motion) — the site's "living" layer.
  *
- * Three signatures, inspired by scroll-linked portfolio motion design,
+ * Two signatures, inspired by scroll-linked portfolio motion design,
  * transposed to the "autorité calme" concept:
  *
- * 1. [data-mots]      — word-by-word text reveal DRIVEN by scroll
- *                       position: words light up scrolling down and dim
- *                       back scrolling up (bidirectional by nature).
- * 2. [data-trace-scroll] — the de-escalation line draws with scroll and
+ * 1. [data-trace-scroll] — the de-escalation line draws with scroll and
  *                       un-draws when scrolling back.
- * 3. [data-hero-titre] — hero title words rise with springs on load.
+ * 2. [data-hero-titre] — hero title words rise with springs on load.
+ *
+ * La révélation mot à mot des paragraphes ([data-mots]) a été retirée le
+ * 26/07 : elle laissait en gris pâle du texte pourtant déjà à l'écran —
+ * en haut de page, un paragraphe entièrement visible restait à moitié
+ * éteint tant qu'on n'avait pas fait défiler.
  *
  * All effects are JS-only enhancements: without JS (or with
  * prefers-reduced-motion) every element stays fully visible and static.
@@ -22,55 +24,8 @@ const reduits = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 type Annulation = VoidFunction;
 let annulations: Annulation[] = [];
 
-function envelopperMots(el: Element): HTMLElement[] {
-  const marcheur = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
-  const noeuds: Text[] = [];
-  while (marcheur.nextNode()) noeuds.push(marcheur.currentNode as Text);
-  for (const noeud of noeuds) {
-    const contenu = noeud.textContent ?? "";
-    if (!contenu.trim()) continue;
-    const fragment = document.createDocumentFragment();
-    for (const part of contenu.split(/(\s+)/)) {
-      if (part === "") continue;
-      if (/^\s+$/.test(part)) {
-        fragment.append(part);
-      } else {
-        const span = document.createElement("span");
-        span.className = "mot";
-        span.textContent = part;
-        fragment.append(span);
-      }
-    }
-    noeud.replaceWith(fragment);
-  }
-  return [...el.querySelectorAll<HTMLElement>(".mot")];
-}
-
 function clamp01(valeur: number): number {
   return Math.min(1, Math.max(0, valeur));
-}
-
-/* 1 — Paragraphes révélés mot à mot par la position de scroll */
-function initMotsScroll() {
-  document.querySelectorAll("[data-mots]:not([data-mots-pret])").forEach((el) => {
-    el.setAttribute("data-mots-pret", "");
-    const mots = envelopperMots(el);
-    if (mots.length === 0) return;
-    const n = mots.length;
-    const arret = scroll(
-      (progression: number) => {
-        for (let i = 0; i < n; i++) {
-          const t = clamp01(progression * n - i);
-          mots[i].style.opacity = String(0.16 + 0.84 * t);
-        }
-      },
-      {
-        target: el as HTMLElement,
-        offset: ["start 0.88", "start 0.28"],
-      },
-    );
-    annulations.push(arret);
-  });
 }
 
 /* 2 — Ligne de désescalade dessinée / effacée par le scroll */
@@ -119,7 +74,6 @@ function initHeroTitre() {
 
 function initialiser() {
   initHeroTitre();
-  initMotsScroll();
   initTraceScroll();
 }
 

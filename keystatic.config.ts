@@ -12,6 +12,8 @@
  * access to the repository.
  */
 import { config, collection, singleton, fields } from "@keystatic/core";
+import { LABELS } from "./src/lib/labels";
+import { FLUX } from "./src/lib/flux";
 
 const storage = import.meta.env.DEV
   ? ({ kind: "local" } as const)
@@ -287,13 +289,17 @@ const journal = collection({
     resume: long("Résumé (affiché sur les cartes et dans Google)"),
     flux: fields.select({
       label: "Flux",
-      options: [
-        { label: "Revue littéraire", value: "revue-litteraire" },
-        { label: "Point de vue actu", value: "point-de-vue-actu" },
-        { label: "Terrain & pratiques", value: "terrain-et-pratiques" },
-        { label: "Méthodes & repères", value: "methodes-et-reperes" },
-      ],
+      options: FLUX.map((f) => ({ label: f.nom, value: f.id })),
       defaultValue: "methodes-et-reperes",
+    }),
+    // Options tirées de la même liste que la validation au build : le
+    // CMS ne peut donc proposer qu'un label reconnu par le site.
+    labels: fields.multiselect({
+      label: "Labels",
+      description:
+        "Thèmes de l'article. Ils servent aux filtres du Journal et permettront de rassembler des articles ailleurs sur le site.",
+      options: LABELS.map((l) => ({ label: l.nom, value: l.id })),
+      defaultValue: [],
     }),
     date: fields.date({
       label: "Date de publication",
