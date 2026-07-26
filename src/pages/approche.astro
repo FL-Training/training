@@ -57,7 +57,15 @@ const titreMethode =
   <!-- ARCA : les quatre piliers -->
   <section class="mx-auto max-w-6xl px-6 py-16">
     <p class="eyebrow">{methode.surtitre}</p>
-    <h2 class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl">
+    {/*
+      Le titre reste à l'écran pendant toute la traversée des piliers :
+      c'est là que chacune de ses lettres s'illumine, à mesure que le
+      pilier correspondant se dévoile. Sans cela, l'écho se jouerait
+      au-dessus de la ligne de flottaison, invisible.
+    */}
+    <h2
+      class="titre-arca display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+    >
       {
         titreMethode ? (
           <>
@@ -182,6 +190,50 @@ const titreMethode =
 </script>
 
 <style>
+  /*
+    Le titre de la méthode accompagne la lecture des quatre piliers.
+
+    Il se fige sous l'en-tête à partir de 768 px : en dessous, il
+    occupe deux lignes et mangerait le tiers de l'écran. Le fond opaque
+    et le filet bas le détachent du texte qui défile dessous.
+  */
+  @media (min-width: 768px) {
+    .titre-arca {
+      position: sticky;
+      /* Exactement la hauteur de l'en-tête collant : le moindre jeu
+         laisserait le texte défiler dans l'interstice. */
+      top: 4.8rem;
+      z-index: 20;
+      /* Le fond doit couvrir toute la largeur de lecture, pas seulement
+         celle du texte. */
+      margin-inline: -0.75rem;
+      max-width: none;
+      padding: 0.85rem 0.75rem 0.75rem;
+      /* Exactement la couleur de la page : la moindre variation dessine
+         un rectangle autour du titre. */
+      background: var(--color-paper);
+      border-bottom: 1px solid
+        color-mix(in oklab, var(--color-ink) 8%, transparent);
+    }
+
+    /*
+      Le grain de la page est un calque fixe posé au-dessus du contenu
+      (z-index 1). Le titre, lui, doit passer devant le texte qui défile
+      dessous, donc au-dessus de ce calque : il en sort et son fond
+      paraît plus lisse que le reste de la page. On lui redonne donc le
+      même bruit, à la même opacité.
+    */
+    .titre-arca::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.039 0 0 0 0 0.212 0 0 0 0 0.325 0.7 0 0 0 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+  }
+
   /*
     Les initiales des quatre piliers. Empilées, elles épellent ARCA :
     c'est leur seule raison d'être, donc elles doivent se voir. Assez
