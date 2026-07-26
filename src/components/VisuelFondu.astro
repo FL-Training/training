@@ -1,0 +1,147 @@
+---
+/**
+ * Photographie posée en fond, sans bord.
+ *
+ * Le parti pris du site : l'image ne s'arrête nulle part. Un masque en
+ * dégradé la fait naître au centre et se dissoudre dans le papier, si
+ * bien qu'on ne peut pas dire où elle finit. Elle accompagne la colonne
+ * de lecture sans jamais la disputer, et n'est pas interactive.
+ *
+ * Réservée au grand écran : sous 768 px il n'y a pas de colonne libre,
+ * elle passerait derrière le texte au lieu de l'équilibrer.
+ *
+ * Le parent doit être positionné (`relative`) et le contenu qui doit
+ * rester lisible placé au-dessus, lui aussi positionné.
+ */
+interface Props {
+  src: string;
+  /** De quel côté l'image se loge. */
+  cote?: "droite" | "gauche";
+  /** Part de la largeur du bloc qu'elle occupe. */
+  largeur?: string;
+  /**
+   * Point de l'image à garder au centre du cadre (`object-position`).
+   *
+   * La colonne est bien plus haute que large : d'une image carrée, elle
+   * n'en montre qu'une bande verticale. Par défaut c'est la bande
+   * centrale — quand le sujet est ailleurs, on déplace le cadre au lieu
+   * de recadrer le fichier, qui perdrait le reste de la scène.
+   */
+  cadrage?: string;
+  class?: string;
+}
+
+import { href } from "../lib/url";
+
+const {
+  src,
+  cote = "droite",
+  largeur = "46%",
+  cadrage = "50% 50%",
+  class: classe,
+} = Astro.props;
+---
+
+<div
+  class:list={["visuel-fondu", `visuel-${cote}`, classe]}
+  style={`--largeur-visuel: ${largeur}; --cadrage-visuel: ${cadrage}`}
+  aria-hidden="true"
+>
+  <img
+    src={href(src)}
+    alt=""
+    width="1000"
+    height="1000"
+    loading="lazy"
+    decoding="async"
+  />
+</div>
+
+<style>
+  .visuel-fondu {
+    position: absolute;
+    top: 50%;
+    width: var(--largeur-visuel);
+    /* Un peu plus haute que le bloc : ses bords fondus doivent en
+       sortir, sinon on devine une bande. */
+    height: 116%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /*
+    Calée sur le bord du bloc, pas au-delà.
+
+    Elle débordait d'un rem : sans conséquence sur grand écran, où la
+    marge du conteneur absorbe le dépassement — mais entre 768 et
+    1024 px le conteneur touche presque les bords de la fenêtre, et ce
+    rem créait une barre de défilement horizontale (784 px de document
+    pour 768 px de fenêtre). Le masque estompe déjà les bords : rien ne
+    se perd à s'arrêter là.
+  */
+  .visuel-droite {
+    right: 0;
+  }
+
+  .visuel-gauche {
+    left: 0;
+  }
+
+  .visuel-fondu img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--cadrage-visuel, 50% 50%);
+    opacity: 0.4;
+    filter: saturate(0.6) contrast(0.95);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  /* Le masque est dissymétrique : franc du côté du texte, plus doux du
+     côté du bord de page. */
+  .visuel-droite img {
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent 0%,
+        rgb(0 0 0 / 0.25) 26%,
+        #000 62%,
+        rgb(0 0 0 / 0.6) 92%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        #000 26%,
+        #000 72%,
+        transparent 100%
+      );
+  }
+
+  .visuel-gauche img {
+    mask-image:
+      linear-gradient(
+        to left,
+        transparent 0%,
+        rgb(0 0 0 / 0.25) 26%,
+        #000 62%,
+        rgb(0 0 0 / 0.6) 92%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0%,
+        #000 26%,
+        #000 72%,
+        transparent 100%
+      );
+  }
+
+  @media (max-width: 767px) {
+    .visuel-fondu {
+      display: none;
+    }
+  }
+</style>

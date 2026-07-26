@@ -327,6 +327,12 @@ const formatDate = new Intl.DateTimeFormat("fr-FR", {
     collection d'étiquettes.
   */
   .onglet-flux {
+    /* Au doigt, un onglet de 37 px se manque : sur petit écran, on lui
+       donne la hauteur d'une vraie cible sans déplacer son filet, qui
+       reste calé sur le bas de la boîte. */
+    display: inline-flex;
+    align-items: flex-end;
+    min-height: 2.75rem;
     padding-bottom: 0.65rem;
     font-size: 0.95rem;
     font-weight: 500;
@@ -372,6 +378,11 @@ const formatDate = new Intl.DateTimeFormat("fr-FR", {
     display: inline-flex;
     align-items: baseline;
     gap: 0.3rem;
+    /* Même raison que les onglets : la pastille reste de la même
+       taille, sa zone sensible atteint 44 px. */
+    min-height: 2.75rem;
+    align-content: center;
+    flex-wrap: wrap;
     padding: 0.28rem 0.6rem;
     border-radius: 0.5rem;
     font-size: 0.86rem;

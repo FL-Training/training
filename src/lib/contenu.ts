@@ -333,19 +333,12 @@ const espaceApprenantSchema = z.object({
   statut: z.object({
     titre: texteRequis,
     texte: texteRequis,
+    // Le livrable remplace le renvoi vers les formations par un renvoi
+    // vers Contact : c'est le seul appel à l'action de la page tant que
+    // l'espace n'est pas ouvert.
+    bouton_contact: texteRequis,
     bouton_acces: texteRequis,
   }),
-  formulaire: z.object({
-    champ_email: texteRequis,
-    champ_email_exemple: texteRequis,
-    bouton: texteRequis,
-    bouton_en_cours: texteRequis,
-    succes: texteRequis,
-    deja_inscrit: texteRequis,
-    erreur: texteRequis,
-    mention: texteRequis,
-  }),
-  note_pro: texteRequis,
 });
 
 function valider<T>(fichier: string, schema: z.ZodType<T>, data: unknown): T {
@@ -389,9 +382,24 @@ export const espaceApprenant = valider(
   espaceApprenantBrut,
 );
 
-export type TextesWaitlist = z.infer<
-  typeof espaceApprenantSchema
->["formulaire"];
+/**
+ * Libellés du formulaire de liste d'attente.
+ *
+ * Le formulaire n'est plus affiché : le livrable « Espace apprenant »
+ * n'en prévoit pas et renvoie vers Contact. Le composant et sa table
+ * Convex restent en place pour pouvoir resservir, d'où ce type déclaré
+ * ici plutôt que dérivé d'un schéma de contenu qui ne le porte plus.
+ */
+export type TextesWaitlist = {
+  champ_email: string;
+  champ_email_exemple: string;
+  bouton: string;
+  bouton_en_cours: string;
+  succes: string;
+  deja_inscrit: string;
+  erreur: string;
+  mention: string;
+};
 
 export type TextesFormulaire = z.infer<typeof contactSchema>["formulaire"] & {
   linkedin: string;

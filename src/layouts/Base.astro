@@ -5,6 +5,21 @@
 // les polices des autres pistes ont été supprimées.
 import "@fontsource/marcellus/400.css";
 import "@fontsource-variable/archivo";
+/*
+  Les deux fichiers de police, réclamés dès la première ligne du <head>.
+
+  Sans cela le navigateur ne les découvre qu'après avoir lu la feuille
+  de style, calculé la mise en page et vu qu'un texte les réclame : il
+  peint donc une première fois avec la police de secours, puis
+  recompose tout quand les vraies arrivent. Les lignes ne se coupent
+  plus au même endroit, les mots changent de forme — c'est la
+  recomposition visible au chargement d'une page.
+
+  `?url` demande à Vite l'adresse du fichier plutôt que son contenu ;
+  elle est hachée au build et reste juste en développement.
+*/
+import policeTitres from "@fontsource/marcellus/files/marcellus-latin-400-normal.woff2?url";
+import policeTexte from "@fontsource-variable/archivo/files/archivo-latin-wght-normal.woff2?url";
 import "lenis/dist/lenis.css";
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
@@ -56,10 +71,34 @@ const jsonLd = grapheSeo({
 ---
 
 <!doctype html>
-<html lang="fr">
+{/*
+  `nav-figee` dès le rendu serveur : à l'ouverture d'une page, un
+  curseur laissé sur une entrée du bandeau déclencherait `:hover` au
+  premier affichage, et un panneau se déplierait sans qu'on l'ait
+  demandé. La classe part au premier mouvement du pointeur (script en
+  fin de fichier). Écrite ici plutôt qu'ajoutée en JavaScript, elle
+  s'applique dès le premier octet — donc aucun panneau n'a le temps de
+  s'entrouvrir, y compris quand la page est rechargée entièrement.
+*/}
+<html lang="fr" class="nav-figee">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Avant tout le reste : voir le commentaire des imports. */}
+    <link
+      rel="preload"
+      href={policeTitres}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href={policeTexte}
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     {/*
       Empreinte de la publication en cours. Sert au diagnostic : en cas
       de doute sur ce que sert le navigateur, cette valeur dit quelle
@@ -73,6 +112,29 @@ const jsonLd = grapheSeo({
         />
       )
     }
+    {/*
+      Nom court de la page, tel qu'il apparaîtrait dans un fil d'Ariane.
+      Le script de parcours s'en sert pour nommer les étapes réellement
+      traversées ; sans lui, il ne pourrait afficher que des chemins.
+    */}
+    <meta
+      name="pacivis-page"
+      content={fil?.at(-1)?.label ?? title}
+    />
+    {/*
+      Position de la page dans l'arborescence, pour le fil d'Ariane du
+      parcours. Sans elle, le fil rendrait l'ordre des visites — « Notre
+      approche › Organisme de formation » si le visiteur est passé par
+      là — au lieu du chemin réel du site.
+    */}
+    {fil && fil.length > 0 && (
+      <meta
+        name="pacivis-hierarchie"
+        content={JSON.stringify(
+          fil.map((f) => ({ label: f.label, chemin: href(f.chemin) })),
+        )}
+      />
+    )}
     <title>{title} — {marque}</title>
     <meta name="description" content={description} />
     {
@@ -113,7 +175,27 @@ const jsonLd = grapheSeo({
       set:html={JSON.stringify(jsonLd)}
     />
 
-    <ClientRouter />
+    {/*
+      TRANSITIONS DE PAGE — PRODUCTION UNIQUEMENT.
+
+      En développement, le routeur et le rechargement à chaud se
+      disputent le contenu du <head>. Séquence reproduite le 26/07 :
+      page ouverte, une règle CSS modifiée (le rechargement à chaud
+      l'applique correctement), puis une navigation — et la page revient
+      à l'ANCIENNE valeur. Le style venait d'être corrigé sous les yeux
+      du développeur, et la navigation le défaisait.
+
+      C'est ce qui a fait passer plusieurs fois pour des défauts du site
+      des artefacts du serveur de dev : « ça marche quand je rafraîchis,
+      pas quand je navigue ».
+
+      En développement, chaque navigation redevient donc un chargement
+      complet : ce que l'on voit est toujours l'état réel du code. En
+      production il n'y a pas de rechargement à chaud, le routeur reprend
+      la main, et `npm run test:styles` vérifie sur le build qu'aucun
+      style ne se perd d'une page à l'autre.
+    */}
+    {!import.meta.env.DEV && <ClientRouter />}
 
     <script>
       import "../scripts/defilement";
@@ -121,6 +203,7 @@ const jsonLd = grapheSeo({
       import "../scripts/cartes-depliables";
       import "../scripts/ancres";
       import "../scripts/version";
+      import "../scripts/parcours";
     </script>
 
     <script
@@ -168,8 +251,69 @@ const jsonLd = grapheSeo({
         };
 
         document.addEventListener("astro:page-load", init);
+
+        /*
+          LE SOUS-MENU QUI SE ROUVRE TOUT SEUL.
+
+          Après un clic sur une entrée du bandeau, le pointeur reste
+          exactement où il était. La page change, le bandeau est
+          reconstruit — et le nouveau lien se retrouve sous un curseur
+          immobile : `:hover` s'applique, et le panneau se déplie une
+          seconde fois, avec son animation. Mesuré : la page arrive à
+          105 ms, le panneau se rouvre à 528 ms. C'est ce déploiement
+          non demandé, un demi-instant après l'arrivée, que l'on voit
+          comme un défaut de chargement.
+
+          On gèle donc le survol du bandeau le temps de la navigation,
+          et on ne le rend qu'au premier vrai mouvement du pointeur —
+          c'est-à-dire quand le visiteur redemande quelque chose.
+          `:focus-within` n'est pas touché : la tabulation continue
+          d'ouvrir les panneaux.
+        */
+        const degeler = () => {
+          document.documentElement.classList.remove("nav-figee");
+        };
+        const geler = () => {
+          document.documentElement.classList.add("nav-figee");
+          // `once` : le prochain mouvement rend la main, et rien ne
+          // reste branché entre deux navigations.
+          window.addEventListener("pointermove", degeler, { once: true });
+          window.addEventListener("pointerdown", degeler, { once: true });
+        };
+
+        /*
+          À reposer après l'échange : le routeur recopie les attributs
+          de <html> depuis le document reçu, ce qui efface la classe
+          posée avant la navigation.
+        */
+        document.addEventListener("astro:after-swap", geler);
+
+        // Et au chargement du document : la classe est déjà posée par
+        // le rendu serveur, il ne manque que de quoi la retirer.
+        geler();
+
         document.addEventListener("astro:before-preparation", () => {
-          document.querySelector(".nav-progress")?.classList.add("actif");
+          geler();
+          /*
+            La barre de progression n'apparaît que si l'attente est
+            réelle. Une navigation interne se règle en ~100 ms : la
+            barre montait alors à 8 % de large puis disparaissait —
+            un clignotement vert sous le bandeau, à chaque clic, qui
+            n'informait de rien.
+          */
+          const barre = document.querySelector(".nav-progress");
+          const differee = window.setTimeout(
+            () => barre?.classList.add("actif"),
+            180,
+          );
+          document.addEventListener(
+            "astro:after-swap",
+            () => {
+              window.clearTimeout(differee);
+              barre?.classList.remove("actif");
+            },
+            { once: true },
+          );
         });
 
         // Accessible state of the mobile menu (<details> toggle doesn't

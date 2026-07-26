@@ -1,7 +1,8 @@
-# Quality gate: every push to main (and every PR) must type-check and
-# build. Vercel builds independently for deploys; this gate is what keeps
-# a broken content edit (e.g. a malformed YAML saved through Keystatic)
-# visibly red on GitHub before anyone tags a release.
+# Quality gate: every push to main (and every PR) must type-check, build,
+# and keep its styles across client-side navigation. This gate is what
+# keeps a broken content edit (e.g. a malformed YAML saved through
+# Keystatic) — or a style silently lost when the router swaps a page —
+# visibly red on GitHub before anyone ships it.
 name: CI
 
 on:
@@ -36,3 +37,13 @@ jobs:
       # every /contenu file against the zod schemas.
       - name: Build Astro site
         run: npm run build
+
+      # A scoped style dropped during a client-side page swap is
+      # invisible when reloading and only shows up while navigating, so
+      # it survives review. This runs the real build in a browser and
+      # compares both ways of reaching a page.
+      - name: Install Chromium for the style test
+        run: npx playwright install --with-deps chromium
+
+      - name: Styles survive navigation
+        run: npm run test:styles

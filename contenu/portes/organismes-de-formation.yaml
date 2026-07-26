@@ -28,7 +28,7 @@ entete:
 # une photographie choisie avec Fabien avant mise en ligne.
 visuel:
   src: "/formations/organismes-de-formation.webp"
-  alt: "Un groupe d'adultes en formation, écoutant un formateur près d'un paperboard."
+  alt: "Un formateur anime un atelier devant un petit groupe d'adultes en formation professionnelle."
 intro: "Pacivis Academy accompagne les organismes de formation dans la conception et l'animation de contenus adaptés aux métiers qu'ils préparent. Elle peut proposer un module spécialisé, prendre en charge certaines séquences d'un parcours existant ou contribuer à un dispositif plus large, dans le respect des objectifs pédagogiques et, lorsqu'ils s'appliquent, des référentiels réglementaires.\n\nLes interventions sont construites avec chaque organisme et peuvent s'inscrire dans des parcours de formation initiale ou continue."
 
 cartes:

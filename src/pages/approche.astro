@@ -1,6 +1,8 @@
 ---
 import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
+import VisuelFondu from "../components/VisuelFondu.astro";
+import PictoPilier from "../components/PictoPilier.astro";
 import { href } from "../lib/url";
 import { approche } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
@@ -54,19 +56,37 @@ const titreMethode =
   description={seo.description}
   fil={[{ label: entete.surtitre, chemin: "/approche" }]}
 >
-  <section class="mx-auto max-w-6xl px-6 pt-16 md:pt-24">
-    <p class="eyebrow">{entete.surtitre}</p>
-    <h1 class="display mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
+  {/*
+    Deux photographies seulement sur cette page, aux endroits où elles
+    disent quelque chose : l'ouverture, et la pédagogie — la seule des
+    deux sections d'appui qui décrive une situation observable. Les
+    fondations relèvent d'outils et de références : les illustrer
+    donnerait une image décorative, ce que Fabien écarte. ARCA n'en
+    reçoit pas non plus : ses lettres, son titre qui se fige et ses
+    quatre piliers portent déjà tout le regard.
+  */}
+  <section class="relative mx-auto max-w-6xl px-6 pt-16 md:pt-24">
+    {/*
+      Cadrage déporté à droite : les deux personnes en tension s'y
+      trouvent, et le cadre centré par défaut les coupait au bord.
+    */}
+    <VisuelFondu
+      src="/approche/ouverture.webp"
+      largeur="42%"
+      cadrage="78% 50%"
+    />
+    <p class="eyebrow relative">{entete.surtitre}</p>
+    <h1 class="display relative mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
       {entete.titre}
     </h1>
     <p
-      class="mt-6 max-w-3xl text-lg leading-relaxed text-ink"
+      class="relative mt-6 max-w-2xl text-lg leading-relaxed text-ink"
       set:html={enrichir(entete.texte)}
     />
     {
       intro.map((p) => (
         <p
-          class="mt-5 max-w-3xl leading-relaxed text-ink-soft"
+          class="relative mt-5 max-w-2xl leading-relaxed text-ink-soft"
           set:html={enrichir(p)}
         />
       ))
@@ -113,7 +133,7 @@ const titreMethode =
         methode.piliers.map((p) => (
           <li
             id={ANCRES_PILIERS[methode.piliers.indexOf(p)]}
-            class="cible-ancre grid gap-5 border-t border-ink/10 pt-8 md:grid-cols-[110px_1fr] md:gap-10"
+            class="pilier cible-ancre grid gap-5 border-t border-ink/10 pt-8 md:grid-cols-[110px_1fr_11rem] md:items-center md:gap-10"
             data-reveal
             data-pilier={methode.piliers.indexOf(p)}
           >
@@ -140,6 +160,20 @@ const titreMethode =
                 set:html={enrichir(p.texte)}
               />
             </div>
+
+            {/*
+              Le schéma du pilier, à droite : il comble le vide que
+              laissent des textes de longueurs inégales et redit
+              visuellement ce que le paragraphe vient d'expliquer.
+            */}
+            <PictoPilier
+              pilier={ANCRES_PILIERS[methode.piliers.indexOf(p)] as
+                | "anticiper"
+                | "reguler"
+                | "communiquer"
+                | "agir"}
+              class="pilier-picto"
+            />
           </li>
         ))
       }
@@ -152,22 +186,39 @@ const titreMethode =
   </section>
 
   <!-- Fondations et pédagogie -->
-  <section class="border-y border-ink/10 bg-paper-deep/50">
-    <div class="mx-auto grid max-w-6xl gap-12 px-6 py-20 md:grid-cols-2">
+  {/*
+    LES DEUX APPUIS DE LA MÉTHODE
+
+    Côte à côte dans une grille étroite, sur un fond gris, avec des
+    titres plus petits que partout ailleurs, ces deux blocs se lisaient
+    comme une annexe d'ARCA. Leur contenu ne l'est pas : l'un dit d'où
+    vient la méthode, l'autre comment elle se travaille.
+
+    Ils reçoivent donc le traitement des sections de plein droit — pleine
+    largeur, filet d'ouverture, titre à la même échelle que celui d'ARCA,
+    et de l'air entre eux. La colonne de lecture reste bornée pour que
+    les lignes ne s'étirent pas.
+  */}
+  <section class="border-t border-ink/10">
+    <div class="mx-auto max-w-6xl space-y-20 px-6 py-20">
       {
         sections.map((s) => (
           <div
             id={ANCRES_SECTIONS[sections.indexOf(s)]}
-            class="cible-ancre"
+            class="cible-ancre relative"
             data-reveal-group
           >
+            {sections.indexOf(s) === 1 && (
+              <VisuelFondu src="/approche/pedagogie.webp" largeur="40%" />
+            )}
+            <span class="bloc-filet relative" aria-hidden="true" data-reveal />
             <h2
-              class="display text-2xl text-navy-deep md:text-[1.75rem]"
+              class="display relative mt-8 max-w-3xl text-3xl text-navy-deep md:text-4xl"
               data-reveal
             >
               {s.titre}
             </h2>
-            <div class="mt-5 space-y-4">
+            <div class="relative mt-6 max-w-2xl space-y-4 text-[1.05rem]">
               {s.paragraphes.map((p) => (
                 <p
                   class="leading-relaxed text-ink-soft"
@@ -182,27 +233,39 @@ const titreMethode =
     </div>
   </section>
 
-  <section id="notre-ambition" class="cible-ancre bg-abysse text-paper">
-    <div class="mx-auto max-w-6xl px-6 py-20">
-      <p class="eyebrow !text-sage">{conclusion.surtitre}</p>
-      <h2 class="display mt-4 max-w-2xl text-3xl md:text-4xl">
+  {/*
+    L'AMBITION — conclusion de la page.
+
+    Elle était posée sur le bleu abysse, c'est-à-dire EXACTEMENT le fond
+    du pied de page : le lecteur croyait la page finie et la prenait pour
+    un élément de pied de page. Elle passe donc sur fond clair, dans le
+    vocabulaire des encarts du site — filet vert épais à gauche, fond
+    vert très pâle — qui la distingue nettement de ce qui la suit.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pb-24">
+    <div
+      id="notre-ambition"
+      class="cible-ancre rounded-2xl border-l-4 border-sage bg-sage-faint/45 px-8 py-12 md:px-12"
+      data-reveal-group
+    >
+      <p class="eyebrow" data-reveal>{conclusion.surtitre}</p>
+      <h2
+        class="display mt-4 max-w-3xl text-3xl text-navy-deep md:text-4xl"
+        data-reveal
+      >
         {conclusion.titre}
       </h2>
       <p
-        class="mt-5 max-w-2xl leading-relaxed text-paper/75"
-        set:html={enrichir(conclusion.texte, "text-sage")}
+        class="mt-5 max-w-3xl text-[1.05rem] leading-relaxed text-ink-soft"
+        data-reveal
+        set:html={enrichir(conclusion.texte)}
       />
-      <div class="mt-9 flex flex-wrap gap-4">
-        <a
-          href={href("/formations")}
-          class="btn border-1.5 border-sage bg-sage !px-6 text-abysse hover:border-paper hover:bg-paper"
-        >
+      <div class="mt-9 flex flex-wrap gap-4" data-reveal>
+        <a href={href("/formations")} class="btn btn-primary !px-6">
           {conclusion.bouton_formations}
+          <span aria-hidden="true">→</span>
         </a>
-        <a
-          href={href("/contact")}
-          class="btn border-1.5 border-paper/40 !px-6 text-paper hover:border-paper"
-        >
+        <a href={href("/contact")} class="btn btn-ghost !px-6">
           {conclusion.bouton_contact}
         </a>
       </div>
@@ -215,6 +278,58 @@ const titreMethode =
 </script>
 
 <style>
+  /*
+    Les quatre piliers reçoivent une hauteur plancher commune : sans
+    elle, « Anticiper » et « Agir » — plus courts — laissaient des blocs
+    deux fois moins hauts que « Réguler », et la colonne de droite
+    paraissait vide par endroits. Le texte reste libre de dépasser.
+  */
+  @media (min-width: 768px) {
+    .pilier {
+      min-height: 12.5rem;
+    }
+  }
+
+  /* Le composant décide de sa visibilité ; la page, de sa place. */
+  @media (min-width: 768px) {
+    .pilier-picto {
+      justify-self: end;
+    }
+  }
+
+  /*
+    Filet d'ouverture des deux appuis de la méthode. Il se trace de la
+    gauche vers la droite à la révélation — même geste que les liserés
+    des cartes de porte, pour que ces sections appartiennent au même
+    langage que le reste du site et non à une annexe.
+  */
+  .bloc-filet {
+    display: block;
+    width: 100%;
+    max-width: 48rem;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-sage-deep) 0%,
+      color-mix(in oklab, var(--color-sage-deep) 30%, transparent) 65%,
+      transparent 100%
+    );
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  :global(html.js-reveal) .bloc-filet:global(.revealed) {
+    transform: scaleX(1);
+    transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bloc-filet {
+      transform: scaleX(1);
+      transition: none;
+    }
+  }
+
   /*
     Le titre de la méthode accompagne la lecture des quatre piliers.
 
@@ -288,6 +403,19 @@ const titreMethode =
   .pilier-lettre-face {
     display: inline-block;
     transform-origin: center center;
+  }
+
+  /*
+    Sur petit écran, l'initiale ne dit plus rien : les quatre lettres ne
+    se voient jamais ensemble — donc elles n'épellent plus ARCA — et
+    posée seule au-dessus du titre, chacune ressemble à une lettrine
+    orpheline qui répète l'initiale du mot juste en dessous. Le titre du
+    pilier suffit. Après la règle de base, sinon elle l'écraserait.
+  */
+  @media (max-width: 767px) {
+    .pilier-lettre {
+      display: none;
+    }
   }
 
   /*

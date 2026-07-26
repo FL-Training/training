@@ -752,7 +752,7 @@ const espaceApprenant = singleton({
     lance: fields.checkbox({
       label: "Espace lancé",
       description:
-        "Cochez quand la communauté est ouverte : le bouton remplace le formulaire d'attente.",
+        "Cochez quand l'espace est ouvert : le bouton d'accès remplace le renvoi vers Contact.",
       defaultValue: false,
     }),
     url_skool: fields.text({
@@ -764,32 +764,19 @@ const espaceApprenant = singleton({
     contenu: fields.object(
       {
         titre: t("Titre"),
-        liste: listeTitreTexte("Ce que contient l'espace"),
+        liste: listeTitreTexte("Ce que l'espace proposera"),
       },
       { label: "Contenu de l'espace" },
     ),
     statut: fields.object(
       {
         titre: t("Titre"),
-        texte: long("Texte"),
-        bouton_acces: t("Bouton d'accès (quand lancé)"),
+        texte: long("Texte", "Une ligne vide sépare deux paragraphes."),
+        bouton_contact: t("Bouton vers Contact (tant que l'espace n'est pas ouvert)"),
+        bouton_acces: t("Bouton d'accès (quand l'espace est ouvert)"),
       },
       { label: "Bloc statut" },
     ),
-    formulaire: fields.object(
-      {
-        champ_email: t("Champ email"),
-        champ_email_exemple: t("Exemple champ email"),
-        bouton: t("Bouton"),
-        bouton_en_cours: t("Bouton pendant l'envoi"),
-        succes: long("Message de succès"),
-        deja_inscrit: long("Message « déjà inscrit »"),
-        erreur: long("Message d'erreur"),
-        mention: long("Mention données personnelles"),
-      },
-      { label: "Formulaire d'attente" },
-    ),
-    note_pro: long("Note pour les professionnels"),
   },
 });
 

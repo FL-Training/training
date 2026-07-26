@@ -41,7 +41,7 @@ const year = new Date().getFullYear();
             pied.liens_site.map((item) => (
               <li>
                 <a
-                  class="text-paper/80 hover:text-paper"
+                  class="lien-pied text-paper/80 hover:text-paper"
                   href={href(item.chemin)}
                 >
                   {item.label}
@@ -59,7 +59,7 @@ const year = new Date().getFullYear();
             pied.liens_secteurs.map((item) => (
               <li>
                 <a
-                  class="text-paper/80 hover:text-paper"
+                  class="lien-pied text-paper/80 hover:text-paper"
                   href={href(item.chemin)}
                 >
                   {item.label}
@@ -115,3 +115,22 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<style>
+  /*
+    Cibles tactiles du pied de page.
+
+    Les liens y sont des lignes de texte de 15 px de haut : au doigt,
+    on vise juste. Sur petit écran ils reçoivent la hauteur d'une vraie
+    cible — l'espacement de la liste absorbe le supplément, la mise en
+    page ne change pas. Au-delà, le pointeur est précis et la densité
+    d'origine reprend.
+  */
+  @media (max-width: 1023px) {
+    .lien-pied {
+      display: flex;
+      align-items: center;
+      min-height: 2.75rem;
+    }
+  }
+</style>

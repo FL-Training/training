@@ -68,7 +68,7 @@ navigation:
   - label: "À propos"
     chemin: "/a-propos"
     sous_menu:
-      - label: "Qui sommes nous"
+      - label: "Qui sommes nous ?"
         ancre: "pacivis-academy"
   # Les quatre rubriques éditoriales de l'architecture V2. Le raccourci
   # ouvre le Journal déjà filtré (`?flux=…`) plutôt qu'une page séparée :

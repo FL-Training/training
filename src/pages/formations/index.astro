@@ -51,13 +51,24 @@ const { seo, entete, portes: intro, carte } = formationsPage;
             >
               {p.data.visuel && (
                 <div class="carte-visuel" aria-hidden="true">
+                  {/*
+                    La page doit arriver d'un seul tenant.
+
+                    Les quatre cartes commencent à ~530 px du haut : elles
+                    sont dans le premier écran. En `lazy`, le navigateur ne
+                    demandait leurs photos qu'après la mise en page ; en
+                    `decoding="async"`, il peignait la page sans les
+                    attendre. Dans les deux cas on voyait quatre cadres
+                    vides se remplir ~70 ms plus tard. Quatre fichiers de
+                    30 Ko : les attendre ne coûte rien.
+                  */}
                   <img
                     src={href(p.data.visuel.src)}
                     alt=""
                     width="1000"
-                    height="667"
-                    loading="lazy"
-                    decoding="async"
+                    height="1000"
+                    loading="eager"
+                    decoding="sync"
                   />
                 </div>
               )}

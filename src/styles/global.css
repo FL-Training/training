@@ -69,8 +69,10 @@
      l'accordéon s'ouvre alors d'un coup, comme avant. */
   interpolate-size: allow-keywords;
 
-  --dur-vt-out: 160ms;
-  --dur-vt-in: 400ms;
+  /* Sortie courte : c'est un relais, pas un effet. La somme des deux
+     reste sous 400 ms, seuil au-delà duquel on sent l'attente. */
+  --dur-vt-out: 110ms;
+  --dur-vt-in: 260ms;
   --dur-section: 450ms;
   --dur-portrait: 700ms;
   --dur-menu: 220ms;
@@ -78,7 +80,7 @@
 }
 @media (max-width: 640px) {
   :root {
-    --dur-vt-in: 320ms;
+    --dur-vt-in: 220ms;
     --dur-section: 360ms;
     --dur-portrait: 560ms;
     --dur-menu: 180ms;
@@ -290,6 +292,17 @@
   */
   .nav-link {
     position: relative;
+    /*
+      Boîte identique pour toutes les entrées.
+
+      Sans cela, les entrées à raccourcis — enveloppées dans un
+      `.groupe-nav` — restaient des boîtes en ligne quand les autres,
+      enfants directs du flex, se comportaient en blocs. Leurs hauteurs
+      différaient de 4 px, et le losange, calé sur le bas de son lien,
+      changeait de niveau d'une entrée à l'autre : au changement de
+      page, il glissait ET sautait. C'est le micro-mouvement du menu.
+    */
+    display: inline-block;
     padding-block: 0.35rem;
     font-size: 0.92rem;
     font-weight: 540;
@@ -308,9 +321,9 @@
      laquelle des deux entrées il appartenait. */
   .nav-souligne {
     position: absolute;
-    /* ESSAI EN COURS — losange sous l'entrée plutôt qu'à sa droite.
-       Centré horizontalement et posé sous la ligne de base : toujours
-       hors du flux, donc sans effet sur la largeur du lien. */
+    /* Sous l'entrée, centré et posé sous la ligne de base — retenu le
+       26/07 contre la variante à droite du mot. Hors du flux, donc sans
+       effet sur la largeur du lien ni sur la position de ses voisins. */
     left: 50%;
     bottom: -0.28rem;
     width: 0.36rem;
@@ -714,11 +727,34 @@
 }
 
 /* ---- Transitions entre pages (View Transitions) ---- */
-::view-transition-old(root) {
-  animation: vt-sortie var(--dur-vt-out) ease both;
-}
+/*
+  PAS DE FONDU ENTRE LES PAGES.
+
+  Les deux animations partaient ensemble : pendant 160 ms, l'ancienne
+  page et la nouvelle étaient peintes l'une sur l'autre. Comme elles ont
+  la même mise en page mais pas les mêmes mots, on lisait deux titres
+  superposés — « Une approche incarnée, structurée » par-dessus « Des
+  interventions construites… » —, deux corps de texte enchevêtrés et
+  deux jeux d'images. Capté au pixel à 877 ms d'une navigation : c'est
+  l'effet de chargement désagréable, et il n'a rien d'un défaut de
+  vitesse.
+
+  Deux façons d'éviter la superposition : séquencer les deux animations
+  (l'ancienne sort, puis la nouvelle entre), ou ne rien animer du tout.
+  Le séquencement laisse un temps où la page est presque effacée, un
+  fondu au blanc de plus de cent millisecondes. Fabien nous a signalé
+  trois fois cet effet de chargement : on choisit donc le silence. La
+  nouvelle page, opaque, recouvre l'ancienne d'un seul tenant.
+
+  Ce n'est pas la fin du mouvement : les transitions NOMMÉES continuent
+  de jouer — le losange glisse toujours d'une entrée à l'autre —, et les
+  blocs se révèlent toujours au défilement. Pour rendre le fondu, il
+  suffit de remplacer les deux `none` par les animations `vt-sortie` et
+  `vt-entree`, restées définies plus bas.
+*/
+::view-transition-old(root),
 ::view-transition-new(root) {
-  animation: vt-entree var(--dur-vt-in) cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),

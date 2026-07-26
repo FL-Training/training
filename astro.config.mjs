@@ -42,6 +42,17 @@ export default defineConfig({
     // failure mode (and saves a render-blocking request).
     inlineStylesheets: "always",
   },
+  /*
+    Le HTML de la page visée est récupéré dès que le pointeur s'attarde
+    sur un lien. Quand le clic arrive, il ne reste plus qu'à l'afficher :
+    la navigation ne laisse plus le temps de voir quoi que ce soit se
+    construire. C'est ce qui manquait pour que le remplacement de page
+    soit franchement instantané et non « rapide ».
+  */
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "hover",
+  },
   integrations: [
     react(),
     // The pages kept alive only to redirect an old URL carry a canonical

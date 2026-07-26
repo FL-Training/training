@@ -12,7 +12,10 @@
     "build": "astro build",
     "check": "astro check",
     "preview": "astro preview",
-    "astro": "astro"
+    "apercu": "astro build && astro preview",
+    "astro": "astro",
+    "test:styles": "node tests/styles-navigation.mjs",
+    "test": "npm run check && npm run build && npm run test:styles"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
@@ -40,6 +43,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "lucide-static": "^1.24.0",
+    "playwright-core": "^1.62.0",
     "typescript": "^6.0.3"
   }
 }

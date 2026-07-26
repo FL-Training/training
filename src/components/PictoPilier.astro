@@ -1,0 +1,254 @@
+---
+/**
+ * Le schéma d'un pilier ARCA.
+ *
+ * Les quatre blocs de la méthode ont des textes de longueurs très
+ * inégales : posés seuls, ils laissent à droite un vide qui déséquilibre
+ * la page. Une photographie par pilier surchargerait une page qui en
+ * porte déjà deux — d'où ces tracés, qui comblent sans peser.
+ *
+ * Ils parlent la langue du site : le trait vert du motif de marque,
+ * aucun aplat, aucune icône générique. Chacun dit littéralement ce que
+ * son pilier décrit — on doit pouvoir lire le dessin après le texte et
+ * y retrouver la même idée.
+ *
+ * Tous partagent la grille 200 × 120 et la ligne d'horizon y = 76 :
+ * posés les uns sous les autres, ils se lisent comme une famille.
+ *
+ * Le pilier est désigné par son nom, pas par son initiale : « Anticiper »
+ * et « Agir » commencent tous deux par A.
+ */
+interface Props {
+  pilier: "anticiper" | "reguler" | "communiquer" | "agir";
+  class?: string;
+}
+
+const { pilier, class: classe } = Astro.props;
+
+const H = 76; // ligne d'horizon commune
+---
+
+<svg
+  class:list={["picto-pilier", classe]}
+  viewBox="0 0 200 120"
+  fill="none"
+  aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {
+    /*
+      ANTICIPER — observer l'environnement pour repérer tôt un signe.
+      Un champ d'observation qui s'ouvre depuis le regard, deux portées
+      qui mesurent la distance, et un signal cerclé bien avant les
+      autres : ce n'est pas une courbe qui monte, c'est une veille.
+    */
+    pilier === "anticiper" && (
+      <>
+        <path
+          d={`M14 ${H} L192 ${H - 34}`}
+          stroke="currentColor"
+          stroke-width="1.5"
+          opacity="0.55"
+        />
+        <path
+          d={`M14 ${H} L192 ${H + 34}`}
+          stroke="currentColor"
+          stroke-width="1.5"
+          opacity="0.55"
+        />
+        {/* Portées : elles disent que le signal repéré est encore loin. */}
+        <path
+          d={`M93 ${H - 15} A 80 80 0 0 1 93 ${H + 15}`}
+          stroke="currentColor"
+          stroke-width="1.5"
+          opacity="0.4"
+        />
+        <path
+          d={`M152 ${H - 26} A 140 140 0 0 1 152 ${H + 26}`}
+          stroke="currentColor"
+          stroke-width="1.5"
+          opacity="0.4"
+        />
+        {/* Le point d'observation. */}
+        <circle cx="14" cy={H} r="4" fill="currentColor" />
+        {/* Bruit de fond : ce qui n'annonce rien. */}
+        <circle cx="88" cy={H + 14} r="2.6" fill="currentColor" opacity="0.45" />
+        <circle cx="124" cy={H - 8} r="2.6" fill="currentColor" opacity="0.45" />
+        {/* Le signe repéré, au-delà de la seconde portée. */}
+        <circle cx="170" cy={H - 14} r="4" fill="currentColor" />
+        <circle
+          cx="170"
+          cy={H - 14}
+          r="10"
+          stroke="currentColor"
+          stroke-width="2"
+        />
+      </>
+    )
+  }
+
+  {
+    /*
+      RÉGULER — retrouver une stabilité suffisante sous la pression.
+      L'amplitude part forte et s'amortit jusqu'à une horizontale tenue.
+      Deux repères l'encadrent et se resserrent avec elle : la réponse
+      revient dans ses marges.
+    */
+    pilier === "reguler" && (
+      <>
+        <path
+          d={`M118 ${H - 24} C146 ${H - 15} 168 ${H - 10} 192 ${H - 8}`}
+          stroke="currentColor"
+          stroke-width="1.2"
+          stroke-dasharray="4 5"
+          opacity="0.4"
+        />
+        <path
+          d={`M118 ${H + 24} C146 ${H + 15} 168 ${H + 10} 192 ${H + 8}`}
+          stroke="currentColor"
+          stroke-width="1.2"
+          stroke-dasharray="4 5"
+          opacity="0.4"
+        />
+        <path
+          d={`M8 ${H} L24 ${H - 40} L40 ${H + 34} L56 ${H - 29} L72 ${H + 24}
+              L88 ${H - 18} L104 ${H + 14} L120 ${H - 8} L136 ${H + 5}
+              C158 ${H + 1} 174 ${H} 192 ${H}`}
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+
+  {
+    /*
+      COMMUNIQUER — une présence, et les trois dimensions qu'elle porte.
+      Une seule personne : deux silhouettes qui s'envoient des ondes se
+      lisent comme une confrontation, jamais comme un échange. Les
+      ondes s'éloignent d'elle en trois graphies — verbale pleine,
+      paraverbale tiretée, non verbale pointillée — et une quatrième,
+      plus faible, revient : l'effet observé, qui permet d'ajuster.
+    */
+    pilier === "communiquer" && (
+      <>
+        {/* La personne : tête et buste, sans visage. */}
+        <circle cx="34" cy={H - 16} r="7.5" stroke="currentColor" stroke-width="2" />
+        <path
+          d={`M19 ${H + 16} C19 ${H - 2} 49 ${H - 2} 49 ${H + 16}`}
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+        <path
+          d={`M66 ${H - 30} Q100 ${H} 66 ${H + 30}`}
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          opacity="0.85"
+        />
+        <path
+          d={`M98 ${H - 34} Q140 ${H} 98 ${H + 34}`}
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-dasharray="8 6"
+          stroke-linecap="round"
+          opacity="0.7"
+        />
+        <path
+          d={`M130 ${H - 38} Q180 ${H} 130 ${H + 38}`}
+          stroke="currentColor"
+          stroke-width="1.9"
+          stroke-dasharray="1 6"
+          stroke-linecap="round"
+          opacity="0.6"
+        />
+      </>
+    )
+  }
+
+  {
+    /*
+      AGIR — une réponse engagée, qui s'arrête au niveau qu'il faut.
+      Une échelle de graduations : l'action part franchement, puis
+      s'arrête à la troisième — pas à la dernière. Ce qui reste
+      disponible court en trait fin jusqu'à la limite verticale, celle
+      que le cadre légal et professionnel ne laisse pas franchir.
+      C'est la proportionnalité : agir, sans aller au maximum.
+    */
+    pilier === "agir" && (
+      <>
+        {/* Les niveaux de réponse. */}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <path
+            d={`M${50 + i * 34} ${H - 8} L${50 + i * 34} ${H + 8}`}
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity={i < 3 ? 0.55 : 0.3}
+          />
+        ))}
+        {/* Ce qui reste disponible, non employé. */}
+        <path
+          d={`M122 ${H} L184 ${H}`}
+          stroke="currentColor"
+          stroke-width="1.4"
+          stroke-dasharray="4 5"
+          opacity="0.3"
+        />
+        {/* La limite à ne pas franchir. */}
+        <path
+          d={`M190 ${H - 26} L190 ${H + 26}`}
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          opacity="0.5"
+        />
+        {/* L'action menée : franche, et arrêtée au bon niveau. */}
+        <path
+          d={`M14 ${H} L110 ${H}`}
+          stroke="currentColor"
+          stroke-width="2.8"
+          stroke-linecap="round"
+        />
+        <path
+          d={`M110 ${H - 8} L122 ${H} L110 ${H + 8}`}
+          stroke="currentColor"
+          stroke-width="2.8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .picto-pilier {
+    display: block;
+    width: 100%;
+    max-width: 11rem;
+    height: auto;
+    color: var(--color-sage-deep);
+    opacity: 0.5;
+  }
+
+  /*
+    Réservé au grand écran, comme les photographies fondues : sous
+    768 px la colonne de droite n'existe plus, et le schéma tomberait
+    sous le texte — petit, isolé, sans rien à équilibrer.
+
+    Le masquage appartient au composant, pas à la page. Une règle
+    `.pilier-picto { display: none }` écrite côté page a la même
+    spécificité que le `display: block` ci-dessus : l'ordre des feuilles
+    décidait, et c'est le schéma qui gagnait. Le composant décide de sa
+    propre visibilité.
+  */
+  @media (max-width: 767px) {
+    .picto-pilier {
+      display: none;
+    }
+  }
+</style>

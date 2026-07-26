@@ -39,7 +39,7 @@ entete:
 # une photographie choisie avec Fabien avant mise en ligne.
 visuel:
   src: "/formations/secteur-public.webp"
-  alt: "Un agent d'accueil accompagne un usager au guichet d'un service public."
+  alt: "Le comptoir d'accueil d'un service public, des usagers au guichet et d'autres qui patientent en salle d'attente."
 # Le tracé de marque, à l'échelle de la page. « oscillation » : la
 # tension qui monte et redescend, motif du premier axe.
 signature: "oscillation"

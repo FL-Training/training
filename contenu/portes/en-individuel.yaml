@@ -30,7 +30,7 @@ entete:
 # une photographie choisie avec Fabien avant mise en ligne.
 visuel:
   src: "/formations/en-individuel.webp"
-  alt: "Une personne seule près d'une fenêtre, prenant un temps de recul avant d'agir."
+  alt: "Une personne suit seule un parcours de formation en ligne, carnet de notes ouvert à côté de son ordinateur."
 # Le tracé de marque, à l'échelle de la page.
 signature: "progression"
 

@@ -1,18 +1,27 @@
 # ============================================================
 # PAGE « ESPACE APPRENANT »
 #
-# Périmètre VALIDÉ (document de décisions V2, point 5) : rubrique
-# TRANSVERSALE, distincte de « Formations », en développement pour
-# L'ENSEMBLE des clients et apprenants — pas seulement les personnes
-# qui se forment à titre individuel (cela, c'est la porte
-# « En individuel » de la rubrique Formations, et l'une ne doit jamais
-# être présentée comme conduisant à l'autre).
+# Textes validés par Fabien (livrable « Rubrique Espace apprenant »,
+# juillet 2026). Reproduits mot pour mot.
 #
-# Consigne : ne promettre aucune fonctionnalité non encore arbitrée.
+# Rubrique TRANSVERSALE, distincte de « Formations » : elle concerne
+# les apprenants comme les entreprises, les collectivités et les
+# organismes accompagnés. La porte « En individuel » de la rubrique
+# Formations est autre chose, et l'une ne doit jamais être présentée
+# comme conduisant à l'autre.
 #
-# ⚠️ À L'OUVERTURE : renseigner l'URL ci-dessous et passer
-# `lance` à true. Tant que c'est false, la page recueille les
-# adresses des personnes à prévenir.
+# ⚠️ CONSIGNES DE FABIEN, à ne pas défaire :
+#   — l'espace n'est PAS ouvert : ne jamais le présenter comme un outil
+#     disponible ni comme une plateforme opérationnelle ;
+#   — la page renvoie vers CONTACT, et non plus vers les formations ;
+#   — la dimension communautaire est une perspective, pas une promesse ;
+#   — ne pas promettre de fonctionnalités précises tant que le périmètre
+#     technique n'est pas arrêté. C'est à ce titre que les « notifications
+#     personnalisées » ont été retirées : elles ne correspondent à rien
+#     d'arbitré.
+#
+# ⚠️ À L'OUVERTURE : renseigner l'URL ci-dessous et passer `lance` à
+# true.
 # ============================================================
 
 lance: false
@@ -20,36 +29,27 @@ url_skool: ""
 
 seo:
   titre: "Espace apprenant"
-  description: "Le futur environnement de suivi de Pacivis Academy : suivi de l'activité et des parcours, accès aux ressources et aux informations, notifications personnalisées. En développement."
+  description: "L'espace apprenant Pacivis Academy, en préparation : suivi des parcours engagés, accès aux ressources transmises et, à terme, partage de retours d'expérience entre professionnels."
 
 entete:
   surtitre: "Espace apprenant"
-  titre: "Votre environnement de suivi, en développement."
-  texte: "L'Espace apprenant est une rubrique transversale, en développement pour l'ensemble des clients et des apprenants de Pacivis Academy. Il présentera le futur environnement de suivi de l'activité et des parcours, d'accès aux ressources et aux informations, ainsi que de notifications personnalisées."
+  titre: "Un espace en préparation"
+  texte: "L'espace apprenant Pacivis Academy n'est pas encore ouvert.\n\nIl est conçu comme un espace de continuité pour accompagner les parcours de formation au-delà de la seule séance : retrouver les informations utiles, accéder aux ressources transmises, suivre les formations engagées et, à terme, faciliter les échanges autour des situations rencontrées.\n\nCet espace pourra concerner les apprenants, les entreprises, les collectivités et les organismes de formation accompagnés par Pacivis Academy."
 
 contenu:
-  titre: "Ce qu'il réunira"
+  titre: "Ce qu'il proposera"
   liste:
-    - titre: "Le suivi de l'activité et des parcours"
-      texte: "Retrouver où en sont les formations engagées, pour soi ou pour ses équipes."
-    - titre: "L'accès aux ressources et aux informations"
-      texte: "Les supports et les informations utiles, réunis en un seul endroit."
-    - titre: "Des notifications personnalisées"
-      texte: "Être informé de ce qui concerne son parcours ou son organisation."
+    - titre: "Suivre les parcours"
+      texte: "Retrouver les formations engagées, les étapes prévues et les informations utiles au bon déroulement du parcours."
+    - titre: "Accéder aux ressources"
+      texte: "Centraliser les supports, documents et contenus complémentaires transmis dans le cadre des formations."
+    - titre: "Partager des retours d'expérience"
+      texte: "À terme, l'espace apprenant pourra aussi devenir un lieu d'échange autour des situations vécues : tensions, conflits, difficultés de communication, résolutions trouvées, apprentissages tirés du terrain.\n\nL'objectif sera de faire vivre une communauté de pratique, dans un cadre adapté, pour permettre aux participants de partager des expériences utiles, de questionner leurs situations et de prolonger les apprentissages au-delà de la formation."
+    - titre: "Garder le lien avec Pacivis Academy"
+      texte: "Disposer d'un point d'accès clair pour retrouver les informations pratiques et faciliter les échanges liés aux actions de formation."
 
 statut:
-  titre: "En développement"
-  texte: "D'autres services viendront compléter cet espace ; leur périmètre reste à définir. Laissez votre adresse email si vous souhaitez être averti de son ouverture — sans engagement."
+  titre: "En attendant son ouverture"
+  texte: "L'espace apprenant est en cours de préparation.\n\nPour toute question sur une formation, un parcours en cours, un besoin d'accompagnement ou un projet à construire, vous pouvez prendre contact directement avec Pacivis Academy."
+  bouton_contact: "Contacter Pacivis Academy"
   bouton_acces: "Accéder à l'espace apprenant"
-
-formulaire:
-  champ_email: "Votre adresse email"
-  champ_email_exemple: "vous@exemple.fr"
-  bouton: "Me prévenir à l'ouverture"
-  bouton_en_cours: "Inscription…"
-  succes: "C'est noté ! Vous serez averti·e de l'ouverture."
-  deja_inscrit: "Cette adresse est déjà sur la liste — vous serez bien prévenu·e."
-  erreur: "L'inscription a échoué. Vous pouvez réessayer ou nous écrire via la page Contact."
-  mention: "Votre adresse ne sert qu'à vous prévenir de l'ouverture. Pas de newsletter, pas de partage — voir notre politique de confidentialité."
-
-note_pro: "Vous cherchez une formation pour vos équipes, vos agents, vos parcours de formation — ou pour vous-même ? Rendez-vous sur la rubrique Formations."

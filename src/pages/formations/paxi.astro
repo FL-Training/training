@@ -58,8 +58,22 @@ const noeudsSeo = [
 >
   <!-- Ouverture -->
   <section class="bg-abysse text-paper">
-    <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-24">
-      <p class="eyebrow !text-sage">{entete.surtitre}</p>
+    <div class="mx-auto max-w-6xl px-6 pt-10 pb-12 md:pt-14">
+      {/*
+        Le chemin réellement parcouru. PAXI s'atteint depuis trois
+        endroits du site : le fil dit d'où l'on vient et permet d'y
+        retourner. Le repli ci-dessous — « Accueil › PAXI » — est rendu
+        côté serveur, donc juste même sans JavaScript et pour qui arrive
+        par un lien direct ; le script y insère les étapes traversées.
+      */}
+      <nav class="fil-parcours" aria-label="Fil d'Ariane" data-fil-parcours="repli">
+        <ol>
+          <li><a href={href("/")}>Accueil</a></li>
+          <li aria-current="page">PAXI</li>
+        </ol>
+      </nav>
+
+      <p class="eyebrow !text-sage mt-8">{entete.surtitre}</p>
       <h1 class="display mt-4 max-w-4xl text-3xl md:text-5xl">
         {entete.titre}
       </h1>
@@ -202,3 +216,60 @@ const noeudsSeo = [
     </div>
   </section>
 </Base>
+
+<style>
+  /*
+    Fil d'Ariane sur fond sombre : des mots séparés par un chevron
+    discret, sans cadre ni fond. Il précède le surtitre et ne doit pas
+    lui disputer l'attention.
+
+    ⚠️ `:global()` est indispensable ici. Le script du parcours
+    reconstruit la liste, et les <li> qu'il crée ne portent pas
+    l'identifiant de portée qu'Astro ajoute aux éléments écrits dans ce
+    fichier : sans cela, les règles ne les atteignent pas et les
+    chevrons disparaissent dès que le fil devient réel.
+  */
+  .fil-parcours :global(ol) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.15rem 0.55rem;
+    font-size: 0.82rem;
+    color: color-mix(in oklab, var(--color-paper) 55%, transparent);
+  }
+
+  .fil-parcours :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  /* Le chevron sépare, il n'annonce pas : posé avant chaque étape sauf
+     la première. */
+  .fil-parcours :global(li + li)::before {
+    content: "›";
+    color: color-mix(in oklab, var(--color-paper) 35%, transparent);
+  }
+
+  .fil-parcours :global(a) {
+    color: var(--color-sage);
+    transition: color 180ms ease;
+  }
+
+  .fil-parcours :global(a:hover),
+  .fil-parcours :global(a:focus-visible) {
+    color: var(--color-paper);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .fil-parcours :global([aria-current="page"]) {
+    color: color-mix(in oklab, var(--color-paper) 70%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fil-parcours :global(a) {
+      transition: none;
+    }
+  }
+</style>

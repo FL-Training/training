@@ -29,7 +29,7 @@ entete:
 # une photographie choisie avec Fabien avant mise en ligne.
 visuel:
   src: "/formations/entreprise.webp"
-  alt: "Deux collègues en discussion autour d'une table de réunion, dans un échange redevenu praticable."
+  alt: "Une équipe et son manager autour d'une table de réunion, en discussion de travail sérieuse et constructive."
 cartes:
   - titre: "Prévenir, désamorcer et gérer les conflits entre vos collaborateurs ou vos services"
     resume: "Agir sur les tensions émergentes, les conflits déclarés ou les situations durablement bloquées afin de rétablir les conditions nécessaires au travail et à la coopération."
