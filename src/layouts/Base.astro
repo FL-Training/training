@@ -59,6 +59,19 @@ const jsonLd = grapheSeo({
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/*
+      Empreinte de la publication en cours. Sert au diagnostic : en cas
+      de doute sur ce que sert le navigateur, cette valeur dit quelle
+      version est réellement affichée.
+    */}
+    {
+      import.meta.env.PUBLIC_BUILD_ID && (
+        <meta
+          name="pacivis-build"
+          content={import.meta.env.PUBLIC_BUILD_ID.slice(0, 8)}
+        />
+      )
+    }
     <title>{title} — {marque}</title>
     <meta name="description" content={description} />
     {

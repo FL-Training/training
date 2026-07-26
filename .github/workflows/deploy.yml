@@ -43,6 +43,11 @@ jobs:
       - name: Build Astro site
         env:
           PUBLIC_CONVEX_URL: ${{ secrets.CONVEX_DEPLOY_KEY != '' && vars.PUBLIC_CONVEX_URL || '' }}
+          # Empreinte de publication : elle est ajoutée aux fichiers de
+          # public/ (logo, images, favicon), dont le nom ne change jamais.
+          # Sans elle, un navigateur qui les a mis en cache continue de
+          # servir l'ancienne version après un déploiement.
+          PUBLIC_BUILD_ID: ${{ github.sha }}
         run: npm run build
 
       # The production deploy key is scoped to this single step: install
