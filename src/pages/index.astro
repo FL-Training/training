@@ -3,14 +3,14 @@ import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
 import Picto from "../components/Picto.astro";
 import { href } from "../lib/url";
-import { nomFlux } from "../lib/flux";
-import { accueil, commun } from "../lib/contenu";
+import { accueil } from "../lib/contenu";
 import { enrichir } from "../lib/texte";
-import { getCollection } from "astro:content";
 
-const articles = (await getCollection("journal"))
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3);
+/*
+  Les schémas d'ARCA sont désignés par le nom du pilier et non par son
+  initiale : « Anticiper » et « Agir » commencent tous deux par A.
+*/
+const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
 ---
 
 <Base title={accueil.seo.titre} description={accueil.seo.description}>
@@ -38,7 +38,7 @@ const articles = (await getCollection("journal"))
     <div class="mx-auto max-w-6xl px-6 pt-14 pb-8 sm:pt-20 md:pt-28 md:pb-10">
       <p class="eyebrow reveal reveal-1">{accueil.hero.surtitre}</p>
       <h1
-        class="display reveal reveal-2 mt-4 max-w-3xl text-[2.6rem] text-navy-deep sm:text-5xl md:mt-5 md:text-[4.4rem]"
+        class="display reveal reveal-2 mt-4 max-w-4xl text-[2.1rem] text-navy-deep sm:text-[2.7rem] md:mt-5 md:text-[3.4rem] lg:text-[3.8rem]"
         data-hero-titre
         set:html={enrichir(accueil.hero.titre)}
       />
@@ -58,31 +58,6 @@ const articles = (await getCollection("journal"))
     </div>
     <div class="mx-auto max-w-6xl px-6">
       <DeescalationLine class="h-12 sm:h-16 md:h-24" />
-    </div>
-  </section>
-
-  <!-- ============ Repères ============ -->
-  <section class="border-y border-ink/10 bg-paper-deep/60">
-    <div class="mx-auto max-w-6xl px-6 py-12" data-reveal-group>
-      <p class="eyebrow" data-reveal>{accueil.reperes.surtitre}</p>
-      <ul class="mt-6 max-w-3xl space-y-4">
-        {
-          accueil.reperes.liste.map((r) => (
-            <li
-              class="border-l-2 border-sage/50 pl-5 leading-relaxed text-ink-soft"
-              data-reveal
-              set:html={enrichir(r)}
-            />
-          ))
-        }
-      </ul>
-      <a
-        href={href("/a-propos")}
-        class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep hover:text-navy-deep"
-        data-reveal
-      >
-        {accueil.reperes.lien} <span aria-hidden="true">→</span>
-      </a>
     </div>
   </section>
 
@@ -107,34 +82,56 @@ const articles = (await getCollection("journal"))
           set:html={enrichir(accueil.publics.texte)}
         />
       </div>
-      <ul class="grid grid-cols-1 content-center gap-4 sm:grid-cols-2">
+      {/*
+        LES QUATRE SECTEURS, ET RIEN D'AUTRE.
+
+        L'accueil dit à qui Pacivis Academy s'adresse ; c'est la seule
+        chose que l'internaute a besoin de savoir ici. Ni photographie,
+        ni résumé, ni quatre liens concurrents : quatre plaques et un
+        bouton unique vers la rubrique, qui montre et détaille.
+
+        Chaque plaque porte le filet vert de la marque, qui se trace à
+        la révélation comme les séparations éditoriales du site — le
+        pictogramme et le nom suffisent au reste.
+      */}
+      {/*
+        Les plaques et leur lien forment UNE cellule de la grille.
+        Enfants directs, ils en occupaient deux : le bouton retombait
+        sous le texte, dans la colonne de gauche.
+      */}
+      <div class="secteurs-colonne">
+      {/*
+        Le damier tout entier est UN lien vers la rubrique, comme le
+        bouton qui le suit : ce ne sont pas quatre destinations mais
+        quatre repères, et l'on a toujours envie de cliquer sur ce que
+        l'on regarde. Ni liste ni éléments interactifs à l'intérieur —
+        le lien reste unique, et son libellé est celui du bouton.
+      */}
+      <a
+        href={href("/formations")}
+        class="secteurs"
+        aria-label={accueil.publics.bouton}
+        data-reveal-group
+        data-reveal-stagger="90"
+      >
         {
           accueil.publics.liste.map((p) => (
-            <li data-reveal>
-              <a
-                href={href(p.chemin)}
-                class="card group flex h-full flex-col p-6"
-              >
-                <Picto nom={p.picto} />
-                <span class="display mt-3 text-lg leading-snug text-navy-deep">
-                  {p.label}
+            <span class="secteur" data-reveal>
+              <span class="secteur-filet" aria-hidden="true" />
+              <span class="secteur-ligne">
+                <span class="secteur-picto" aria-hidden="true">
+                  <Picto nom={p.picto} />
                 </span>
-                <span class="mt-1.5 flex-1 text-sm leading-snug text-ink-soft">
-                  {p.texte}
-                </span>
-                <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
-                  <span
-                    aria-hidden="true"
-                    class="transition-transform duration-200 group-hover:translate-x-1"
-                  >
-                    →
-                  </span>
-                </span>
-              </a>
-            </li>
+                <span class="secteur-nom display">{p.label}</span>
+              </span>
+            </span>
           ))
         }
-      </ul>
+      </a>
+        <a href={href("/formations")} class="btn btn-ghost secteurs-lien" data-reveal>
+          {accueil.publics.bouton} <span aria-hidden="true">→</span>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -142,35 +139,37 @@ const articles = (await getCollection("journal"))
   <section class="bg-abysse text-paper">
     <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
       <p class="eyebrow !text-sage" data-reveal>{accueil.methode.surtitre}</p>
-      <h2 class="display mt-4 max-w-2xl text-3xl md:text-4xl" data-reveal>
-        {accueil.methode.titre}
-      </h2>
-      <div class="mt-14 grid gap-x-12 gap-y-12 sm:grid-cols-2" data-reveal-group>
-        {
-          accueil.methode.piliers.map((p) => (
-            <div class="group border-t border-paper/15 pt-6" data-reveal>
-              <div class="flex items-start justify-between gap-4">
-                <h3 class="display text-2xl">{p.titre}</h3>
-                <span class="display text-6xl leading-[0.85] text-sage/25 transition-colors duration-300 group-hover:text-sage/50">
-                  {p.numero}
-                </span>
-              </div>
-              <p class="mt-3 max-w-md text-[0.95rem] leading-relaxed text-paper/70">
-                {p.texte}
-              </p>
-            </div>
-          ))
-        }
-      </div>
-      <p
-        class="mt-14 border-l-2 border-sage pl-5 text-lg leading-relaxed text-paper md:max-w-2xl"
-        set:html={enrichir(accueil.methode.citation, "text-sage")}
+      <h2
+        class="display mt-4 max-w-2xl text-3xl md:text-4xl"
+        data-reveal
+        set:html={enrichir(accueil.methode.titre, "text-sage")}
       />
+      <p
+        class="mt-5 max-w-3xl leading-relaxed text-paper/75"
+        data-reveal
+        set:html={enrichir(accueil.methode.intro, "text-sage")}
+      />
+      {/*
+        Ni les quatre piliers ni leurs schémas ici : l'accueil annonce
+        la méthode, « Notre approche » la déroule. Les répéter donnait à
+        l'accueil un condensé de la page, et retirait sa raison d'être au
+        lien qui suit.
+      */}
+      <a href={href("/approche")} class="btn btn-ghost !border-paper/30 !text-paper mt-9 hover:!border-sage hover:!text-sage" data-reveal>
+        {accueil.methode.bouton} <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
-  <!-- ============ Spotlight PAXI ============ -->
-  <section class="mx-auto max-w-6xl px-6 pt-20">
+  {/*
+    ============ Spotlight PAXI ============
+
+    La section porte sa respiration EN BAS comme en haut. Sans `pb`, le
+    bloc sombre finissait au ras de la section suivante, dont le fond
+    gris commençait 12 px avant lui : le bas de la carte était mangé, et
+    le bloc paraissait mal posé sur la page.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-20">
     <a
       href={href("/formations/paxi")}
       class="group flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between md:p-10"
@@ -194,51 +193,6 @@ const articles = (await getCollection("journal"))
     </a>
   </section>
 
-  <!-- ============ À propos teaser ============ -->
-  <section class="border-y border-ink/10 bg-paper-deep/60">
-    <div
-      class="mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 md:grid-cols-[auto_1fr] md:gap-16"
-      data-reveal-group
-    >
-      <div
-        class="relative mx-auto w-60 md:w-80"
-        data-portrait
-        data-portrait-directional
-        data-reveal
-      >
-        <span class="portrait-cadre" aria-hidden="true"></span>
-        <span class="portrait-direction" aria-hidden="true"></span>
-        <img
-          src={href("/fabien.webp")}
-          alt={commun.photos.portrait_alt}
-          width="640"
-          height="800"
-          class="relative aspect-4/5 w-full rounded-[6px] object-cover object-[50%_30%]"
-        />
-      </div>
-      <div data-portrait-copy data-reveal>
-        <p class="portrait-copy-step portrait-copy-kicker eyebrow">
-          {accueil.formateur.surtitre}
-        </p>
-        <h2
-          class="portrait-copy-step portrait-copy-title display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
-        >
-          {accueil.formateur.titre}
-        </h2>
-        <p
-          class="portrait-copy-step portrait-copy-body mt-5 max-w-2xl leading-relaxed text-ink-soft"
-          set:html={enrichir(accueil.formateur.texte)}
-        />
-        <a
-          href={href("/a-propos")}
-          class="portrait-copy-step portrait-copy-action btn btn-ghost mt-8"
-        >
-          {accueil.formateur.bouton}
-        </a>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ Teaser Journal ============ -->
   <section class="mx-auto max-w-6xl px-6 py-20" data-reveal-group>
     <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
@@ -247,38 +201,20 @@ const articles = (await getCollection("journal"))
         <h2 class="display mt-4 text-3xl text-navy-deep md:text-4xl">
           {accueil.journal.titre}
         </h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+          {accueil.journal.texte}
+        </p>
       </div>
       <a href={href("/journal")} class="btn btn-ghost">
         {accueil.journal.bouton_tous} <span aria-hidden="true">→</span>
       </a>
     </div>
-    <div class="mt-10 grid gap-6 md:grid-cols-3">
-      {
-        articles.map((article) => (
-          <a
-            href={href(`/journal/${article.id}`)}
-            class="card group flex flex-col p-7"
-            data-reveal
-          >
-            <span class="self-start rounded-full bg-sage-faint px-3 py-1 text-xs font-semibold text-sage-deep">
-              {nomFlux(article.data.flux)}
-            </span>
-            <h3 class="display mt-4 flex-1 text-lg leading-snug text-navy-deep">
-              {article.data.titre}
-            </h3>
-            <span class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
-              Lire
-              <span
-                aria-hidden="true"
-                class="transition-transform duration-200 group-hover:translate-x-1"
-              >
-                →
-              </span>
-            </span>
-          </a>
-        ))
-      }
-    </div>
+    {/*
+      Aucun article ici : l'accueil annonce le Journal, la rubrique le
+      déroule. Les extraits d'articles y faisaient double emploi — et
+      leur nombre aurait varié au fil des publications, déséquilibrant
+      la page.
+    */}
   </section>
 
   <!-- ============ CTA final ============ -->
@@ -301,6 +237,131 @@ const articles = (await getCollection("journal"))
 </Base>
 
 <style>
+  /*
+    ---- LES QUATRE SECTEURS ----
+
+    Une grille de deux par deux, chaque plaque ouverte par un filet vert
+    qui se trace à la révélation. Ni carte ni bouton : rien ne se clique
+    ici, l'unique chemin est le lien qui suit. Le pictogramme est celui
+    du sous-menu et des cartes de porte — le visiteur reconnaît les
+    mêmes signes partout.
+  */
+  .secteurs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: color-mix(in oklab, var(--color-ink) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-ink) 10%, transparent);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  /*
+    Le damier. Deux teintes de la charte seulement, et les plus pâles :
+    le papier et le vert très clair des puces. Alternées en diagonale,
+    elles donnent au bloc une matière sans que le vert cesse d'être un
+    accent — la charte le veut rare.
+  */
+  .secteur {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 2.25rem 1.75rem 2.1rem;
+    background: var(--color-paper);
+  }
+
+  .secteur:nth-child(1),
+  .secteur:nth-child(4) {
+    background: color-mix(in oklab, var(--color-sage-faint) 55%, var(--color-paper));
+  }
+
+  /* Le damier réagit d'un seul tenant : c'est un seul lien. */
+  .secteurs .secteur {
+    transition: background-color 300ms ease;
+  }
+
+  .secteurs:hover .secteur:nth-child(1),
+  .secteurs:hover .secteur:nth-child(4),
+  .secteurs:focus-visible .secteur:nth-child(1),
+  .secteurs:focus-visible .secteur:nth-child(4) {
+    background: color-mix(in oklab, var(--color-sage-faint) 85%, var(--color-paper));
+  }
+
+  .secteurs:hover .secteur:nth-child(2),
+  .secteurs:hover .secteur:nth-child(3),
+  .secteurs:focus-visible .secteur:nth-child(2),
+  .secteurs:focus-visible .secteur:nth-child(3) {
+    background: color-mix(in oklab, var(--color-sage-faint) 25%, var(--color-paper));
+  }
+
+  /*
+    Le pictogramme et le nom sur une seule ligne, centrés l'un sur
+    l'autre. Empilés, ils flottaient : trois éléments alignés à gauche
+    mais à des hauteurs sans rapport. Ici le signe précède le mot,
+    comme dans le sous-menu et sur les cartes de porte.
+  */
+  .secteur-ligne {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .secteur-filet {
+    display: block;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--color-sage-deep);
+    transform-origin: left center;
+  }
+
+  :global(html.js-reveal) .secteur:not(:global(.revealed)) .secteur-filet {
+    transform: scaleX(0);
+  }
+
+  :global(html.js-reveal) .secteur:global(.revealed) .secteur-filet {
+    transform: scaleX(1);
+    transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1) 140ms;
+  }
+
+  .secteur-picto {
+    display: inline-flex;
+    color: var(--color-sage-deep);
+  }
+
+  .secteur-picto :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .secteur-nom {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--color-navy-deep);
+  }
+
+  .secteurs-colonne {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .secteurs-lien {
+    margin-top: 1.75rem;
+  }
+
+  @media (max-width: 479px) {
+    .secteurs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .secteur-filet {
+      transition: none;
+    }
+  }
+
   /*
     Le filigrane du logo s'efface progressivement vers la gauche : côté
     texte il a totalement disparu, côté marge il reste visible. Le titre

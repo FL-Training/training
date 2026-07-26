@@ -116,22 +116,13 @@ const accueilSchema = z.object({
     bouton_principal: texteRequis,
     bouton_secondaire: texteRequis,
   }),
-  reperes: z.object({
-    surtitre: texteRequis,
-    liste: z.array(texteRequis).min(1),
-    lien: texteRequis,
-  }),
   publics: entete.extend({
+    // Nom et pictogramme seulement : l'accueil nomme les secteurs, il
+    // ne les décrit pas. Un lien unique mène à la rubrique.
     liste: z
-      .array(
-        z.object({
-          label: texteRequis,
-          texte: texteRequis,
-          picto: texteRequis,
-          chemin: texteRequis,
-        }),
-      )
+      .array(z.object({ label: texteRequis, picto: texteRequis }))
       .min(1),
+    bouton: texteRequis,
   }),
   paxi: z.object({
     surtitre: texteRequis,
@@ -142,18 +133,18 @@ const accueilSchema = z.object({
   journal: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
+    // Le chapô de la rubrique, repris sur l'accueil : sans lui, le bloc
+    // n'annonçait que son titre et ne disait pas ce qu'on y trouve.
+    texte: texteRequis,
     bouton_tous: texteRequis,
   }),
   methode: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
-    piliers: z.array(pilier).min(1),
-    citation: texteRequis,
-  }),
-  formateur: z.object({
-    surtitre: texteRequis,
-    titre: texteRequis,
-    texte: texteRequis,
+    // Phrase d'introduction de la méthode, reprise de « Notre
+    // approche » : elle nomme les quatre piliers, que la page dédiée
+    // détaille. L'accueil ne les développe pas.
+    intro: texteRequis,
     bouton: texteRequis,
   }),
   appel_final: z.object({
