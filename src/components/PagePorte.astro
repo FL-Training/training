@@ -31,6 +31,7 @@ const {
   cartes,
   encart_paxi,
   sections,
+  encarts,
   cta,
 } = entry.data;
 const { carte, porte: libelles } = formationsPage;
@@ -277,20 +278,81 @@ const { carte, porte: libelles } = formationsPage;
     }
 
     {/*
+      Encarts transversaux. Traités comme des blocs distincts du fil de
+      lecture — fond et filet propres — mais sans la présence d'une
+      section : ils valent pour toute la page et ne doivent jamais se
+      lire comme un axe ou une offre de plus.
+    */}
+    {
+      encarts.length > 0 && (
+        <div class="mt-16 grid max-w-4xl gap-6" data-reveal-group>
+          {encarts.map((e) => (
+            <aside
+              class="rounded-2xl border border-sage/30 bg-sage-faint/50 p-8"
+              data-reveal
+            >
+              <h2 class="display text-xl text-navy-deep md:text-2xl">
+                {e.titre}
+              </h2>
+              <div class="mt-4 space-y-3">
+                {e.paragraphes.map((p) => (
+                  <p
+                    class="leading-relaxed text-ink-soft"
+                    set:html={enrichir(p)}
+                  />
+                ))}
+              </div>
+              {e.lien && (
+                <a
+                  href={href(e.lien.chemin)}
+                  class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep hover:text-navy-deep"
+                >
+                  {e.lien.label}
+                  <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </aside>
+          ))}
+        </div>
+      )
+    }
+
+    {/*
       Charte : bord gauche dominant, pas de centrages répétés hors
       couverture. Le bouton part à droite sur grand écran pour équilibrer
       le bloc sans recourir au centrage.
     */}
     <div
-      class="mt-20 flex flex-col gap-6 rounded-2xl border border-ink/10 bg-paper-deep/40 p-10 md:flex-row md:items-center md:justify-between"
+      class:list={[
+        "mt-20 flex flex-col gap-6 rounded-2xl border border-ink/10 bg-paper-deep/40 p-10",
+        // Sans accroche, le bloc se réduit au geste : inutile de le
+        // pousser sur toute la largeur.
+        cta.titre || cta.texte
+          ? "md:flex-row md:items-center md:justify-between"
+          : "items-start",
+      ]}
     >
-      <div>
-        <h2 class="display max-w-xl text-2xl text-navy-deep md:text-3xl">
-          {cta.titre}
-        </h2>
-        <p class="mt-3 max-w-xl text-ink-soft">{cta.texte}</p>
-      </div>
-      <a href={href("/contact")} class="btn btn-primary shrink-0 self-start md:self-center">
+      {
+        (cta.titre || cta.texte) && (
+          <div>
+            {cta.titre && (
+              <h2 class="display max-w-xl text-2xl text-navy-deep md:text-3xl">
+                {cta.titre}
+              </h2>
+            )}
+            {cta.texte && <p class="mt-3 max-w-xl text-ink-soft">{cta.texte}</p>}
+          </div>
+        )
+      }
+      <a
+        href={href("/contact")}
+        class:list={[
+          "btn btn-primary shrink-0 self-start",
+          // Le bouton ne se recentre que s'il fait face à une accroche.
+          // Seul, il reste au bord gauche, comme le veut la charte.
+          (cta.titre || cta.texte) && "md:self-center",
+        ]}
+      >
         {cta.bouton} <span aria-hidden="true">→</span>
       </a>
     </div>

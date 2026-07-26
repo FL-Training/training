@@ -1,8 +1,10 @@
 ---
 /**
- * Hub « Formations » : les quatre portes de l'architecture V2, plus
- * PAXI présenté comme offre transversale (jamais comme une cinquième
- * porte).
+ * Hub « Formations » : les quatre portes de l'architecture V2.
+ *
+ * PAXI n'y figure pas — consigne de Fabien. Le visiteur y accède depuis
+ * l'accueil, la page « Entreprises » ou la page « Organismes de
+ * formation », qui portent chacune le contexte de sa demande.
  */
 import { getCollection } from "astro:content";
 import Base from "../../layouts/Base.astro";
@@ -14,7 +16,7 @@ import { enrichir } from "../../lib/texte";
 const portes = (await getCollection("portes")).sort(
   (a, b) => a.data.ordre - b.data.ordre,
 );
-const { seo, entete, portes: intro, paxi_banniere, carte } = formationsPage;
+const { seo, entete, portes: intro, carte } = formationsPage;
 ---
 
 <Base
@@ -69,26 +71,13 @@ const { seo, entete, portes: intro, paxi_banniere, carte } = formationsPage;
       </div>
     </div>
 
-    <!-- PAXI : offre transversale unique -->
-    <a
-      href={href("/formations/paxi")}
-      class="group mt-16 flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between"
-      data-reveal
-    >
-      <div>
-        <p class="eyebrow !text-sage">{paxi_banniere.surtitre}</p>
-        <h2 class="display mt-2 text-2xl">{paxi_banniere.titre}</h2>
-        <p class="mt-2 max-w-2xl text-[0.95rem] leading-relaxed text-paper/75">
-          {paxi_banniere.texte}
-        </p>
-      </div>
-      <span
-        class="btn shrink-0 self-start border-1.5 border-sage bg-sage !px-6 text-abysse group-hover:border-paper group-hover:bg-paper md:self-center"
-      >
-        {paxi_banniere.bouton}
-        <span aria-hidden="true">→</span>
-      </span>
-    </a>
+    {/*
+      Aucun encart PAXI ici : consigne explicite de Fabien, PAXI ne doit
+      pas apparaître sur la page principale « Formations ». Ses trois
+      points d'accès sont l'accueil, la page « Entreprises » et la page
+      « Organismes de formation » — chacune portant le contexte de la
+      demande, ce que ce carrefour ne fait pas.
+    */}
   </section>
 </Base>
 

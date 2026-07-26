@@ -165,9 +165,29 @@ const portes = defineCollection({
         }),
       )
       .default([]),
+    // Blocs mis en valeur, transversaux à toute la page — jamais un axe
+    // ou une offre de plus. Fabien insiste sur ce point pour la porte
+    // « Secteur public » : l'encart sur son parcours doit valoir pour la
+    // page entière, et non se rattacher au seul volet consacré à la
+    // crise.
+    encarts: z
+      .array(
+        z.object({
+          titre: texteRequis,
+          paragraphes: z.array(texteRequis).min(1),
+          lien: blocFacultatif(
+            z.object({ label: texteRequis, chemin: texteRequis }),
+          ),
+        }),
+      )
+      .default([]),
+    // Titre et texte sont facultatifs : pour « Secteur public », le
+    // livrable ne fournit qu'un libellé de bouton. En composer une
+    // accroche reviendrait à écrire du texte que Fabien n'a pas validé,
+    // alors que la consigne est d'utiliser exclusivement les siens.
     cta: z.object({
-      titre: texteRequis,
-      texte: texteRequis,
+      titre: texteFacultatif,
+      texte: texteFacultatif,
       bouton: texteRequis,
     }),
   }),

@@ -1,4 +1,17 @@
 ---
+/**
+ * Page PAXI.
+ *
+ * Suit l'ordre imposé par le livrable de Fabien : ouverture, encart de
+ * conformité EASA/IOSA — visuellement distinct et placé AVANT le
+ * programme —, programme commun en cinq blocs, deux déclinaisons
+ * métiers, pédagogie, contenus adaptables, puis un appel à l'échange
+ * unique.
+ *
+ * La page ne s'organise jamais par type de client : le contexte de la
+ * demande est porté par la page d'où vient le visiteur (accueil,
+ * Entreprises ou Organismes de formation).
+ */
 import Base from "../../layouts/Base.astro";
 import DeescalationLine from "../../components/DeescalationLine.astro";
 import { href } from "../../lib/url";
@@ -6,21 +19,29 @@ import { paxi } from "../../lib/contenu";
 import { enrichir } from "../../lib/texte";
 import { racineSite } from "../../lib/seo";
 
-const { seo, entete, preuve, objectifs, modules, publics, pedagogie, cta } =
-  paxi;
+const {
+  seo,
+  entete,
+  conformite,
+  programme,
+  declinaisons,
+  pedagogie,
+  adaptables,
+  cta,
+} = paxi;
 
 const racine = racineSite(Astro.site!, import.meta.env.BASE_URL);
 const noeudsSeo = [
   {
     "@type": "Course",
     "@id": `${new URL(Astro.url.pathname, Astro.site).href}#course`,
-    name: "PAXI — Gestion des passagers indisciplinés",
+    name: "PAXI — Prévenir et gérer les comportements de passagers indisciplinés",
     description: seo.description,
     provider: { "@id": `${racine}#organization` },
     inLanguage: "fr-FR",
-    audience: publics.liste.map((p) => ({
+    audience: declinaisons.liste.map((d) => ({
       "@type": "Audience",
-      audienceType: p.titre,
+      audienceType: d.titre,
     })),
   },
 ];
@@ -35,104 +56,148 @@ const noeudsSeo = [
   ]}
   noeudsSeo={noeudsSeo}
 >
-  <!-- Entête produit sur fond abysse -->
+  <!-- Ouverture -->
   <section class="bg-abysse text-paper">
     <div class="mx-auto max-w-6xl px-6 pt-16 pb-12 md:pt-24">
       <p class="eyebrow !text-sage">{entete.surtitre}</p>
-      <h1 class="display mt-4 max-w-3xl text-4xl md:text-[3.4rem]">
+      <h1 class="display mt-4 max-w-4xl text-3xl md:text-5xl">
         {entete.titre}
       </h1>
-      <p
-        class="mt-6 max-w-2xl text-lg leading-relaxed text-paper/85"
-        set:html={enrichir(entete.texte, "text-sage")}
-      />
-      <p
-        class="mt-8 inline-block rounded-full border border-sage/40 px-5 py-2 text-sm font-medium text-sage"
-      >
-        {preuve}
-      </p>
+      {
+        entete.texte.split("\n\n").map((p) => (
+          <p
+            class="mt-6 max-w-3xl text-lg leading-relaxed text-paper/85"
+            set:html={enrichir(p, "text-sage")}
+          />
+        ))
+      }
       <DeescalationLine class="mt-10 h-12 opacity-60 md:h-16" mode="defilement" />
     </div>
   </section>
 
-  <!-- Objectifs -->
-  <section class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
-    <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-      {objectifs.titre}
-    </h2>
-    <ul class="prose-site mt-6" data-reveal>
-      {objectifs.liste.map((o) => <li>{o}</li>)}
-    </ul>
+  {/*
+    Conformité : encart à part entière, pas une phrase du corps de
+    texte. C'est la première chose qu'un responsable formation d'une
+    compagnie doit pouvoir vérifier.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pt-14">
+    <aside
+      class="flex max-w-3xl flex-col gap-3 rounded-2xl border-l-4 border-sage bg-sage-faint/60 px-8 py-7"
+      data-reveal
+    >
+      <h2
+        class="text-[0.72rem] font-semibold tracking-[0.18em] text-sage-deep uppercase"
+      >
+        {conformite.titre}
+      </h2>
+      <p class="display text-lg leading-snug text-navy-deep md:text-xl">
+        {conformite.texte}
+      </p>
+    </aside>
   </section>
 
-  <!-- Programme en 5 modules -->
+  <!-- Programme commun -->
+  <section class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
+    <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
+      {programme.titre}
+    </h2>
+    <ol class="mt-10 space-y-8">
+      {
+        programme.liste.map((m, i) => (
+          <li
+            class="grid gap-4 border-t border-ink/10 pt-6 md:grid-cols-[90px_1fr] md:gap-8"
+            data-reveal
+          >
+            <span class="display text-4xl text-sage/60 md:text-5xl">
+              {String(i + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <h3 class="display text-xl text-navy-deep">{m.titre}</h3>
+              <p class="mt-2 max-w-3xl leading-relaxed text-ink-soft">
+                {m.texte}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <!-- Deux déclinaisons métiers -->
   <section class="border-y border-ink/10 bg-paper-deep/50">
     <div class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
       <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-        {modules.titre}
+        {declinaisons.titre}
       </h2>
-      <ol class="mt-10 space-y-8">
+      <div class="mt-10 grid gap-8 md:grid-cols-2">
         {
-          modules.liste.map((m, i) => (
-            <li
-              class="grid gap-4 border-t border-ink/10 pt-6 md:grid-cols-[90px_1fr] md:gap-8"
-              data-reveal
-            >
-              <span class="display text-4xl text-sage/60 md:text-5xl">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <h3 class="display text-xl text-navy-deep">{m.titre}</h3>
-                <p class="mt-2 max-w-3xl leading-relaxed text-ink-soft">
-                  {m.texte}
-                </p>
+          declinaisons.liste.map((d) => (
+            <div class="card p-8" data-reveal>
+              <h3 class="display text-xl text-navy-deep">{d.titre}</h3>
+              <div class="mt-4 space-y-3">
+                {d.paragraphes.map((p) => (
+                  <p class="leading-relaxed text-ink-soft">{p}</p>
+                ))}
               </div>
-            </li>
+            </div>
           ))
         }
-      </ol>
+      </div>
     </div>
   </section>
 
-  <!-- Publics -->
+  <!-- Pédagogie -->
   <section class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
-    <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-      {publics.titre}
+    <h2 class="display max-w-3xl text-2xl text-navy-deep md:text-3xl" data-reveal>
+      {pedagogie.titre}
     </h2>
-    <div class="mt-8 grid gap-6 md:grid-cols-3">
+    <div class="mt-6 max-w-3xl space-y-4">
       {
-        publics.liste.map((p) => (
-          <div class="card p-7" data-reveal>
-            <h3 class="display text-lg text-navy-deep">{p.titre}</h3>
-            <p class="mt-2 text-[0.95rem] leading-relaxed text-ink-soft">
-              {p.texte}
-            </p>
-          </div>
+        pedagogie.paragraphes.map((p) => (
+          <p class="leading-relaxed text-ink-soft" data-reveal>
+            {p}
+          </p>
         ))
       }
     </div>
-    <p
-      class="mt-10 max-w-3xl border-l-2 border-sage pl-5 leading-relaxed text-ink-soft"
-      data-reveal
-      set:html={enrichir(pedagogie)}
-    />
   </section>
 
-  <!-- CTA -->
-  <section class="mx-auto max-w-6xl px-6 pb-24 text-center">
-    <h2 class="display mx-auto max-w-2xl text-3xl text-navy-deep md:text-4xl">
-      {cta.titre}
-    </h2>
-    <p class="mx-auto mt-4 max-w-xl text-ink-soft">{cta.texte}</p>
-    <div class="mt-8 flex flex-wrap justify-center gap-4">
-      <a href={href("/contact")} class="btn btn-primary">
-        Prendre contact <span aria-hidden="true">→</span>
-      </a>
+  <!-- Contenus adaptables -->
+  <section class="border-t border-ink/10">
+    <div class="mx-auto max-w-6xl px-6 py-16" data-reveal-group>
+      <h2 class="display max-w-3xl text-2xl text-navy-deep md:text-3xl" data-reveal>
+        {adaptables.titre}
+      </h2>
+      <div class="mt-10 space-y-10">
+        {
+          adaptables.liste.map((a) => (
+            <div class="max-w-3xl border-l-2 border-sage/50 pl-6" data-reveal>
+              <h3 class="display text-lg text-navy-deep">{a.titre}</h3>
+              <p class="mt-3 leading-relaxed text-ink-soft">{a.texte}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {/*
+    Appel à l'échange unique — le livrable n'en prévoit qu'un pour toute
+    la page. Aligné à gauche, comme le reste du site : la charte réserve
+    le centrage à la couverture.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pb-24">
+    <div
+      class="flex flex-col gap-6 rounded-2xl border border-ink/10 bg-paper-deep/40 p-10 md:flex-row md:items-center md:justify-between"
+    >
+      <p class="display max-w-2xl text-xl leading-snug text-navy-deep md:text-2xl">
+        {cta.texte}
+      </p>
       <a
-        href={href("/formations/organismes-de-formation")}
-        class="btn btn-ghost"
+        href={href("/contact")}
+        class="btn btn-primary shrink-0 self-start md:self-center"
       >
-        Organismes de formation aéronautique
+        {cta.bouton} <span aria-hidden="true">→</span>
       </a>
     </div>
   </section>

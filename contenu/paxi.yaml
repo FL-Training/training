@@ -1,64 +1,79 @@
 # ============================================================
-# PAGE « PAXI » — OFFRE TRANSVERSALE UNIQUE
+# PAGE « PAXI »
 #
-# Architecture V2 : PAXI s'adresse aux compagnies et entreprises
-# aériennes et aéroportuaires COMME aux organismes de formation
-# aéronautique, et prépare deux publics — personnel navigant et
-# ground handling. Le croisement produit quatre configurations,
-# jamais quatre offres distinctes.
+# Textes validés par Fabien (livrable « Rubrique Formations — PAXI »,
+# juillet 2026). Reproduits mot pour mot.
 #
-# Contenu issu du module réel déployé en CQP PNC (7 h).
-# ⚠️ Objectifs, modules et pédagogie restent à faire relire par Fabien.
+# ⚠️ Ce fichier a été entièrement réécrit : la version précédente
+# contenait des éléments jamais validés (durée de formation, mention
+# d'un dispositif certifiant, conventions internationales nommées,
+# nombre d'émotions primaires). La consigne de Fabien est explicite —
+# ne pas inventer de programme, de durée, de certification, de modalité
+# ni de promesse commerciale. Ne rien réintroduire ici qui ne figure pas
+# dans le livrable.
+#
+# ⚠️ La page ne s'organise PAS par type de client : le contexte de la
+# demande est porté par la page depuis laquelle le visiteur arrive
+# (accueil, Entreprises ou Organismes de formation).
 # ============================================================
 
 seo:
-  titre: "PAXI — Formation gestion des passagers indisciplinés"
-  description: "Le module de référence pour anticiper, désamorcer et gérer les passagers indisciplinés : classification des risques, cadre légal aérien, désescalade et coordination équipage. Déployé en CQP PNC."
+  titre: "PAXI — Prévenir et gérer les comportements de passagers indisciplinés"
+  description: "Formation PAXI : préparer les pilotes, les personnels navigants commerciaux et les personnels au sol à qualifier la situation, maintenir leurs capacités sous pression, adapter leur communication et coordonner leur action. Conforme aux exigences EASA et aux standards IOSA applicables."
 
 entete:
-  surtitre: "Offre transversale · Aéronautique et aéroportuaire"
-  titre: "PAXI — De la tension à la maîtrise, en cabine."
-  texte: "**PAXI** : tout passager refusant d'appliquer les consignes et règles de sécurité, ou auteur d'incivilités, de dégradations ou d'agressions. Ce module forme les équipages à anticiper, désamorcer et gérer ces situations — dans l'un des environnements les plus contraints qui soient : une cabine en vol."
+  surtitre: "PAXI"
+  titre: "Préparer les professionnels de l'aérien et de l'aéroportuaire à prévenir et gérer les comportements perturbateurs et les passagers indisciplinés"
+  texte: "Une interaction difficile avec un passager peut affecter la relation, le déroulement des opérations et, dans les situations les plus sérieuses, la sécurité.\n\nLa formation PAXI prépare les professionnels à qualifier la situation, maintenir leurs capacités sous pression, adapter leur communication et coordonner leur action. La formation repose sur un socle commun, adapté aux métiers concernés, aux situations rencontrées et aux procédures applicables."
 
-preuve: "Module déployé en CQP PNC — 7 heures de formation réalisées pour une école aéronautique."
+# Encart visuel distinct, à placer AVANT le programme commun — consigne
+# explicite de Fabien : ne pas le fondre dans le corps du texte.
+conformite:
+  titre: "Conformité EASA et IOSA"
+  texte: "La formation PAXI est conforme aux exigences EASA et aux standards IOSA applicables."
 
-objectifs:
-  titre: "Agir en équipage face au conflit"
+programme:
+  titre: "Un programme commun en cinq blocs"
   liste:
-    - "Identifier les comportements inappropriés et reconnaître les signaux faibles de dégradation d'une interaction"
-    - "Évaluer le niveau de risque et adapter sa réponse"
-    - "Gérer son stress et maintenir sa capacité d'analyse sous pression"
-    - "Désamorcer les tensions avant l'escalade, adapter sa communication au comportement observé"
-    - "Coordonner efficacement l'action de l'équipage en situation dégradée"
+    - titre: "Comprendre et qualifier la situation"
+      texte: "Identifier les comportements perturbateurs, apprécier le niveau de risque, connaître le cadre légal et réglementaire et proportionner la réponse."
+    - titre: "Développer sa vigilance situationnelle"
+      texte: "Observer les comportements, le contexte et la dynamique de l'interaction."
+    - titre: "Gérer le stress et les émotions"
+      texte: "Comprendre les effets du stress sur la perception, la communication, la décision et l'action. Mobiliser des techniques permettant de rester disponible et de conserver une réponse professionnelle sous pression."
+    - titre: "Prévenir et gérer le conflit par la communication"
+      texte: "Adapter sa posture et sa communication, dans leurs dimensions verbale, paraverbale et non verbale. Mobiliser une boîte à outils associant écoute, reformulation, cadrage et techniques de négociation et d'influence afin d'obtenir l'adhésion, sans transiger sur les règles de sécurité."
+    - titre: "Coordonner l'action et agir"
+      texte: "Partager rapidement l'information utile, employer un vocabulaire commun, répartir les rôles et maintenir une représentation collective de la situation. Mettre en œuvre une réponse coordonnée et proportionnée lorsque la situation exige une intervention."
 
-modules:
-  titre: "Le programme en 5 modules"
+declinaisons:
+  titre: "Deux déclinaisons selon les métiers concernés"
   liste:
-    - titre: "Classification des comportements"
-      texte: "Typologie des comportements à risque, classification en 4 niveaux (du comportement perturbateur à la tentative d'accès au poste de pilotage), cadre légal complet : Convention de Tokyo, Protocole de Montréal, règlements européens, circulaire OACI 288, Code des transports et Code pénal."
-    - titre: "Profilage prédictif et lecture comportementale"
-      texte: "Reconnaître les 7 émotions primaires, comprendre les facteurs de risque contextuels qui amplifient une tension, détecter les signaux faibles annonciateurs d'un passage à l'acte. Observer l'émotion, c'est anticiper le comportement."
-    - titre: "Gestion du stress et maîtrise de soi"
-      texte: "Comprendre les effets du stress sur l'intervention (vision tunnel, perte de motricité fine) et s'entraîner aux techniques de régulation utilisables en vol — corps et cognition."
-    - titre: "Désescalade conflictuelle et posture professionnelle"
-      texte: "Langage corporel, paraverbal et verbal : réguler l'échange, comprendre le besoin derrière l'émotion, poser un cadre ferme sans provoquer. Structurer son feedback face au passager."
-    - titre: "Coordination d'équipage en situation dégradée"
-      texte: "Sous stress, le risque est d'agir seul. Reconstruire une vision globale partagée, synchroniser l'action, communiquer entre PNC et avec le poste de pilotage."
+    - titre: "Pilotes et Personnels Navigants Commerciaux"
+      paragraphes:
+        - "Dans l'environnement du vol, une situation impliquant un passager peut engager simultanément la relation en cabine, la coordination de l'équipage, le déroulement des opérations et la sécurité. La formation PAXI prépare les pilotes et les personnels navigants commerciaux à partager une lecture commune de la situation, apprécier le niveau de risque, coordonner leurs décisions et leurs actions et agir dans le cadre de leurs responsabilités respectives."
+        - "Les situations travaillées sont adaptées aux réalités du bord, aux procédures de la compagnie et aux rôles respectifs de la cabine et du poste de pilotage. Elles sont nourries par les retours d'expérience de professionnels du secteur et évoluent dans une logique d'amélioration continue."
 
-publics:
-  titre: "Une seule offre, quatre configurations"
+    - titre: "Personnels au sol"
+      paragraphes:
+        - "Les personnels au sol interviennent dans des espaces où se concentrent attente, contraintes opérationnelles, incompréhensions et frustrations. Les situations peuvent survenir lors de l'accueil, de l'enregistrement, de l'embarquement, de l'assistance aux passagers ou du traitement des bagages et des irrégularités."
+        - "Les contenus sont adaptés aux responsabilités propres à chaque fonction. Les mises en situation reprennent les contraintes rencontrées, les procédures à appliquer et les relais que l'agent peut mobiliser."
+
+pedagogie:
+  titre: "Une pédagogie construite à partir des situations de travail"
+  paragraphes:
+    - "La formation PAXI alterne des apports théoriques ciblés, des analyses de situations, des exercices d'observation, des entraînements à la communication et des mises en situation. Les participants travaillent à partir de cas proches de leur activité afin de relier les connaissances aux décisions et aux comportements attendus sur le terrain."
+    - "Les exercices permettent d'expérimenter différentes réponses et d'en observer les effets. Ils sont accompagnés de débriefings structurés favorisant l'analyse, la prise de recul et la transposition aux situations professionnelles."
+    - "La durée, le niveau d'approfondissement et la place accordée à chaque séquence sont définis en fonction des objectifs, des métiers concernés et des contraintes du parcours dans lequel la formation s'inscrit."
+
+adaptables:
+  titre: "Des contenus adaptables aux exigences opérationnelles et réglementaires"
   liste:
-    - titre: "Compagnies et entreprises aériennes et aéroportuaires"
-      texte: "Formation de vos équipes, adaptée à vos procédures et à vos contraintes d'exploitation."
-    - titre: "Organismes de formation aéronautique"
-      texte: "Intégrez PAXI à vos parcours : la formation s'adapte aux publics préparés, à leur niveau d'expérience et à vos objectifs pédagogiques."
-    - titre: "Personnel navigant"
-      texte: "Gestion des situations en cabine, coordination entre PNC et PNT, techniques de protection et d'immobilisation en équipe lorsque la situation l'exige."
-    - titre: "Ground handling"
-      texte: "Les mêmes mécanismes appliqués aux situations rencontrées au sol, dans l'environnement aéroportuaire."
-
-pedagogie: "La pédagogie PAXI repose sur l'entraînement : ateliers de reconnaissance des émotions, détection des signaux faibles, mises en situation de désescalade et exercices de coordination d'équipage. Les cadres théoriques sont couverts dans la formation — mais c'est la répétition sous pression qui installe les réflexes."
+    - titre: "Cadre, procédures et traçabilité"
+      texte: "Le socle de la formation PAXI peut être complété par les éléments réglementaires, les procédures internes et les modalités de signalement correspondant au contexte d'intervention. Pour les pilotes et les personnels navigants commerciaux, les contenus peuvent être adaptés au syllabus de l'OM-D et intégrer les procédures de la compagnie, notamment en matière de refus de transport, de coordination entre la cabine et le poste de pilotage et de traçabilité des incidents."
+    - titre: "Techniques de protection, intervention coordonnée et utilisation d'un kit d'intervention"
+      texte: "Lorsque les responsabilités exercées et le périmètre de la mission le justifient, la formation peut intégrer des contenus consacrés au maintien de la distance, à la protection personnelle, à l'intervention coordonnée et à l'utilisation d'équipements dédiés. Ces contenus ne sont pas systématiques : ils sont définis avec l'organisation concernée selon les fonctions des participants, les procédures en vigueur et les autorisations applicables."
 
 cta:
-  titre: "Déployer le PAXI chez vous"
-  texte: "École, compagnie ou centre de formation : le module s'adapte à votre maquette pédagogique, vos effectifs et vos contraintes. Premier échange sans engagement."
+  texte: "Échangeons sur les métiers concernés, les situations rencontrées et les exigences opérationnelles et réglementaires afin de définir ensemble le format le plus pertinent."
+  bouton: "Échanger sur votre besoin"

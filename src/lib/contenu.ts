@@ -134,12 +134,8 @@ const formationsPageSchema = z.object({
   seo,
   entete,
   portes: z.object({ titre: texteRequis, texte: texteRequis }),
-  paxi_banniere: z.object({
-    surtitre: texteRequis,
-    titre: texteRequis,
-    texte: texteRequis,
-    bouton: texteRequis,
-  }),
+  // Pas de bannière PAXI ici : la consigne de Fabien exclut PAXI de la
+  // page principale « Formations ».
   carte: z.object({
     lien_porte: texteRequis,
     badge_stub: texteRequis,
@@ -251,28 +247,43 @@ const pageLegaleSchema = z.object({
     .min(1),
 });
 
+// Structure calquée sur le livrable validé de Fabien. Les champs
+// suivent l'ordre imposé : la conformité est un encart à part, placé
+// avant le programme et non fondu dans le corps du texte.
 const paxiSchema = z.object({
   seo,
   entete,
-  preuve: texteRequis,
-  objectifs: z.object({
+  conformite: z.object({ titre: texteRequis, texte: texteRequis }),
+  programme: z.object({
     titre: texteRequis,
-    liste: z.array(texteRequis).min(1),
+    liste: z.array(z.object({ titre: texteRequis, texte: texteRequis })).min(1),
   }),
-  modules: z.object({
-    titre: texteRequis,
-    liste: z
-      .array(z.object({ titre: texteRequis, texte: texteRequis }))
-      .min(1),
-  }),
-  publics: z.object({
+  // Deux déclinaisons métiers, jamais deux offres : la page ne
+  // s'organise pas par type de client, c'est la page d'où vient le
+  // visiteur qui porte ce contexte.
+  declinaisons: z.object({
     titre: texteRequis,
     liste: z
-      .array(z.object({ titre: texteRequis, texte: texteRequis }))
+      .array(
+        z.object({
+          titre: texteRequis,
+          paragraphes: z.array(texteRequis).min(1),
+        }),
+      )
       .min(1),
   }),
-  pedagogie: texteRequis,
-  cta: z.object({ titre: texteRequis, texte: texteRequis }),
+  pedagogie: z.object({
+    titre: texteRequis,
+    paragraphes: z.array(texteRequis).min(1),
+  }),
+  adaptables: z.object({
+    titre: texteRequis,
+    liste: z.array(z.object({ titre: texteRequis, texte: texteRequis })).min(1),
+  }),
+  // Un seul appel à l'échange sur toute la page. Pas de titre : le
+  // livrable n'en fournit pas, et en inventer un contreviendrait à la
+  // consigne d'utiliser exclusivement les textes validés.
+  cta: z.object({ texte: texteRequis, bouton: texteRequis }),
 });
 
 const espaceApprenantSchema = z.object({

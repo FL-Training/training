@@ -59,11 +59,16 @@ publics:
       picto: "user-round"
       chemin: "/formations/en-individuel"
 
+# Encart PAXI de la page d'accueil. Texte validé par Fabien, repris mot
+# pour mot du livrable PAXI (section « Encart à placer sur la page
+# d'accueil »). L'accueil est l'un des trois seuls points d'accès prévus
+# vers PAXI, avec les pages « Entreprises » et « Organismes de
+# formation ».
 paxi:
-  surtitre: "Produit phare"
-  titre: "PAXI — gestion des passagers indisciplinés"
-  texte: "Le module de référence pour le transport aérien, déployé en CQP PNC : classification des risques en 4 niveaux, cadre légal complet, désescalade et coordination d'équipage. Pour les écoles, les compagnies — et les navigants."
-  bouton: "Découvrir le PAXI"
+  surtitre: "Formation PAXI"
+  titre: "PAXI — Prévenir et gérer les comportements de passagers indisciplinés"
+  texte: "La formation PAXI prépare les pilotes, les personnels navigants commerciaux et les personnels au sol à développer leur vigilance situationnelle, gérer le conflit par la communication, coordonner l'action et agir de manière adaptée."
+  bouton: "Découvrir la formation PAXI"
 
 journal:
   surtitre: "Le Journal Pacivis"
