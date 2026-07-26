@@ -320,6 +320,13 @@
     border-radius: 0.5px;
   }
 
+  /* Mots enveloppés par le script pour l'animation du titre d'accueil :
+     bloc en ligne, seul moyen de leur appliquer une transformation. */
+  .mot {
+    display: inline-block;
+    will-change: transform, opacity;
+  }
+
   /* ---- Pictogrammes (Lucide inline) ---- */
   .picto svg {
     width: 26px;

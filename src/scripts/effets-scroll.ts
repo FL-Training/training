@@ -24,11 +24,39 @@ const reduits = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 type Annulation = VoidFunction;
 let annulations: Annulation[] = [];
 
-function clamp01(valeur: number): number {
-  return Math.min(1, Math.max(0, valeur));
+/**
+ * Découpe le contenu textuel d'un élément en mots enveloppés de
+ * <span class="mot">, pour pouvoir les animer un par un.
+ *
+ * Toujours utilisée par le titre d'accueil, dont les mots s'élèvent à
+ * l'arrivée sur la page. Elle servait aussi à la révélation mot à mot
+ * des paragraphes, retirée le 26/07.
+ */
+function envelopperMots(el: Element): HTMLElement[] {
+  const marcheur = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const noeuds: Text[] = [];
+  while (marcheur.nextNode()) noeuds.push(marcheur.currentNode as Text);
+  for (const noeud of noeuds) {
+    const contenu = noeud.textContent ?? "";
+    if (!contenu.trim()) continue;
+    const fragment = document.createDocumentFragment();
+    for (const part of contenu.split(/(\s+)/)) {
+      if (part === "") continue;
+      if (/^\s+$/.test(part)) {
+        fragment.append(part);
+      } else {
+        const span = document.createElement("span");
+        span.className = "mot";
+        span.textContent = part;
+        fragment.append(span);
+      }
+    }
+    noeud.replaceWith(fragment);
+  }
+  return [...el.querySelectorAll<HTMLElement>(".mot")];
 }
 
-/* 2 — Ligne de désescalade dessinée / effacée par le scroll */
+/* 1 — Ligne de désescalade dessinée / effacée par le scroll */
 function initTraceScroll() {
   document
     .querySelectorAll<SVGSVGElement>("[data-trace-scroll]:not([data-trace-pret])")
@@ -51,7 +79,7 @@ function initTraceScroll() {
     });
 }
 
-/* 3 — Titre du héro : mots portés par des springs à l'arrivée */
+/* 2 — Titre du héro : mots portés par des springs à l'arrivée */
 function initHeroTitre() {
   const titre = document.querySelector("[data-hero-titre]:not([data-hero-pret])");
   if (!titre) return;

@@ -49,8 +49,6 @@ export default defineConfig({
     // to index a redirect.
     sitemap({
       filter: (page) =>
-        // Page de travail typographique, temporaire et noindex.
-        !page.includes("/typo-essai") &&
         !CHEMINS_REDIRIGES.some((chemin) =>
           page.replace(/\/+$/, "").endsWith(chemin),
         ),
