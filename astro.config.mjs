@@ -3,30 +3,39 @@ import { defineConfig } from "astro/config";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import keystatic from "@keystatic/astro";
-import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 import yaml from "@rollup/plugin-yaml";
 
 import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
 
-// Deployed on Vercel, served at the domain root. Canonical URLs, Open
-// Graph, JSON-LD, sitemap and robots.txt all derive from `site`:
-//  - custom domain later: set PUBLIC_SITE_URL in Vercel, nothing else moves
-//  - until then, VERCEL_PROJECT_PRODUCTION_URL (injected by Vercel) is used
-//    on every environment, so previews already emit production canonicals
-//  - local builds fall back to localhost
-const site =
-  process.env.PUBLIC_SITE_URL ??
-  (process.env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : "http://localhost:4321");
+/*
+  Hébergement : GitHub Pages, site de projet servi sous /training/.
+  `site` + `base` alimentent les URLs canoniques, Open Graph, JSON-LD,
+  le sitemap et robots.txt ; les liens internes passent tous par
+  src/lib/url.ts, qui préfixe la base automatiquement.
+
+  Le jour où un domaine propre sera attaché : passer `site` au nouveau
+  domaine et `base` à "/". Rien d'autre à toucher.
+
+  La migration vers un hébergement autonome (Dokploy) est préparée mais
+  reportée : la reprendre demandera de rétablir l'adaptateur — voir
+  ci-dessous.
+*/
+
+/*
+  Keystatic ne tourne qu'en développement.
+
+  Son interface d'administration a besoin de routes serveur, donc d'un
+  adaptateur. GitHub Pages ne sert que des fichiers statiques : inclure
+  l'intégration ici ferait échouer le build de production. En local,
+  `npm run dev` donne accès à /keystatic en mode fichier.
+*/
+const enDeveloppement = process.argv.includes("dev");
 
 export default defineConfig({
-  site,
+  site: "https://fl-training.github.io",
+  base: "/training",
   trailingSlash: "ignore",
-  // Pages stay fully prerendered; the adapter only turns the Keystatic
-  // admin (/keystatic, /api/keystatic) into serverless functions.
-  adapter: vercel(),
   build: {
     // Cached HTML can outlive the hashed CSS file it references across
     // deploys and render an unstyled page. Inlining all CSS removes that
@@ -46,7 +55,7 @@ export default defineConfig({
           page.replace(/\/+$/, "").endsWith(chemin),
         ),
     }),
-    keystatic(),
+    ...(enDeveloppement ? [keystatic()] : []),
   ],
   vite: {
     plugins: [tailwindcss(), yaml()],
