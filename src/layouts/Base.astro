@@ -253,6 +253,48 @@ const jsonLd = grapheSeo({
         document.addEventListener("astro:page-load", init);
 
         /*
+          EN DÉVELOPPEMENT, PERSONNE N'ANNONCE L'ARRIVÉE DE LA PAGE.
+
+          `astro:page-load` est émis par le routeur — y compris au tout
+          premier chargement. Or le routeur est désactivé en
+          développement (voir le commentaire du ClientRouter, plus
+          haut) : l'événement n'est donc jamais émis, et les huit
+          modules qui l'attendent ne s'initialisent pas. Révélations au
+          défilement, cartes dépliables, ancres, animation d'ARCA, fil
+          d'Ariane : rien ne s'exécutait en local, alors que tout
+          fonctionnait sur le site construit. C'est une régression que
+          la désactivation du routeur avait introduite sans qu'on la
+          voie — un défaut visible seulement là où l'on travaille.
+
+          On émet donc l'événement nous-mêmes si personne ne l'a fait,
+          une fois la page complètement chargée : à cet instant tous les
+          modules ont été exécutés et ont posé leurs écouteurs.
+
+          La condition porte sur le fait constaté — l'événement est-il
+          venu ? — et non sur le mode de compilation : ce script est
+          `is:inline`, donc `import.meta` n'y est pas remplacé et le
+          navigateur refuserait le fichier entier. En production le
+          routeur annonce la page bien avant, et cette reprise ne fait
+          rien.
+        */
+        let annonceRecue = false;
+        document.addEventListener(
+          "astro:page-load",
+          () => {
+            annonceRecue = true;
+          },
+          { once: true },
+        );
+        const reprendre = () => {
+          if (!annonceRecue) document.dispatchEvent(new Event("astro:page-load"));
+        };
+        if (document.readyState === "complete") setTimeout(reprendre, 0);
+        else
+          window.addEventListener("load", () => setTimeout(reprendre, 0), {
+            once: true,
+          });
+
+        /*
           LE SOUS-MENU QUI SE ROUVRE TOUT SEUL.
 
           Après un clic sur une entrée du bandeau, le pointeur reste

@@ -1,6 +1,20 @@
 @import "tailwindcss";
 
 /*
+  Le rayon de la mise au point du portrait.
+
+  Une variable CSS ordinaire est du texte : le navigateur ne sait pas
+  l'interpoler et la valeur saute d'un état à l'autre. La déclarer avec
+  son type la rend animable — c'est ce qui permet au cercle de netteté
+  de s'ouvrir progressivement depuis le visage.
+*/
+@property --foyer-net {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -24%;
+}
+
+/*
   PACIVIS Academy — design system « autorité calme »
   Charte officielle (Palette_Couleurs_Pacivis_Academy_OKLCH_V1) :
   bleu nuit d'autorité, vert PA rare et signifiant, fond papier chaud
@@ -75,12 +89,17 @@
   --dur-vt-in: 260ms;
   --dur-section: 450ms;
   --dur-portrait: 700ms;
+  /* Le retour des couleurs sur le portrait s'étire : c'est le seul
+     mouvement de la page qu'on est censé regarder se faire, et il doit
+     rester perceptible du début à la fin. */
+  --dur-foyer: 2600ms;
   --dur-menu: 220ms;
   --dur-btn: 200ms;
 }
 @media (max-width: 640px) {
   :root {
     --dur-vt-in: 220ms;
+    --dur-foyer: 2200ms;
     --dur-section: 360ms;
     --dur-portrait: 560ms;
     --dur-menu: 180ms;
@@ -444,8 +463,16 @@
       dot-pulse 350ms 1900ms ease-out;
   }
 
-  /* ---- Révélation au défilement (activée seulement si JS présent) ---- */
-  html.js-reveal [data-reveal]:not([data-portrait]) {
+  /*
+    ---- Révélation au défilement (activée seulement si JS présent) ----
+
+    Le bloc monte de douze pixels en apparaissant. Deux éléments ont
+    leur propre entrée et doivent être exclus, sinon cette règle écrase
+    la leur : le portrait, qui se fait au point, et le filet, qui se
+    trace. Les exclure ici vaut mieux que surenchérir en spécificité
+    ailleurs — on lit d'un coup d'œil qui échappe à la règle.
+  */
+  html.js-reveal [data-reveal]:not([data-portrait]):not(.bloc-filet) {
     opacity: 0;
     transform: translateY(12px);
     transition:
@@ -453,7 +480,7 @@
       transform var(--dur-section) cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--reveal-delay, 0ms);
   }
-  html.js-reveal [data-reveal].revealed:not([data-portrait]) {
+  html.js-reveal [data-reveal].revealed:not([data-portrait]):not(.bloc-filet) {
     opacity: 1;
     transform: none;
   }
@@ -519,6 +546,49 @@
     transform: none;
   }
 
+  /*
+    ---- Filet de séparation ----
+
+    Sépare deux blocs sans les enfermer dans un cadre : un trait vert
+    qui se trace de la gauche vers la droite à la révélation, puis
+    s'éteint avant le bord. Même geste que les liserés des cartes de
+    porte — un seul vocabulaire pour tout le site.
+
+    Employé sur « Notre approche » (les appuis de la méthode) et sur
+    « À propos » (entre la structure et l'homme).
+  */
+  .bloc-filet {
+    display: block;
+    width: 100%;
+    max-width: 48rem;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      var(--color-sage-deep) 0%,
+      color-mix(in oklab, var(--color-sage-deep) 30%, transparent) 65%,
+      transparent 100%
+    );
+    transform-origin: left center;
+  }
+
+  /* Le trait n'est escamoté que si le script est là pour le tracer :
+     sans JavaScript, il reste simplement dessiné. */
+  html.js-reveal .bloc-filet {
+    transform: scaleX(0);
+  }
+
+  html.js-reveal .bloc-filet.revealed {
+    transform: scaleX(1);
+    transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js-reveal .bloc-filet {
+      transform: scaleX(1);
+      transition: none;
+    }
+  }
+
   /* ---- Portrait : cadre sauge dessiné, puis masque vertical ---- */
   .portrait-cadre {
     position: absolute;
@@ -543,6 +613,99 @@
   html.js-reveal [data-portrait]:not(.revealed) img {
     clip-path: inset(0 100% 0 0);
     transform: scale(1.03);
+  }
+
+  /*
+    ---- Variante « la couleur revient depuis le visage » ----
+
+    Le portrait n'est plus dévoilé par un balayage : il reprend ses
+    couleurs. Elles ne reviennent pas partout à la fois — elles naissent
+    sur le regard et gagnent les bords.
+
+    Une première version faisait la mise au point depuis le même point,
+    d'un flou vers le net : écartée par Fabien. Le principe reste le
+    bon, seule la matière change.
+
+    Deux copies superposées : celle du dessous est virée sépia, celle du
+    dessus garde ses couleurs et se découpe par un cercle qui s'ouvre.
+    Un filtre ne sait que traiter l'image entière ; seul un masque
+    permet au retour des couleurs d'avoir un foyer.
+
+    Le rayon est une propriété enregistrée (`@property`) : sans
+    déclaration de type, une variable CSS ne s'interpole pas et le
+    cercle sauterait d'un coup. Là où `@property` manque, l'image
+    apparaît nette sans transition — dégradation acceptable.
+
+    Écrit ici, à côté de la règle qu'il remplace, et non dans la page :
+    deux règles de même spécificité dans deux feuilles différentes se
+    départagent par l'ordre de chargement, ce qui a déjà coûté un
+    schéma affiché sur mobile. `clip-path: none` annule explicitement
+    le balayage hérité de `[data-portrait]`.
+  */
+  .portrait-pile {
+    /* Le cadre sauge est calé sur ce bloc : il doit épouser l'image. */
+    display: grid;
+  }
+
+  .portrait-pile > img {
+    grid-area: 1 / 1;
+  }
+
+  /*
+    La copie virée sépia, accordée au papier.
+
+    `sepia()` seul tire vers un brun jaune trop franc pour la charte.
+    On le tempère : la rotation de teinte le ramène vers les bruns
+    rosés du fond crème, la saturation retenue et le contraste allégé
+    évitent l'effet carte postale ancienne.
+  */
+  .portrait-sepia {
+    filter: sepia(0.92) saturate(0.85) hue-rotate(-6deg) brightness(1.04)
+      contrast(0.9);
+  }
+
+  html.js-reveal [data-portrait-foyer] img {
+    clip-path: none;
+  }
+
+  html.js-reveal [data-portrait-foyer] .portrait-net {
+    /*
+      Le foyer : au niveau du regard, un peu au-dessus du centre et
+      très légèrement à droite — c'est là que tombe le visage dans un
+      cadrage 4/5 recadré à 30 % de hauteur.
+    */
+    mask-image: radial-gradient(
+      circle at 52% 33%,
+      #000 var(--foyer-net),
+      transparent calc(var(--foyer-net) + 24%)
+    );
+    /* Une courbe presque régulière : la couleur doit progresser d'un
+       pas égal, sans à-coup ni accélération finale. */
+    transition: --foyer-net var(--dur-foyer) cubic-bezier(0.4, 0.05, 0.35, 1);
+    transition-delay: calc(var(--reveal-delay, 0ms) + 200ms);
+  }
+
+  /*
+    Fermé pour de bon : le dégradé s'étale sur 24 %, donc un rayon de
+    0 % laissait encore un disque à demi opaque sur le visage — une
+    tache de couleur avant même le début du mouvement. En partant de
+    -24 %, la bordure du dégradé tombe pile sur 0 : rien ne perce.
+  */
+  html.js-reveal [data-portrait-foyer]:not(.revealed) .portrait-net {
+    --foyer-net: -24%;
+  }
+
+  html.js-reveal [data-portrait-foyer].revealed .portrait-net {
+    --foyer-net: 105%;
+  }
+
+  /* Aucun mouvement d'échelle : seule la couleur revient. Un zoom, même
+     léger, détournerait l'œil de ce qu'on veut lui montrer. */
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js-reveal [data-portrait-foyer]:not(.revealed) .portrait-net {
+      --foyer-net: 105%;
+    }
   }
 
   /* ---- Portrait direction: frame leads the eye into the copy ---- */

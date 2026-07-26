@@ -105,6 +105,27 @@ const SONDES = [
     sel: ".eyebrow",
     exige: { textTransform: "uppercase" },
   },
+  {
+    // Le filet de séparation, avant d'être tracé : escamoté sur la
+    // gauche. Il partage sa règle avec « Notre approche ».
+    page: "/a-propos/",
+    sel: ".bloc-filet",
+    exige: { height: "2px", transform: "matrix(0, 0, 0, 1, 0, 0)" },
+  },
+  {
+    // La copie sépia du portrait, toujours présente sous celle en
+    // couleurs.
+    page: "/a-propos/",
+    sel: ".portrait-sepia",
+    exige: { filter: "defini" },
+  },
+  {
+    // La copie en couleurs attend hors du champ : son cercle est
+    // encore fermé.
+    page: "/a-propos/",
+    sel: "[data-portrait-foyer] .portrait-net",
+    exige: { maskImage: "defini" },
+  },
 ];
 
 const b = await chromium.launch({ channel: "chrome" });

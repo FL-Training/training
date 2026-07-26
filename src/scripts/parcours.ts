@@ -254,6 +254,43 @@ function noterPosition(): void {
 }
 
 /**
+ * Le bandeau de navigation prime sur la mémoire de position.
+ *
+ * Consigne de Fabien : cliquer sur une entrée du menu principal doit
+ * ramener en haut de la page visée. Or la mémoire de lecture, faite
+ * pour la ligne de vie, restituait la position d'une page déjà
+ * traversée — on cliquait sur « Formations » et l'on atterrissait au
+ * milieu. Les deux comportements sont légitimes ; ils se distinguent
+ * par l'intention, donc par le lien emprunté.
+ *
+ * Les raccourcis du sous-menu portent un fragment et ne sont pas
+ * concernés : ils désignent un endroit précis, qui reste prioritaire.
+ */
+const CLE_MENU = "pacivis-arrivee-menu";
+
+document.addEventListener("click", (e) => {
+  const lien = (e.target as HTMLElement | null)?.closest?.("a");
+  if (!lien || !lien.closest("header")) return;
+  if (lien.getAttribute("href")?.includes("#")) return;
+  try {
+    sessionStorage.setItem(CLE_MENU, "1");
+  } catch {
+    /* sans stockage, on retombe sur le comportement d'avant */
+  }
+});
+
+/** Vrai une seule fois : la marque est consommée à la lecture. */
+function arriveeParLeMenu(): boolean {
+  try {
+    if (sessionStorage.getItem(CLE_MENU) === null) return false;
+    sessionStorage.removeItem(CLE_MENU);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Rend la position de lecture quand on revient sur ses pas.
  *
  * Uniquement lors d'un vrai retour — reconnaissable au fait que la page
@@ -263,6 +300,11 @@ function noterPosition(): void {
  * mémorisée.
  */
 function rendrePosition(etaitDeja: boolean): void {
+  if (arriveeParLeMenu()) {
+    // Le routeur a déjà remis la page en haut ; on s'assure seulement
+    // de ne rien restaurer par-dessus.
+    return;
+  }
   if (!etaitDeja || window.location.hash) return;
   const etape = lire().find((e) => e.chemin === window.location.pathname);
   if (!etape) return;

@@ -297,38 +297,9 @@ const titreMethode =
     }
   }
 
-  /*
-    Filet d'ouverture des deux appuis de la méthode. Il se trace de la
-    gauche vers la droite à la révélation — même geste que les liserés
-    des cartes de porte, pour que ces sections appartiennent au même
-    langage que le reste du site et non à une annexe.
-  */
-  .bloc-filet {
-    display: block;
-    width: 100%;
-    max-width: 48rem;
-    height: 2px;
-    background: linear-gradient(
-      90deg,
-      var(--color-sage-deep) 0%,
-      color-mix(in oklab, var(--color-sage-deep) 30%, transparent) 65%,
-      transparent 100%
-    );
-    transform: scaleX(0);
-    transform-origin: left center;
-  }
-
-  :global(html.js-reveal) .bloc-filet:global(.revealed) {
-    transform: scaleX(1);
-    transition: transform 760ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .bloc-filet {
-      transform: scaleX(1);
-      transition: none;
-    }
-  }
+  /* Le filet d'ouverture des appuis de la méthode vit désormais dans
+     global.css : la page « À propos » s'en sert aussi, et deux copies
+     auraient fini par diverger. */
 
   /*
     Le titre de la méthode accompagne la lecture des quatre piliers.
