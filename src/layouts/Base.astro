@@ -221,12 +221,17 @@ const jsonLd = grapheSeo({
         }
 
         let observateur = null;
+        /* Les observateurs secondaires, à débrancher au changement de
+           page comme le principal. */
+        let observateurs = [];
 
         const init = () => {
           // The ClientRouter swaps <html> attributes on every navigation:
           // the class must be re-applied here, not just at first load.
           document.documentElement.classList.add("js-reveal");
           observateur?.disconnect();
+          observateurs.forEach((o) => o.disconnect());
+          observateurs = [];
 
           document.querySelectorAll("[data-reveal-group]").forEach((groupe) => {
             const pas = Number(groupe.dataset.revealStagger) || 70;
@@ -234,20 +239,43 @@ const jsonLd = grapheSeo({
               el.style.setProperty("--reveal-delay", `${i * pas}ms`);
             });
           });
-          observateur = new IntersectionObserver(
-            (entrees) => {
-              for (const entree of entrees) {
-                if (entree.isIntersecting) {
-                  entree.target.classList.add("revealed");
-                  observateur.unobserve(entree.target);
-                }
+          const declencher = (entrees, obs) => {
+            for (const entree of entrees) {
+              if (entree.isIntersecting) {
+                entree.target.classList.add("revealed");
+                obs.unobserve(entree.target);
               }
-            },
-            { threshold: 0.18 },
-          );
-          document
-            .querySelectorAll("[data-reveal]:not(.revealed)")
-            .forEach((el) => observateur.observe(el));
+            }
+          };
+
+          observateur = new IntersectionObserver(declencher, { threshold: 0.18 });
+
+          /*
+            Un second regard, plus exigeant, pour ce qui mérite d'être
+            regardé.
+
+            Le seuil ordinaire déclenche dès qu'un élément pointe par le
+            bas de l'écran : parfait pour un paragraphe qui monte, mais
+            pas pour une animation longue. Sur un grand écran, le
+            portrait était déjà entré dans le champ au chargement de la
+            page — son retour en couleurs se jouait avant même qu'on ait
+            défilé, et Fabien ne voyait jamais que le résultat.
+
+            La marge négative rétrécit la fenêtre d'observation à sa
+            moitié haute : l'élément doit y être monté pour compter comme
+            visible. On voit donc l'animation quand on la regarde.
+          */
+          const tardif = new IntersectionObserver(declencher, {
+            threshold: 0.25,
+            rootMargin: "0px 0px -45% 0px",
+          });
+          observateurs.push(tardif);
+
+          for (const el of document.querySelectorAll(
+            "[data-reveal]:not(.revealed)",
+          )) {
+            (el.hasAttribute("data-reveal-tardif") ? tardif : observateur).observe(el);
+          }
         };
 
         document.addEventListener("astro:page-load", init);

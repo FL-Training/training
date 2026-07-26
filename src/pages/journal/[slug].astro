@@ -106,6 +106,32 @@ const noeudsSeo = [
       )
     }
 
+    {/*
+      La vignette, reprise de la carte du Journal.
+
+      Posée entre l'appareil de tête — rubrique, date, titre, résumé,
+      labels — et le corps de l'article : elle referme l'entrée en
+      matière et ouvre la lecture. Même traitement que dans la liste :
+      pas de cadre, des bords qui se dissolvent dans le papier.
+
+      Facultative : un article sans vignette enchaîne directement sur
+      son texte.
+    */}
+    {
+      entry.data.vignette && (
+        <figure class="vignette-article" data-reveal>
+          <img
+            src={href(entry.data.vignette.src)}
+            alt={entry.data.vignette.alt}
+            width="1200"
+            height="675"
+            loading="eager"
+            decoding="sync"
+          />
+        </figure>
+      )
+    }
+
     <div class="prose-site mt-10">
       <Content />
     </div>
@@ -151,6 +177,41 @@ const noeudsSeo = [
 </Base>
 
 <style>
+  /*
+    LA VIGNETTE DE L'ARTICLE.
+
+    Reprise de la carte du Journal, à pleine largeur de la colonne de
+    lecture. Sans cadre : ses bords se dissolvent dans le papier, comme
+    tous les visuels du site — une photographie encadrée aurait ici
+    l'air d'une pièce rapportée entre le chapô et le texte.
+
+    Elle n'est pas décorative : c'est l'image de l'article, elle porte
+    donc son texte de remplacement et vit dans une <figure>.
+  */
+  .vignette-article {
+    margin-top: 2.5rem;
+    aspect-ratio: 16 / 7.5;
+    overflow: hidden;
+  }
+
+  .vignette-article img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.88;
+    filter: saturate(0.9) contrast(0.97);
+    mask-image: radial-gradient(
+      ellipse 50% 50% at 50% 50%,
+      #000 0%,
+      rgb(0 0 0 / 0.97) 34%,
+      rgb(0 0 0 / 0.86) 52%,
+      rgb(0 0 0 / 0.62) 68%,
+      rgb(0 0 0 / 0.32) 82%,
+      rgb(0 0 0 / 0.1) 92%,
+      transparent 100%
+    );
+  }
+
   /*
     Labels de l'article : des mots cliquables, pas des boutons. Ils
     renvoient au Journal filtré sur ce label. Même langage que la rangée

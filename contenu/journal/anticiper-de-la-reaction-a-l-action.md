@@ -7,6 +7,9 @@ labels:
   - "anticiper"
   - "gestion-des-conflits"
 auteur: "Fabien Lacombe"
+vignette:
+  src: "/journal/vignettes/anticiper.webp"
+  alt: "Un couloir professionnel où une personne s'arrête, comme si elle remarquait quelque chose."
 sources: []
 ---
 

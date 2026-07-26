@@ -153,7 +153,21 @@ const { carte, porte: libelles } = formationsPage;
                   <span class="display block text-xl leading-snug text-navy-deep md:text-[1.4rem]">
                     {c.titre}
                   </span>
-                  <span class="mt-2 block leading-relaxed text-ink-soft">
+                  {c.sous_titre && (
+                    <span class="mt-1.5 block text-[0.95rem] leading-snug text-ink-faint">
+                      {c.sous_titre}
+                    </span>
+                  )}
+                  {/*
+                    L'état de l'offre, annoncé avant son contenu : le
+                    livrable transitoire demande qu'il soit clairement
+                    identifiable. Pastille sauge, la même que le badge
+                    des portes en préparation sur le carrefour.
+                  */}
+                  {c.statut_carte && (
+                    <span class="statut-carte">{c.statut_carte}</span>
+                  )}
+                  <span class="mt-3 block leading-relaxed text-ink-soft">
                     {c.resume}
                   </span>
                 </div>
@@ -175,6 +189,14 @@ const { carte, porte: libelles } = formationsPage;
                   <span class="display block text-xl leading-snug text-navy-deep md:text-[1.4rem]">
                     {c.titre}
                   </span>
+                  {c.sous_titre && (
+                    <span class="mt-1.5 block text-[0.95rem] leading-snug text-ink-faint">
+                      {c.sous_titre}
+                    </span>
+                  )}
+                  {c.statut_carte && (
+                    <span class="statut-carte">{c.statut_carte}</span>
+                  )}
                   <span class="mt-2 block leading-relaxed text-ink-soft">
                     {c.resume}
                   </span>
@@ -367,7 +389,12 @@ const { carte, porte: libelles } = formationsPage;
       Charte : bord gauche dominant, pas de centrages répétés hors
       couverture. Le bouton part à droite sur grand écran pour équilibrer
       le bloc sans recourir au centrage.
+
+      Tout le bloc est conditionnel : une porte dont le livrable ne
+      prévoit aucun appel à l'échange — « En individuel » pendant la
+      période transitoire — se termine sur sa dernière carte.
     */}
+    {cta && (
     <div
       class:list={[
         "mt-20 flex flex-col gap-6 rounded-2xl border border-ink/10 bg-paper-deep/40 p-10",
@@ -402,6 +429,7 @@ const { carte, porte: libelles } = formationsPage;
         {cta.bouton} <span aria-hidden="true">→</span>
       </a>
     </div>
+    )}
   </section>
 </Base>
 
@@ -572,6 +600,28 @@ const { carte, porte: libelles } = formationsPage;
     .carte-contour rect {
       transition: none;
     }
+  }
+
+  /*
+    Le statut d'une offre annoncée mais pas encore ouverte.
+
+    Pastille discrète, dans le vert de la marque : assez présente pour
+    être lue avant le texte, assez sobre pour ne pas ressembler à une
+    étiquette promotionnelle. Le livrable exige qu'elle soit clairement
+    identifiable — c'est le seul élément de la carte qui porte une
+    couleur de fond.
+  */
+  .statut-carte {
+    display: inline-block;
+    margin-top: 0.85rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    background: var(--color-sage-faint);
+    color: var(--color-sage-deep);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
   .carte-depliable summary,

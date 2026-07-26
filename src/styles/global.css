@@ -610,7 +610,18 @@
       transform var(--dur-portrait) cubic-bezier(0.4, 0, 0.2, 1);
     transition-delay: calc(var(--reveal-delay, 0ms) + 150ms);
   }
-  html.js-reveal [data-portrait]:not(.revealed) img {
+  /*
+    Le balayage ne s'applique qu'aux portraits qui n'ont pas d'entrée à
+    eux. Celui de « À propos » se découvre par un cercle de couleur :
+    exclu ici, plutôt que d'être annulé plus bas.
+
+    Il l'était, et la règle d'annulation perdait : `:not(.revealed)`
+    ajoute une pseudo-classe, donc de la spécificité, et rien d'écrit
+    ensuite ne pouvait la battre à égalité de sélecteurs. Résultat, les
+    deux copies du portrait restaient rognées à zéro jusqu'à la
+    révélation — l'image n'apparaissait qu'au défilement, d'un coup.
+  */
+  html.js-reveal [data-portrait]:not([data-portrait-foyer]):not(.revealed) img {
     clip-path: inset(0 100% 0 0);
     transform: scale(1.03);
   }
@@ -639,8 +650,9 @@
     Écrit ici, à côté de la règle qu'il remplace, et non dans la page :
     deux règles de même spécificité dans deux feuilles différentes se
     départagent par l'ordre de chargement, ce qui a déjà coûté un
-    schéma affiché sur mobile. `clip-path: none` annule explicitement
-    le balayage hérité de `[data-portrait]`.
+    schéma affiché sur mobile. Le balayage de `[data-portrait]` exclut
+    d'ailleurs ce cas à la source (voir plus haut) — une annulation
+    écrite ici perdrait contre lui en spécificité.
   */
   .portrait-pile {
     /* Le cadre sauge est calé sur ce bloc : il doit épouser l'image. */
@@ -662,10 +674,6 @@
   .portrait-sepia {
     filter: sepia(0.92) saturate(0.85) hue-rotate(-6deg) brightness(1.04)
       contrast(0.9);
-  }
-
-  html.js-reveal [data-portrait-foyer] img {
-    clip-path: none;
   }
 
   html.js-reveal [data-portrait-foyer] .portrait-net {

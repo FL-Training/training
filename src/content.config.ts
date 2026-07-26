@@ -61,6 +61,12 @@ const journal = defineCollection({
     // rester publiable.
     labels: z.array(z.enum(IDS_LABELS)).default([]),
     auteur: texteRequis.default("Fabien Lacombe"),
+    // Vignette de la carte, dans la liste du Journal. Facultative : un
+    // article publié sans image doit rester lisible — sa carte se
+    // présente alors sans bandeau, comme avant.
+    vignette: blocFacultatif(
+      z.object({ src: texteRequis, alt: texteRequis }),
+    ),
     sources: z.array(z.object({ titre: texteRequis, url: z.url() })).default([]),
   }),
 });
@@ -112,6 +118,14 @@ const portes = defineCollection({
       .array(
         z.object({
           titre: texteRequis,
+          // Précision de deuxième ligne, sous le titre. Employée par le
+          // livrable transitoire « En individuel », où chaque carte
+          // annonce sa nature avant son état.
+          sous_titre: texteFacultatif,
+          // « Prochainement », « En préparation »… L'état d'une offre
+          // annoncée mais pas encore ouverte. Le livrable exige qu'il
+          // soit clairement identifiable : il est rendu en pastille.
+          statut_carte: texteFacultatif,
           // État fermé : le visiteur doit reconnaître son besoin.
           resume: texteRequis,
           // État ouvert.
@@ -194,11 +208,20 @@ const portes = defineCollection({
     // livrable ne fournit qu'un libellé de bouton. En composer une
     // accroche reviendrait à écrire du texte que Fabien n'a pas validé,
     // alors que la consigne est d'utiliser exclusivement les siens.
-    cta: z.object({
-      titre: texteFacultatif,
-      texte: texteFacultatif,
-      bouton: texteRequis,
-    }),
+    /*
+      L'appel à l'échange en pied de page. Facultatif : le livrable
+      transitoire « En individuel » n'en prévoit aucun, et son contrôle
+      avant publication demande qu'aucun lien ne soit proposé tant que
+      les deux offres ne sont pas ouvertes. Une porte sans `cta` se
+      termine donc sur sa dernière carte.
+    */
+    cta: blocFacultatif(
+      z.object({
+        titre: texteFacultatif,
+        texte: texteFacultatif,
+        bouton: texteRequis,
+      }),
+    ),
   }),
 });
 

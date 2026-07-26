@@ -382,7 +382,29 @@ function rendrePosition(etaitDeja: boolean): void {
   }
 }
 
+/**
+ * Une seule initialisation par page affichée.
+ *
+ * Le module s'exécute au chargement ET écoute `astro:page-load`. En
+ * production le routeur n'émet cet événement qu'en arrivant sur une
+ * page, les deux ne se marchent pas dessus. En développement, où le
+ * routeur est absent, le gabarit réémet l'événement lui-même pour
+ * réveiller les modules — et `initialiser()` passait alors deux fois
+ * sur la même page.
+ *
+ * La conséquence n'était pas anodine : le premier passage consommait la
+ * marque « arrivée par le menu » et repartait sans rien restaurer, le
+ * second ne la trouvait plus, jugeait la page déjà connue et rendait la
+ * position mémorisée. Cliquer sur un raccourci du menu ramenait donc au
+ * milieu de la page au lieu de son sommet.
+ */
+let dejaInitialisee: string | null = null;
+
 function initialiser(): void {
+  const ici = window.location.pathname + window.location.hash;
+  if (dejaInitialisee === ici) return;
+  dejaInitialisee = ici;
+
   const connue = lire().some((e) => e.chemin === window.location.pathname);
   enregistrer();
   afficher();

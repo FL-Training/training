@@ -197,6 +197,15 @@ const portes = collection({
     cartes: fields.array(
       fields.object({
         titre: t("Titre de la carte"),
+        sous_titre: fields.text({
+          label: "Sous-titre (facultatif)",
+          description: "Une ligne de précision sous le titre.",
+        }),
+        statut_carte: fields.text({
+          label: "Statut (facultatif)",
+          description:
+            "Par exemple « Prochainement » ou « En préparation ». Affiché en pastille : à utiliser pour une offre annoncée mais pas encore ouverte.",
+        }),
         resume: long("Résumé (visible carte fermée)"),
         paragraphes: fields.array(long("Paragraphe"), {
           label: "Contenu déplié",
@@ -311,6 +320,25 @@ const journal = collection({
       defaultValue: "Fabien Lacombe",
       validation: { isRequired: true },
     }),
+    vignette: fields.object(
+      {
+        src: fields.text({
+          label: "Chemin de l'image",
+          description:
+            "Par exemple /journal/vignettes/anticiper.webp — le fichier se dépose dans public/journal/vignettes.",
+        }),
+        alt: fields.text({
+          label: "Description de l'image",
+          description:
+            "Décrit ce que montre l'image, pour les personnes qui ne la voient pas.",
+        }),
+      },
+      {
+        label: "Vignette de la carte",
+        description:
+          "Image affichée en haut de la carte, dans la liste du Journal. Laisser vide si l'article n'en a pas.",
+      },
+    ),
     sources: fields.array(
       fields.object({
         titre: t("Titre de la source"),
