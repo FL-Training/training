@@ -1,0 +1,152 @@
+name: Conteneur Dokploy
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/container.yml"
+      - ".dockerignore"
+      - "Dockerfile"
+      - "astro.config.mjs"
+      - "keystatic.config.ts"
+      - "ops/**"
+      - "package.json"
+      - "package-lock.json"
+      - "tests/**"
+      - "public/**"
+      - "src/**"
+      - "contenu/**"
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pacivis-container-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Run production regression tests
+        run: npm test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build runtime image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: pacivis-training:ci
+          build-args: |
+            PUBLIC_SITE_URL=https://site.app.pacivisacademy.com
+            PUBLIC_CONVEX_URL=https://convex.app.pacivisacademy.com
+            PUBLIC_BUILD_ID=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify runtime contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --entrypoint /bin/sh pacivis-training:ci -ec \
+            'test "$(id -u)" = 1001; ! command -v npm; ! test -e /usr/local/lib/node_modules/npm'
+
+          container_id="$(${DOCKER_CLI:-docker} run --detach --read-only \
+            --tmpfs /tmp:rw,noexec,nosuid,size=64m \
+            --publish 127.0.0.1::4321 \
+            pacivis-training:ci)"
+          trap 'docker rm --force "${container_id}" >/dev/null 2>&1 || true' EXIT
+          host_port="$(docker port "${container_id}" 4321/tcp | sed 's/.*://')"
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent --show-error "http://127.0.0.1:${host_port}/" >/dev/null; then
+              break
+            fi
+            if [ "${attempt}" -eq 30 ]; then
+              docker logs "${container_id}"
+              exit 1
+            fi
+            sleep 1
+          done
+
+          docker exec "${container_id}" /usr/local/bin/pacivis-healthcheck
+
+      - name: Scan runtime image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: pacivis-training:ci
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: 1
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract OCI metadata
+        id: metadata
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: ghcr.io/fl-training/training
+          tags: |
+            type=ref,event=tag
+            type=sha,format=long
+
+      - name: Build and publish
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          build-args: |
+            PUBLIC_SITE_URL=https://site.app.pacivisacademy.com
+            PUBLIC_CONVEX_URL=https://convex.app.pacivisacademy.com
+            PUBLIC_BUILD_ID=${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true

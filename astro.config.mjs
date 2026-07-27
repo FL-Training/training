@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from "astro/config";
+import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
 import keystatic from "@keystatic/astro";
@@ -31,10 +32,15 @@ import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
   `npm run dev` donne accès à /keystatic en mode fichier.
 */
 const enDeveloppement = process.argv.includes("dev");
+const cibleDokploy = process.env.DEPLOY_TARGET === "dokploy";
+const originePublique =
+  process.env.PUBLIC_SITE_URL ?? "https://fl-training.github.io";
 
 export default defineConfig({
-  site: "https://fl-training.github.io",
-  base: "/training",
+  site: originePublique,
+  base: enDeveloppement || cibleDokploy ? "/" : "/training",
+  output: cibleDokploy ? "server" : "static",
+  adapter: cibleDokploy ? node({ mode: "standalone" }) : undefined,
   trailingSlash: "ignore",
   build: {
     // Cached HTML can outlive the hashed CSS file it references across
@@ -64,7 +70,7 @@ export default defineConfig({
           page.replace(/\/+$/, "").endsWith(chemin),
         ),
     }),
-    ...(enDeveloppement ? [keystatic()] : []),
+    ...(enDeveloppement || cibleDokploy ? [keystatic()] : []),
   ],
   vite: {
     plugins: [tailwindcss(), yaml()],
