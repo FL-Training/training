@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.env
+.env.*
+!.env.example
+.DS_Store
+dist
+node_modules
+npm-debug.log*
+playwright-report
+test-results
+
