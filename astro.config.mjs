@@ -10,26 +10,47 @@ import yaml from "@rollup/plugin-yaml";
 import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
 
 /*
-  Hébergement : GitHub Pages, site de projet servi sous /training/.
-  `site` + `base` alimentent les URLs canoniques, Open Graph, JSON-LD,
-  le sitemap et robots.txt ; les liens internes passent tous par
-  src/lib/url.ts, qui préfixe la base automatiquement.
+  DEUX HÉBERGEMENTS, UN SEUL FICHIER.
 
-  Le jour où un domaine propre sera attaché : passer `site` au nouveau
-  domaine et `base` à "/". Rien d'autre à toucher.
+  Le site part vers Dokploy, sur un serveur à nous. GitHub Pages, où il
+  vit encore, est mis en sommeil le temps de la bascule : il continue de
+  servir le dernier site publié, mais ne se met plus à jour (voir
+  .github/workflows/deploy.yml).
 
-  La migration vers un hébergement autonome (Dokploy) est préparée mais
-  reportée : la reprendre demandera de rétablir l'adaptateur — voir
-  ci-dessous.
+  Ce que `DEPLOY_TARGET=dokploy` change, et pourquoi :
+
+    - la BASE passe à la racine. Sous GitHub Pages le site est un projet
+      parmi d'autres, servi sous /training/ ; sur un serveur à nous il
+      est seul et vit à la racine.
+    - la SORTIE devient un serveur, avec l'adaptateur node. Il en faut
+      un pour l'éditeur de Fabien, qui a besoin de routes vivantes —
+      c'est ce que GitHub Pages, qui ne sert que des fichiers, ne pourra
+      jamais faire. C'est la raison même de la bascule.
+    - l'ORIGINE vient de PUBLIC_SITE_URL. Elle alimente les URLs
+      canoniques, le sitemap, Open Graph et JSON-LD. Tant qu'elle
+      désigne une adresse IP, le site demande à n'être pas indexé (voir
+      src/pages/robots.txt.ts) : une IP dans les résultats de recherche
+      deviendrait un doublon et des liens morts le jour du domaine.
+
+  Le jour où un nom de domaine sera attaché : renseigner PUBLIC_SITE_URL
+  et SITE_INDEXABLE=true. Rien d'autre à toucher.
 */
 
 /*
-  Keystatic ne tourne qu'en développement.
+  LA BASE EN DÉVELOPPEMENT : la racine, comme sur Dokploy.
 
-  Son interface d'administration a besoin de routes serveur, donc d'un
-  adaptateur. GitHub Pages ne sert que des fichiers statiques : inclure
-  l'intégration ici ferait échouer le build de production. En local,
-  `npm run dev` donne accès à /keystatic en mode fichier.
+  Keystatic ne sait pas vivre ailleurs qu'à la racine. Son routeur
+  découpe l'adresse avec une expression écrite en dur
+  (`pathname.replace(/^\/keystatic\/?/, "")`) et son gestionnaire d'API
+  lit l'action juste après `/api/keystatic/`. Sous /training/keystatic,
+  l'interface se charge, son menu s'affiche, et toute rubrique ouverte
+  répond « Not found ».
+
+  Rien ne permet de le lui apprendre : la propriété `basePath` que
+  documente Keystatic n'existe pas dans cette version, et un intergiciel
+  ne peut pas rattraper le coup — Astro rejette les requêtes hors base
+  AVANT d'exécuter le moindre intergiciel. Ne pas remettre /training ici
+  en croyant corriger une anomalie : l'éditeur cesserait de s'ouvrir.
 */
 const enDeveloppement = process.argv.includes("dev");
 const cibleDokploy = process.env.DEPLOY_TARGET === "dokploy";

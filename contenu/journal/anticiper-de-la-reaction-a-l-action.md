@@ -8,7 +8,7 @@ labels:
   - "gestion-des-conflits"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/anticiper.webp"
+  src: "/journal/vignettes/anticiper-de-la-reaction-a-l-action/vignette/src.webp"
   alt: "Un couloir professionnel où une personne s'arrête, comme si elle remarquait quelque chose."
 sources: []
 ---

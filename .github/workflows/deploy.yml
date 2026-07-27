@@ -1,8 +1,19 @@
+# GitHub Pages — mis en sommeil le 27/07/2026, le temps de basculer vers
+# Dokploy.
+#
+# Le déclenchement automatique est retiré : un envoi sur `main` ne
+# republie plus. Rien ne s'éteint pour autant — Pages continue de servir
+# le dernier site publié, à l'adresse qu'il a toujours eue. Le site cesse
+# simplement de se mettre à jour.
+#
+# Le workflow reste lançable à la main (onglet Actions, bouton « Run
+# workflow ») : c'est le filet si la bascule vers Dokploy devait
+# attendre, ou si une correction devait partir en ligne entre-temps.
+#
+# À supprimer une fois Dokploy en service et l'ancienne adresse redirigée.
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

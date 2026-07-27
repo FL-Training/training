@@ -35,8 +35,16 @@ const lien = z.object({
  * Raccourci d'un sous-menu : soit une autre page (`chemin`), soit une
  * section de la page portée par l'entrée parente (`ancre`).
  *
- * L'un des deux, jamais les deux : un raccourci qui désignerait à la
- * fois une page et une ancre serait ambigu à construire comme à lire.
+ * Aucune saisie ne doit pouvoir empêcher la publication. L'éditeur ne
+ * sait pas imposer de choisir entre deux champs voisins : Fabien peut
+ * n'en remplir aucun — en ajoutant une ligne puis en enregistrant avant
+ * de l'avoir écrite — ou les deux. Un schéma qui refuserait ces cas
+ * arrêterait le déploiement sans que personne en soit averti : Fabien
+ * verrait « enregistré » et le site en ligne resterait celui d'avant.
+ *
+ * Donc : un raccourci sans cible est écarté à la lecture, comme la
+ * ligne vide qu'il est ; un raccourci qui porte les deux est conservé,
+ * `Header.astro` tranchant déjà en faveur de l'ancre.
  */
 // Même contrat que côté collections : une chaîne vide vaut « absent »,
 // puisque Keystatic écrit `""` au lieu d'omettre la clé.
@@ -45,22 +53,20 @@ const texteFacultatif = z.preprocess(
   texteRequis.optional(),
 );
 
-const raccourci = z
-  .object({
-    label: texteRequis,
-    chemin: texteFacultatif,
-    ancre: texteFacultatif,
-    // Repris de la page visée : la même icône que sur sa carte et son
-    // entête, pour que le raccourci et sa destination se reconnaissent.
-    picto: texteFacultatif,
-  })
-  .refine(
-    (r) => Boolean(r.chemin) !== Boolean(r.ancre),
-    "indiquer soit un chemin, soit une ancre — pas les deux, pas aucun",
-  );
+const raccourci = z.object({
+  label: texteRequis,
+  chemin: texteFacultatif,
+  ancre: texteFacultatif,
+  // Repris de la page visée : la même icône que sur sa carte et son
+  // entête, pour que le raccourci et sa destination se reconnaissent.
+  picto: texteFacultatif,
+});
 
 const lienNavigation = lien.extend({
-  sous_menu: z.array(raccourci).default([]),
+  sous_menu: z
+    .array(raccourci)
+    .default([])
+    .transform((liste) => liste.filter((r) => r.chemin ?? r.ancre)),
 });
 
 const seo = z.object({ titre: texteRequis, description: texteRequis });
@@ -345,6 +351,25 @@ function valider<T>(fichier: string, schema: z.ZodType<T>, data: unknown): T {
   }
   return resultat.data;
 }
+
+/**
+ * Les schémas eux-mêmes, exposés pour le contrôle de cohérence avec
+ * l'éditeur (tests/cms-schemas.mjs) : un champ requis ici et absent de
+ * keystatic.config.ts serait effacé du fichier dès que Fabien
+ * enregistre la page. Le site, lui, ne consomme que les valeurs
+ * validées ci-dessous.
+ */
+export const schemas = {
+  communSchema,
+  accueilSchema,
+  formationsPageSchema,
+  approcheSchema,
+  aProposSchema,
+  contactSchema,
+  pageLegaleSchema,
+  paxiSchema,
+  espaceApprenantSchema,
+};
 
 export const commun = valider("commun.yaml", communSchema, communBrut);
 export const accueil = valider("accueil.yaml", accueilSchema, accueilBrut);

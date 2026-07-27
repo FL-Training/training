@@ -34,6 +34,47 @@ function estVide(valeur: unknown): boolean {
 const blocFacultatif = <T extends z.ZodTypeAny>(schema: T) =>
   z.preprocess((v) => (estVide(v) ? undefined : v), schema.optional());
 
+/**
+ * Un choix dans une liste, que l'on peut ne pas faire.
+ *
+ * L'éditeur propose « Aucun » et enregistre `""` — il ne sait pas
+ * omettre la clé. Sans cette conversion, une porte enregistrée sans
+ * tracé de marque écrirait `signature: ""`, valeur qu'aucune liste ne
+ * contient, et le déploiement s'arrêterait là.
+ */
+const choixFacultatif = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess(
+    (v) => (typeof v === "string" && v.trim() === "" ? undefined : v),
+    schema.optional(),
+  );
+
+/**
+ * Une illustration : le fichier et le texte qui la remplace pour qui ne
+ * la voit pas.
+ *
+ * L'éditeur laisse ces deux champs indépendants — il ne sait pas lier
+ * la présence de l'un à celle de l'autre. Deux moitiés de saisie sont
+ * donc possibles, et aucune ne doit arrêter la publication :
+ *
+ *   - un texte de remplacement resté seul, après le retrait d'une
+ *     image : il n'y a plus d'illustration, le bloc est ignoré ;
+ *   - une image déposée sans description : elle est publiée telle
+ *     quelle. Le texte manquant nuit à qui navigue au lecteur d'écran,
+ *     mais c'est un défaut réparable en ligne, quand un déploiement
+ *     bloqué ne se voit de personne.
+ */
+const imageEtSonTexte = z.object({
+  src: texteRequis,
+  alt: texteFacultatif.transform((a) => a ?? ""),
+});
+
+const illustration = <T extends z.ZodTypeAny>(schema: T) =>
+  z.preprocess((v) => {
+    if (estVide(v) || typeof v !== "object" || v === null) return undefined;
+    const src = (v as Record<string, unknown>).src;
+    return typeof src === "string" && src.trim() !== "" ? v : undefined;
+  }, schema.optional());
+
 const formations = defineCollection({
   loader: glob({ pattern: "**/[^_]*.md", base: "./contenu/formations" }),
   schema: z.object({
@@ -64,9 +105,7 @@ const journal = defineCollection({
     // Vignette de la carte, dans la liste du Journal. Facultative : un
     // article publié sans image doit rester lisible — sa carte se
     // présente alors sans bandeau, comme avant.
-    vignette: blocFacultatif(
-      z.object({ src: texteRequis, alt: texteRequis }),
-    ),
+    vignette: illustration(imageEtSonTexte),
     sources: z.array(z.object({ titre: texteRequis, url: z.url() })).default([]),
   }),
 });
@@ -94,8 +133,8 @@ const portes = defineCollection({
     // Signature de la page entière, tracée sous l'entête. Elle porte
     // l'identité visuelle des portes qui n'ont pas (encore) de cartes
     // dépliables.
-    signature: z
-      .enum([
+    signature: choixFacultatif(
+      z.enum([
         "oscillation",
         "pic",
         "endurance",
@@ -104,15 +143,13 @@ const portes = defineCollection({
         "referentiel",
         "construction",
         "progression",
-      ])
-      .optional(),
+      ]),
+    ),
     // Visuel de la porte sur le carrefour « Formations ». Il n'illustre
     // pas la page elle-même : il aide le visiteur à se reconnaître dans
     // une situation avant de choisir son entrée. Affiché en fondu, bords
     // évanouis — jamais comme une photo posée dans un cadre.
-    visuel: blocFacultatif(
-      z.object({ src: texteRequis, alt: texteRequis }),
-    ),
+    visuel: illustration(imageEtSonTexte),
     intro: texteFacultatif,
     cartes: z
       .array(
@@ -146,17 +183,13 @@ const portes = defineCollection({
           // Inutilisé pour l'instant : une illustration figurative pèse
           // visuellement plus lourd que le logo. Le champ reste pour le
           // jour où de vraies photos seront disponibles.
-          visuel: blocFacultatif(
-            z.object({
-              src: texteRequis,
-              src_sombre: texteFacultatif,
-              alt: texteRequis,
-            }),
+          visuel: illustration(
+            imageEtSonTexte.extend({ src_sombre: texteFacultatif }),
           ),
           // Variante du motif de marque : le tracé raconte la dynamique
           // décrite par la carte, et se dessine à son ouverture.
-          signature: z
-            .enum([
+          signature: choixFacultatif(
+            z.enum([
               "oscillation",
               "pic",
               "endurance",
@@ -165,8 +198,8 @@ const portes = defineCollection({
               "referentiel",
               "construction",
               "progression",
-            ])
-            .optional(),
+            ]),
+          ),
           // Consigne de conception de Fabien, jamais affichée : elle
           // décrit l'illustration à produire pour cette carte.
           note_visuel: texteFacultatif,

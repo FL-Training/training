@@ -27,6 +27,43 @@ const storage = import.meta.env.DEV
 // object shapes (seo, entete, lien, pilier) reused across pages.
 // ---------------------------------------------------------------------------
 
+/*
+  Mention à porter sur tout champ dont le texte vient d'un livrable
+  validé par Fabien. Elle s'affiche SOUS le champ, dans l'éditeur —
+  c'est là qu'elle est lue, au moment d'écrire, alors qu'un commentaire
+  dans le fichier YAML n'est jamais vu (et sera même effacé au premier
+  enregistrement : Keystatic réécrit les fichiers depuis son schéma).
+*/
+/*
+  Les images déposées ici sont servies telles quelles : le site ne les
+  redimensionne pas. La consigne accompagne donc chaque champ.
+*/
+/*
+  OÙ VIVENT LES IMAGES DE L'ÉDITEUR.
+
+  Keystatic range ce qu'il reçoit dans `<directory>/<slug>/`, et n'affiche
+  en retour que les fichiers déjà rangés là. Une image posée à côté —
+  `public/formations/entreprise.webp` — lui reste invisible : le champ
+  s'ouvre vide, et l'enregistrement de la page l'efface du fichier sans
+  rien dire.
+
+  Les images pilotées ici vivent donc sous le dossier de leur entrée :
+
+      public/formations/entreprise/visuel/src.webp
+      public/journal/vignettes/<article>/vignette/src.webp
+
+  Le nom du fichier, lui, est celui du champ : Keystatic renomme ce qu'il
+  reçoit. Les images ont été rangées ainsi d'avance, pour qu'aucune ne se
+  déplace à la première modification d'une page. Une image ajoutée à la
+  main hors de ce dossier serait perdue au premier enregistrement.
+*/
+const CONSIGNE_IMAGE =
+  "Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. " +
+  "Une photographie de 5 Mo déposée ici ralentirait la page : elle est " +
+  "publiée sans retouche.";
+
+const VALIDE = "Texte validé par Fabien : à ne pas reformuler sans reprendre le document d'origine.";
+
 const t = (label: string, description?: string) =>
   fields.text({ label, description, validation: { isRequired: true } });
 
@@ -47,15 +84,64 @@ const seo = () =>
     { label: "Référencement (SEO)" },
   );
 
-const entete = () =>
+/*
+  L'en-tête d'une page. `origine` porte, quand il y a lieu, le rappel
+  que le texte vient d'un livrable — il s'affiche sous les champs.
+*/
+const entete = (origine?: string) =>
   fields.object(
     {
       surtitre: t("Surtitre"),
-      titre: t("Titre"),
-      texte: long("Texte d'introduction"),
+      titre: t("Titre", origine),
+      texte: long("Texte d'introduction", origine),
     },
     { label: "En-tête de page" },
   );
+
+/*
+  Un raccourci de sous-menu : soit une page (chemin), soit une ancre dans
+  la page de son entrée. Jamais les deux — le site refuse le contenu
+  sinon.
+*/
+/*
+  Le tracé de marque associé à une page ou à une carte : une variante de
+  la ligne de désescalade, qui raconte la dynamique décrite par le texte.
+*/
+const SIGNATURES = [
+  { label: "Oscillation (la tension va et vient)", value: "oscillation" },
+  { label: "Pic (la montée brutale)", value: "pic" },
+  { label: "Endurance (la durée qui use)", value: "endurance" },
+  { label: "Paliers (la réponse graduée)", value: "paliers" },
+  { label: "Greffe (l'apport qui s'intègre)", value: "greffe" },
+  { label: "Référentiel (le cadre qui tient)", value: "referentiel" },
+  { label: "Construction (ce qui s'élabore)", value: "construction" },
+  { label: "Progression (le chemin qui avance)", value: "progression" },
+] as const;
+
+const signature = (label: string) =>
+  fields.select({
+    label,
+    description: "Laisser « Aucun » pour ne pas afficher de tracé.",
+    options: [{ label: "Aucun", value: "" }, ...SIGNATURES],
+    defaultValue: "",
+  });
+
+const raccourci = () =>
+  fields.object({
+    label: t("Libellé"),
+    chemin: fields.text({
+      label: "Chemin (page entière)",
+      description: "Par exemple /formations/paxi. Laisser vide si l'on vise une ancre.",
+    }),
+    ancre: fields.text({
+      label: "Ancre (endroit dans la page de l'entrée)",
+      description: "Par exemple notre-ambition. Laisser vide si l'on vise une page.",
+    }),
+    picto: fields.text({
+      label: "Pictogramme (facultatif)",
+      description: "Repris de la page visée, pour que le raccourci la reconnaisse.",
+    }),
+  });
 
 const lien = () =>
   fields.object({
@@ -64,11 +150,21 @@ const lien = () =>
   });
 
 const listeLiens = (label: string) =>
-  fields.array(lien(), {
-    label,
-    itemLabel: (props) => props.fields.label.value || "Lien",
-    validation: { length: { min: 1 } },
-  });
+  fields.array(
+    fields.object({
+      label: t("Libellé"),
+      chemin: t("Chemin", "Exemple : /formations ou /contact"),
+      accent: fields.checkbox({
+        label: "Mettre le lien en évidence",
+        defaultValue: false,
+      }),
+    }),
+    {
+      label,
+      itemLabel: (props) => props.fields.label.value || "Lien",
+      validation: { length: { min: 1 } },
+    },
+  );
 
 // Menu principal : mêmes champs qu'un lien, plus la mise en évidence.
 const listeLiensNav = (label: string) =>
@@ -79,6 +175,12 @@ const listeLiensNav = (label: string) =>
       accent: fields.checkbox({
         label: "Mettre l'entrée en évidence (fond plein)",
         defaultValue: false,
+      }),
+      sous_menu: fields.array(raccourci(), {
+        label: "Raccourcis du sous-menu",
+        description:
+          "Se déploient sous l'entrée au survol. Laisser vide pour une entrée sans sous-menu.",
+        itemLabel: (props) => props.fields.label.value || "Raccourci",
       }),
     }),
     {
@@ -177,6 +279,30 @@ const portes = collection({
       validation: { isRequired: true },
     }),
     seo: seo(),
+    /*
+      La photographie de la porte : celle du carrefour « Formations » et
+      celle du damier de l'accueil — c'est le même fichier aux deux
+      endroits. Elle manquait à l'éditeur : enregistrer la page l'aurait
+      effacée du fichier, et l'image aurait disparu du site sans que le
+      build proteste, puisqu'elle est facultative.
+    */
+    signature: signature("Tracé de marque de la page"),
+    visuel: fields.object(
+      {
+        src: fields.image({
+          label: "Photographie",
+          directory: "public/formations",
+          publicPath: "/formations/",
+          description: CONSIGNE_IMAGE,
+        }),
+        alt: fields.text({
+          label: "Description de l'image",
+          description:
+            "Décrit ce que montre la photo, pour les personnes qui ne la voient pas.",
+        }),
+      },
+      { label: "Photographie de la porte" },
+    ),
     entete: fields.object(
       {
         surtitre: t("Surtitre"),
@@ -226,13 +352,28 @@ const portes = collection({
           },
           { label: "Bouton de la carte (facultatif)" },
         ),
+        signature: signature("Tracé de marque de la carte"),
         visuel: fields.object(
           {
-            src: fields.text({
-              label: "Image",
-              description: "Chemin dans public/, ex. /cartes/conflits.webp",
+            src: fields.image({
+              label: "Illustration",
+              directory: "public/cartes",
+              publicPath: "/cartes/",
+              description: CONSIGNE_IMAGE,
             }),
             alt: fields.text({ label: "Description de l'image" }),
+            /*
+              Variante pour fond sombre, que `PagePorte.astro` affiche à
+              la place de la précédente quand elle existe. Aucun contenu
+              ne s'en sert aujourd'hui — mais l'éditeur qui l'ignore
+              l'effacerait du fichier le jour où l'un s'en servirait.
+            */
+            src_sombre: fields.image({
+              label: "Variante pour fond sombre (facultatif)",
+              directory: "public/cartes",
+              publicPath: "/cartes/",
+              description: CONSIGNE_IMAGE,
+            }),
           },
           { label: "Illustration de la carte (facultatif)" },
         ),
@@ -244,6 +385,32 @@ const portes = collection({
       {
         label: "Cartes dépliables",
         itemLabel: (props) => props.fields.titre.value || "Carte",
+      },
+    ),
+    /*
+      Encarts libres de la page, entre les cartes et l'appel à
+      l'échange. Ils n'existent que sur les portes qui en ont besoin —
+      « Secteur public » y place ses précisions de contexte.
+    */
+    encarts: fields.array(
+      fields.object({
+        titre: t("Titre de l'encart"),
+        paragraphes: fields.array(long("Paragraphe"), {
+          label: "Paragraphes",
+          itemLabel: (props) => props.value?.slice(0, 60) || "Paragraphe",
+          validation: { length: { min: 1 } },
+        }),
+        lien: fields.object(
+          {
+            label: fields.text({ label: "Libellé du lien" }),
+            chemin: fields.text({ label: "Chemin, ex. /contact" }),
+          },
+          { label: "Lien (facultatif)" },
+        ),
+      }),
+      {
+        label: "Encarts",
+        itemLabel: (props) => props.fields.titre.value || "Encart",
       },
     ),
     encart_paxi: fields.object(
@@ -276,8 +443,17 @@ const portes = collection({
     ),
     cta: fields.object(
       {
-        titre: t("Titre"),
-        texte: long("Texte"),
+        /*
+          Titre et texte facultatifs : le livrable de la porte Secteur
+          public ne prévoit ici qu'un bouton, sans accroche. Les exiger
+          plaçait Fabien devant deux astérisques rouges qu'il ne pouvait
+          satisfaire qu'en inventant un texte que la page n'attend pas.
+        */
+        titre: fields.text({ label: "Titre (facultatif)" }),
+        texte: fields.text({
+          label: "Texte (facultatif)",
+          multiline: true,
+        }),
         bouton: t("Libellé du bouton"),
       },
       { label: "Appel à contact (bas de page)" },
@@ -322,10 +498,11 @@ const journal = collection({
     }),
     vignette: fields.object(
       {
-        src: fields.text({
-          label: "Chemin de l'image",
-          description:
-            "Par exemple /journal/vignettes/anticiper.webp — le fichier se dépose dans public/journal/vignettes.",
+        src: fields.image({
+          label: "Vignette",
+          directory: "public/journal/vignettes",
+          publicPath: "/journal/vignettes/",
+          description: CONSIGNE_IMAGE,
         }),
         alt: fields.text({
           label: "Description de l'image",
@@ -368,6 +545,15 @@ const commun = singleton({
   path: "contenu/commun",
   format: "yaml",
   schema: {
+    journal: fields.object(
+      {
+        duree_lecture: t(
+          "Mention de durée de lecture",
+          "Suit le nombre de minutes calculé automatiquement — par exemple « min de lecture ».",
+        ),
+      },
+      { label: "Le Journal" },
+    ),
     marque: fields.object(
       {
         nom: t("Nom"),
@@ -441,41 +627,33 @@ const accueil = singleton({
       },
       { label: "Bandeau d'ouverture (hero)" },
     ),
-    reperes: fields.object(
-      {
-        surtitre: t("Surtitre"),
-        liste: fields.array(
-          long("Repère", "Mettre l'élément saillant entre **doubles étoiles**."),
-          {
-            label: "Repères",
-            itemLabel: (props) => props.value?.slice(0, 60) || "Repère",
-            validation: { length: { min: 1 } },
-          },
-        ),
-        lien: t("Libellé du lien vers À propos"),
-      },
-      { label: "Repères (bande de crédibilité)" },
-    ),
     publics: fields.object(
       {
         surtitre: t("Surtitre"),
-        titre: t("Titre"),
-        texte: long("Texte"),
+        titre: t(
+          "Titre",
+          "Repris mot pour mot de la page « Formations » — ne pas reformuler sans reprendre le livrable.",
+        ),
+        texte: long(
+          "Texte",
+          "Repris mot pour mot de la page « Formations ».",
+        ),
         liste: fields.array(
           fields.object({
-            label: t("Libellé"),
-            texte: long("Texte"),
+            label: t("Nom du secteur"),
             picto: t("Pictogramme", "Nom du picto (voir la liste dans LISEZMOI.md)"),
-            chemin: t("Chemin", "Page ouverte au clic, ex. /formations/secteurs/entreprise"),
           }),
           {
-            label: "Cartes publics",
-            itemLabel: (props) => props.fields.label.value || "Public",
+            label: "Les quatre secteurs",
+            description:
+              "Nom et pictogramme seulement : l'accueil dit à qui l'activité s'adresse, la rubrique « Formations » explique. Le damier entier mène à cette rubrique.",
+            itemLabel: (props) => props.fields.label.value || "Secteur",
             validation: { length: { min: 1 } },
           },
         ),
+        bouton: t("Bouton vers la rubrique Formations"),
       },
-      { label: "Bloc « Pour qui ? »" },
+      { label: "Bloc « Votre situation »" },
     ),
     paxi: fields.object(
       {
@@ -490,6 +668,7 @@ const accueil = singleton({
       {
         surtitre: t("Surtitre"),
         titre: t("Titre"),
+        texte: long("Chapô", "Repris du haut de la page « Le Journal »."),
         bouton_tous: t("Bouton « Tous les articles »"),
       },
       { label: "Bloc Journal" },
@@ -497,24 +676,21 @@ const accueil = singleton({
     methode: fields.object(
       {
         surtitre: t("Surtitre"),
-        titre: t("Titre"),
-        piliers: fields.array(pilier(), {
-          label: "Piliers",
-          itemLabel: (props) => props.fields.titre.value || "Pilier",
-          validation: { length: { min: 1 } },
-        }),
-        citation: long("Citation"),
+        titre: t(
+          "Titre",
+          "Repris de « Notre approche ». Le mot entre [crochets] s'affiche en vert.",
+        ),
+        intro: long(
+          "Teaser",
+          "Repris mot pour mot de l'introduction de la méthode, sur « Notre approche ».",
+        ),
+        bouton: t("Bouton vers « Notre approche »"),
       },
-      { label: "Bloc méthode" },
-    ),
-    formateur: fields.object(
       {
-        surtitre: t("Surtitre"),
-        titre: t("Titre"),
-        texte: long("Texte"),
-        bouton: t("Bouton"),
+        label: "Bloc méthode",
+        description:
+          "L'accueil annonce ARCA, il ne le déroule pas : les quatre piliers vivent sur « Notre approche ».",
       },
-      { label: "Bloc formateur" },
     ),
     appel_final: fields.object(
       {
@@ -538,15 +714,13 @@ const formationsPage = singleton({
       { titre: t("Titre"), texte: long("Texte") },
       { label: "Introduction des quatre portes" },
     ),
-    paxi_banniere: fields.object(
-      {
-        surtitre: t("Surtitre"),
-        titre: t("Titre"),
-        texte: long("Texte"),
-        bouton: t("Bouton"),
-      },
-      { label: "Bannière PAXI" },
-    ),
+    /*
+      Aucune bannière PAXI ici : consigne de Fabien, PAXI ne figure pas
+      sur la page principale « Formations ». Le bloc était resté dans
+      l'éditeur après avoir quitté le site — quatre champs marqués
+      obligatoires que rien ne lisait, et qu'aucun contenu ne
+      remplissait.
+    */
     carte: fields.object(
       {
         lien_porte: t("Lien des cartes (« Découvrir »)"),
@@ -575,7 +749,7 @@ const approche = singleton({
   format: "yaml",
   schema: {
     seo: seo(),
-    entete: entete(),
+    entete: entete(VALIDE + " Livrable « Rubrique Notre approche », version 7."),
     intro: fields.array(long("Paragraphe"), {
       label: "Chapô (paragraphes sous l'entête)",
       itemLabel: (props) => props.value?.slice(0, 60) || "Paragraphe",
@@ -627,7 +801,7 @@ const aPropos = singleton({
   format: "yaml",
   schema: {
     seo: seo(),
-    entete: entete(),
+    entete: entete(VALIDE + " Livrable « Rubrique À propos », V1 consolidée."),
     intro: fields.array(long("Paragraphe"), {
       label: "Chapô (paragraphes sous l'entête)",
       itemLabel: (props) => props.value?.slice(0, 60) || "Paragraphe",
@@ -731,43 +905,88 @@ const pageLegale = (label: string, path: string) =>
     },
   });
 
+/*
+  PAXI suit l'ordre imposé par le livrable de Fabien : ouverture, encart
+  de conformité AVANT le programme, programme commun, deux déclinaisons
+  métiers, pédagogie, contenus adaptables, puis un appel à l'échange
+  unique. Les champs ci-dessous reprennent cet ordre — le modifier
+  changerait l'ordre de lecture de la page.
+*/
 const paxi = singleton({
   label: "PAXI (produit phare)",
   path: "contenu/paxi",
   format: "yaml",
   schema: {
     seo: seo(),
-    entete: entete(),
-    preuve: long("Preuve (déploiement CQP)"),
-    objectifs: fields.object(
+    entete: entete(VALIDE + " Livrable PAXI."),
+    conformite: fields.object(
+      {
+        titre: t("Titre de l'encart"),
+        texte: long("Texte", "La mention de conformité EASA/IOSA."),
+      },
+      {
+        label: "Conformité",
+        description:
+          "Encart à part entière, placé AVANT le programme : c'est la première chose qu'un responsable formation vérifie.",
+      },
+    ),
+    programme: fields.object(
       {
         titre: t("Titre"),
-        liste: fields.array(long("Objectif"), {
-          label: "Objectifs",
-          itemLabel: (props) => props.value || "Objectif",
+        liste: listeTitreTexte("Modules du programme commun"),
+      },
+      { label: "Programme commun" },
+    ),
+    declinaisons: fields.object(
+      {
+        titre: t("Titre"),
+        liste: fields.array(
+          fields.object({
+            titre: t("Titre de la déclinaison"),
+            paragraphes: fields.array(long("Paragraphe"), {
+              label: "Paragraphes",
+              itemLabel: (props) => props.value?.slice(0, 60) || "Paragraphe",
+              validation: { length: { min: 1 } },
+            }),
+          }),
+          {
+            label: "Déclinaisons",
+            itemLabel: (props) => props.fields.titre.value || "Déclinaison",
+            validation: { length: { min: 1 } },
+          },
+        ),
+      },
+      {
+        label: "Déclinaisons métiers",
+        description:
+          "Deux déclinaisons métiers, jamais deux offres : la page ne s'organise pas par type de client.",
+      },
+    ),
+    pedagogie: fields.object(
+      {
+        titre: t("Titre"),
+        paragraphes: fields.array(long("Paragraphe"), {
+          label: "Paragraphes",
+          itemLabel: (props) => props.value?.slice(0, 60) || "Paragraphe",
           validation: { length: { min: 1 } },
         }),
       },
-      { label: "Objectifs" },
+      { label: "Pédagogie" },
     ),
-    modules: fields.object(
+    adaptables: fields.object(
       {
         titre: t("Titre"),
-        liste: listeTitreTexte("Modules"),
+        liste: listeTitreTexte("Contenus adaptables"),
       },
-      { label: "Modules" },
+      { label: "Contenus adaptables" },
     ),
-    publics: fields.object(
-      {
-        titre: t("Titre"),
-        liste: listeTitreTexte("Publics"),
-      },
-      { label: "Publics" },
-    ),
-    pedagogie: long("Pédagogie"),
     cta: fields.object(
-      { titre: t("Titre"), texte: long("Texte") },
-      { label: "Appel à contact" },
+      { texte: long("Texte"), bouton: t("Libellé du bouton") },
+      {
+        label: "Appel à l'échange",
+        description:
+          "Un seul pour toute la page — le livrable n'en prévoit pas d'autre.",
+      },
     ),
   },
 });
@@ -788,7 +1007,7 @@ const espaceApprenant = singleton({
       description: "Laisser vide tant que l'espace n'est pas lancé.",
     }),
     seo: seo(),
-    entete: entete(),
+    entete: entete(VALIDE + " Livrable « Rubrique Espace apprenant »."),
     contenu: fields.object(
       {
         titre: t("Titre"),

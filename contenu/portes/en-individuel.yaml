@@ -48,7 +48,7 @@ entete:
 # ⚠️ Image de travail générée pour la maquette — à remplacer par
 # une photographie choisie avec Fabien avant mise en ligne.
 visuel:
-  src: "/formations/en-individuel.webp"
+  src: "/formations/en-individuel/visuel/src.webp"
   alt: "Une personne suit seule un parcours de formation en ligne, carnet de notes ouvert à côté de son ordinateur."
 # Le tracé de marque, à l'échelle de la page.
 signature: "progression"

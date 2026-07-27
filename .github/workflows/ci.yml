@@ -32,6 +32,13 @@ jobs:
       - name: Type check (astro check)
         run: npm run check
 
+      # L'éditeur de contenu doit connaître tous les champs que le site
+      # exige : un champ requis absent de keystatic.config.ts serait
+      # effacé du fichier dès que Fabien enregistre la page, et le build
+      # suivant refuserait le contenu.
+      - name: Cohérence éditeur ↔ schémas
+        run: npm run test:cms
+
       # PUBLIC_CONVEX_URL is intentionally absent: the build must succeed
       # without it (forms fall back to LinkedIn), and this also validates
       # every /contenu file against the zod schemas.

@@ -15,7 +15,8 @@
     "apercu": "astro build && astro preview",
     "astro": "astro",
     "test:styles": "node tests/styles-navigation.mjs",
-    "test": "npm run check && npm run build && npm run test:styles"
+    "test:cms": "node tests/cms-schemas.mjs",
+    "test": "npm run check && npm run build && npm run test:cms && npm run test:styles"
   },
   "dependencies": {
     "@astrojs/node": "11.0.2",
