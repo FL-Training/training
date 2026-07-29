@@ -5,39 +5,55 @@
  *
  *   - ceux de zod (src/lib/contenu.ts, src/content.config.ts) valident au
  *     build et refusent une page incomplète ;
- *   - celui de Keystatic (keystatic.config.ts) dessine les champs que
- *     Fabien voit dans l'éditeur.
+ *   - la configuration Sveltia (public/admin/config.yml, GÉNÉRÉE par
+ *     outils/generer-config-sveltia.mjs) dessine les champs que Fabien
+ *     voit dans l'éditeur.
  *
  * Les deux doivent décrire la même chose, et l'asymétrie est piégeuse :
+ * comme tout éditeur qui réécrit les fichiers depuis son schéma, un
+ * champ qu'il ignore est EFFACÉ du fichier dès que Fabien enregistre —
+ * même sans y toucher. Quatre défauts sont contrôlés :
  *
- *   - un champ EN TROP dans Keystatic est ignoré par zod, sans dommage ;
- *   - un champ MANQUANT dans Keystatic est effacé du fichier dès que
- *     Fabien enregistre la page — même sans y toucher. Le build refuse
- *     alors le contenu, et le site cesse silencieusement de se mettre à
- *     jour : la page en ligne reste celle d'avant, personne ne voit rien.
- *
- * C'est exactement ce qui est arrivé le 26/07 : les schémas de l'accueil
- * ont été remaniés sans reprendre l'éditeur, et six champs requis n'y
- * figuraient plus. D'où ce test.
+ *   - un champ requis par le site, absent de l'éditeur : le contenu est
+ *     amputé à l'enregistrement et le déploiement s'arrête ;
+ *   - un champ facultatif absent de l'éditeur : son contenu est effacé
+ *     en silence, le build reste vert (les photographies des portes) ;
+ *   - un bloc proposé par l'éditeur que le site ne lit pas : Fabien
+ *     remplit des champs qui ne s'afficheront jamais (la « Bannière
+ *     PAXI » du 27/07) ;
+ *   - un champ facultatif pour le site mais exigé par l'éditeur : un
+ *     astérisque impossible à satisfaire sans trahir le livrable
+ *     (l'appel à contact de la porte Secteur public).
  *
  *   npm run test:cms
  *
- * Il compare les CLÉS, pas les types : un champ absent est une panne, un
- * type mal choisi se voit à l'usage. Les deux fichiers de schéma sont
- * compilés à la volée — ils sont écrits pour Vite, qui fournit
- * `import.meta.env`, absent de Node.
+ * Il compare les CLÉS et l'OBLIGATION, pas les types : un champ absent
+ * est une panne, un type mal choisi se voit à l'usage. Le fichier de
+ * schémas zod est compilé à la volée — il est écrit pour Vite, qui
+ * fournit `import.meta.env`, absent de Node.
  */
+import { spawnSync } from "node:child_process";
 import { build } from "esbuild";
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import yaml from "js-yaml";
 
+const RACINE = new URL("..", import.meta.url).pathname;
+
 /*
-  Les fichiers de contenu sont importés comme des modules par Vite ;
-  esbuild ne le sait pas. Ce greffon les convertit à la volée, pour que
-  `src/lib/contenu.ts` se charge hors du site.
+  D'abord : la config committée est-elle celle que le générateur
+  produit ? Une option de flux ajoutée dans src/lib sans relancer
+  `npm run cms:config` donnerait un éditeur en retard sur le site —
+  exactement la dérive que ce test existe pour empêcher.
 */
+const generation = spawnSync(
+  process.execPath,
+  [join(RACINE, "outils/generer-config-sveltia.mjs"), "--verifier"],
+  { stdio: "inherit" },
+);
+if (generation.status !== 0) process.exit(1);
+
 /*
   `astro:content` n'existe que dans le site ; hors de lui, on en fournit
   le strict nécessaire : `defineCollection` rend son argument tel quel,
@@ -74,8 +90,6 @@ const greffonYaml = {
   },
 };
 
-const RACINE = new URL("..", import.meta.url).pathname;
-
 const dossierTemporaire = mkdtempSync(join(tmpdir(), "pacivis-cms-"));
 process.on("exit", () => rmSync(dossierTemporaire, { recursive: true, force: true }));
 
@@ -87,9 +101,14 @@ async function charger(chemin) {
     write: false,
     format: "esm",
     platform: "node",
-    // Le mode de stockage de Keystatic dépend de cette variable ; en
-    // local elle vaut `true`, ce qui donne le schéma complet.
-    define: { "import.meta.env.DEV": "true" },
+    define: {
+      "import.meta.env.DEV": "true",
+      // `import.meta.glob` est fourni par Vite, absent d'esbuild : hors
+      // du site, il rend un catalogue vide — les tests passent par les
+      // fichiers réels, pas par ce catalogue.
+      "import.meta.glob": "globalThis.__globVide",
+    },
+    banner: { js: "globalThis.__globVide = () => ({});" },
     plugins: [greffonAstro, greffonYaml],
     logLevel: "silent",
   });
@@ -104,40 +123,17 @@ async function charger(chemin) {
 }
 
 /**
- * Les clés d'un schéma zod, en descendant dans les objets et les tableaux.
- *
- * `facultatifs` recueille à part les champs que zod accepte absents.
- * Ils ne cassent pas le build s'ils manquent à l'éditeur — mais ils sont
- * effacés du fichier au premier enregistrement, et ce qu'ils portaient
- * disparaît du site en silence. C'est ce qui menaçait la photographie
- * des quatre portes.
- */
-/**
  * Retire les enveloppes d'un schéma zod — `optional`, `default`,
- * `refine`… — pour atteindre l'objet ou le tableau qu'elles contiennent.
- *
- * Sans cela, un tableau déclaré `.default([])` — les cartes d'une porte,
- * par exemple — n'expose ni `shape` ni `element` : le parcours s'y
- * arrêtait, et tout ce qu'il contenait passait inaperçu. C'est ainsi que
- * `cartes[].signature` a échappé au contrôle, jusqu'à ce que l'éditeur
- * lui-même refuse d'ouvrir la page.
+ * `refine`, les deux sens d'un tuyau (`preprocess` range son schéma en
+ * sortie, `transform` en entrée) — pour atteindre l'objet ou le tableau
+ * qu'elles contiennent. Sans cela le parcours s'arrête à l'enveloppe,
+ * et tout ce qui est en dessous cesse d'être contrôlé sans qu'aucun
+ * test ne rougisse.
  */
 function denuder(schema) {
   let s = schema;
   for (let i = 0; i < 10 && s?._def; i++) {
     if (s.shape ?? s._def.shape ?? s.element ?? s._def.element) return s;
-    /*
-      Plusieurs enveloppes possibles, et l'utile n'est pas toujours à la
-      même place. `optional`/`default` gardent leur contenu sous
-      `innerType`. `z.preprocess` et `.transform` fabriquent tous deux un
-      tuyau, mais en sens inverse : le premier range le schéma en sortie
-      (`out`), le second en entrée (`in`) — sa sortie n'étant que la
-      fonction de conversion. On essaie donc chaque piste et l'on garde
-      celle qui mène à un objet ou à un tableau. Sans cela le parcours
-      s'arrête, et tout ce qui est en dessous cesse d'être contrôlé sans
-      qu'aucun test ne rougisse : c'est ce qui a fait disparaître les
-      raccourcis de sous-menu du décompte.
-    */
     const pistes = [
       s._def.innerType,
       s._def.schema,
@@ -145,13 +141,25 @@ function denuder(schema) {
       s._def.in,
       s._def.type,
     ].filter((d) => d?._def);
-    const suite = pistes.find((d) => denuder(d)?.shape ?? denuder(d)?._def?.shape ?? denuder(d)?.element ?? denuder(d)?._def?.element);
+    const suite = pistes.find(
+      (d) =>
+        denuder(d)?.shape ??
+        denuder(d)?._def?.shape ??
+        denuder(d)?.element ??
+        denuder(d)?._def?.element,
+    );
     if (!suite) return s;
     s = suite;
   }
   return s;
 }
 
+/**
+ * Les clés d'un schéma zod, en descendant dans les objets et les
+ * tableaux. `facultatifs` recueille à part les champs que zod accepte
+ * absents : ils ne cassent pas le build s'ils manquent à l'éditeur —
+ * mais ils sont effacés du fichier au premier enregistrement.
+ */
 function clesZod(schema, prefixe = "", facultatifs = new Set()) {
   const cles = new Set();
   if (!schema?._def) return cles;
@@ -174,76 +182,53 @@ function clesZod(schema, prefixe = "", facultatifs = new Set()) {
 }
 
 /**
- * Les clés d'un schéma Keystatic, dans la même notation.
+ * Les clés d'un tableau de champs Sveltia, dans la même notation.
  *
- * `exiges` recueille à part les champs que l'éditeur refuse de laisser
- * vides. Un champ exigé ici mais facultatif côté site place Fabien
- * devant un astérisque rouge qu'aucun contenu ne justifie — et l'oblige
- * à inventer un texte que la page n'attend pas.
+ * `exiges` recueille à part les champs devant lesquels Fabien trouvera
+ * une case vide à remplir obligatoirement : la convention Sveltia rend
+ * tout champ obligatoire sauf `required: false` — et un champ pourvu
+ * d'une valeur par défaut arrive rempli, il ne compte pas.
  */
-/**
- * Ce champ mettra-t-il Fabien devant une case vide qu'il doit remplir ?
- *
- * Keystatic ne conserve pas la déclaration `validation: {isRequired}` :
- * il en fabrique une fonction `validate`, seule trace de l'exigence. On
- * la met donc à l'épreuve — un champ obligatoire refuse aussi bien la
- * chaîne vide que l'absence de valeur.
- *
- * Un champ qui propose une valeur par défaut ne compte pas : il arrive
- * rempli. C'est le cas de la durée d'une formation, « Sur mesure » de
- * part et d'autre — obligatoire, mais jamais vide.
- */
-function exigeUneSaisie(champ) {
-  if (typeof champ?.validate !== "function") return false;
-  // `defaultValue` est une fonction chez Keystatic, jamais la valeur.
-  let parDefaut;
-  try {
-    parDefaut =
-      typeof champ.defaultValue === "function"
-        ? champ.defaultValue()
-        : champ.defaultValue;
-  } catch {}
-  if (typeof parDefaut === "string" && parDefaut.trim()) return false;
-  const refuse = (v) => {
-    try {
-      champ.validate(v);
-      return false;
-    } catch {
-      return true;
-    }
-  };
-  return refuse("") && refuse(null);
-}
-
-function clesKeystatic(schema, prefixe = "", exiges = new Set()) {
+function clesSveltia(champs, prefixe = "", exiges = new Set()) {
   const cles = new Set();
-  if (!schema || typeof schema !== "object") return cles;
+  for (const champ of champs ?? []) {
+    // Le corps d'un fichier Markdown n'est pas une clé du schéma zod :
+    // Astro le tient à part, sous le nom de `body`.
+    if (prefixe === "" && champ.name === "body") continue;
+    const chemin = prefixe ? `${prefixe}.${champ.name}` : champ.name;
+    cles.add(chemin);
 
-  // Objet Keystatic : ses champs vivent dans `.fields`.
-  const champs = schema.fields ?? (prefixe === "" ? schema : null);
-  if (champs && !schema.element) {
-    for (const [cle, valeur] of Object.entries(champs)) {
-      const chemin = prefixe ? `${prefixe}.${cle}` : cle;
-      cles.add(chemin);
-      if (exigeUneSaisie(valeur)) exiges.add(chemin);
-      for (const sous of clesKeystatic(valeur, chemin, exiges)) cles.add(sous);
+    // Un objet ou une liste ne sont pas des cases à remplir ; leur
+    // obligation se joue champ par champ, en dessous.
+    const conteneur = champ.widget === "object" || champ.widget === "list";
+    const rempliDAvance =
+      champ.default !== undefined && champ.default !== null && champ.default !== "";
+    if (!conteneur && champ.required !== false && !rempliDAvance) exiges.add(chemin);
+
+    if (champ.widget === "object") {
+      for (const sous of clesSveltia(champ.fields, chemin, exiges)) cles.add(sous);
+    } else if (champ.widget === "list" && champ.fields) {
+      for (const sous of clesSveltia(champ.fields, `${chemin}[]`, exiges)) cles.add(sous);
     }
-  }
-  // Tableau Keystatic : son gabarit vit dans `.element`.
-  if (schema.element) {
-    for (const sous of clesKeystatic(schema.element, `${prefixe}[]`, exiges)) cles.add(sous);
+    // Une liste à champ unique (`field`) produit des valeurs nues : pas
+    // de clés en dessous, comme côté zod.
   }
   return cles;
 }
 
-const keystatic = (await charger("keystatic.config.ts")).default;
 const contenu = await charger("src/lib/contenu.ts");
 const collections = await charger("src/content.config.ts");
+const sveltia = yaml.load(readFileSync(join(RACINE, "public/admin/config.yml"), "utf8"));
+
+const parNom = new Map(sveltia.collections.map((c) => [c.name, c]));
+const fichiers = new Map(
+  ["pages", "reglages"].flatMap((n) => (parNom.get(n)?.files ?? []).map((f) => [f.name, f])),
+);
 
 /*
-  Les pages à confronter. Le nom de gauche est celui du singleton
-  Keystatic, celui de droite le schéma zod exporté par src/lib/contenu.ts.
-  Ajouter une page ici quand une nouvelle est créée.
+  Les pages à confronter. Le nom de gauche est celui de l'entrée Sveltia,
+  celui de droite le schéma zod exporté par src/lib/contenu.ts. Ajouter
+  une page ici quand une nouvelle est créée.
 */
 const PAGES = [
   ["accueil", "accueilSchema"],
@@ -252,6 +237,7 @@ const PAGES = [
   ["aPropos", "aProposSchema"],
   ["contactPage", "contactSchema"],
   ["paxi", "paxiSchema"],
+  ["journalPage", "journalPageSchema"],
   ["espaceApprenant", "espaceApprenantSchema"],
   ["commun", "communSchema"],
   // Les deux pages légales partagent un schéma unique.
@@ -263,54 +249,41 @@ const PAGES = [
   Les collections — un fichier par entrée. Leur schéma zod vit dans
   src/content.config.ts, dans la propriété `schema` de chaque collection.
 */
-const COLLECTIONS = [["portes", "portes"], ["journal", "journal"], ["formations", "formations"]];
+const COLLECTIONS = [
+  ["portes", "portes"],
+  ["journal", "journal"],
+  ["formations", "formations"],
+];
 
 let echecs = 0;
 
-/** Confronte un schéma zod à un schéma Keystatic et rend le verdict. */
-function confronter(nom, schemaZod, schemaKeystatic) {
+/** Confronte un schéma zod à un schéma Sveltia et rend le verdict. */
+function confronter(nom, schemaZod, champsSveltia) {
   const facultatifs = new Set();
   const requises = clesZod(schemaZod, "", facultatifs);
   const exiges = new Set();
-  const declarees = clesKeystatic(schemaKeystatic, "", exiges);
+  const declarees = clesSveltia(champsSveltia, "", exiges);
 
   const manquantes = [...requises].filter((c) => !declarees.has(c));
   // Un facultatif absent ne casse pas le build : il efface son contenu.
   const effaces = [...facultatifs].filter((c) => !declarees.has(c));
   /*
-    Et l'inverse : un champ que l'éditeur propose alors que le site ne
-    le lit pas. Souvent un reste d'une version antérieure. Il apparaît à
-    Fabien comme un champ à remplir — parfois marqué obligatoire, et
-    toujours vide, puisque aucun contenu ne le porte. C'était le cas de
-    la « Bannière PAXI » sur la page Formations, que la consigne de
-    Fabien exclut pourtant de cette page.
-  */
-  /*
-    Limité aux blocs de PREMIER NIVEAU. Plus bas, la comparaison ne
-    serait pas fiable : les objets facultatifs du site vivent sous des
-    enveloppes que le parcours ne traverse pas jusqu'au bout, et le
-    contrôle crierait au loup sur des champs parfaitement lus. C'est au
-    premier niveau que vivent les blocs oubliés — une rubrique entière
-    proposée à Fabien alors que plus personne ne l'affiche.
+    Les blocs fantômes, limités au PREMIER NIVEAU : c'est là que vivent
+    les rubriques oubliées — une section entière proposée à Fabien alors
+    que plus personne ne l'affiche. Plus bas, les enveloppes des blocs
+    facultatifs rendraient la comparaison criarde à tort.
   */
   const fantomes = [...declarees].filter(
     (c) =>
       !c.includes(".") &&
       !c.includes("[") &&
-      // Le corps d'un article n'est pas un champ : Astro le tient à
-      // part du schéma, sous le nom de `body`. L'éditeur, lui, doit
-      // bien le proposer.
-      c !== "contenu" &&
       !requises.has(c) &&
       !facultatifs.has(c),
   );
-
   /*
-    Facultatif pour le site, obligatoire dans l'éditeur. La porte Secteur
-    public le montrait : son appel à contact ne porte qu'un bouton, comme
-    le veut le livrable, et l'éditeur y réclamait pourtant un titre et un
-    texte. Fabien ne pouvait ni les remplir sans trahir le livrable, ni
-    enregistrer la page sans les remplir.
+    Facultatif pour le site, obligatoire dans l'éditeur : un astérisque
+    que Fabien ne peut satisfaire qu'en inventant un texte que la page
+    n'attend pas.
   */
   const trop = [...facultatifs].filter((c) => exiges.has(c));
 
@@ -328,31 +301,31 @@ function confronter(nom, schemaZod, schemaKeystatic) {
   }
 }
 
-for (const [nomKeystatic, nomZod] of PAGES) {
-  const singleton = keystatic.singletons?.[nomKeystatic];
+for (const [nomSveltia, nomZod] of PAGES) {
+  const entree = fichiers.get(nomSveltia);
   const schemaZod = contenu.schemas?.[nomZod];
 
-  if (!singleton) {
-    console.log(`ÉCHEC  ${nomKeystatic} : absent de keystatic.config.ts`);
+  if (!entree) {
+    console.log(`ÉCHEC  ${nomSveltia} : absent de public/admin/config.yml`);
     echecs++;
     continue;
   }
   if (!schemaZod) {
-    console.log(`—      ${nomKeystatic} : schéma zod « ${nomZod} » non exporté, contrôle impossible`);
+    console.log(`—      ${nomSveltia} : schéma zod « ${nomZod} » non exporté, contrôle impossible`);
     continue;
   }
 
-  confronter(nomKeystatic, schemaZod, singleton.schema);
+  confronter(nomSveltia, schemaZod, entree.fields);
 }
 
-for (const [nomKeystatic, nomCollection] of COLLECTIONS) {
-  const col = keystatic.collections?.[nomKeystatic];
+for (const [nomSveltia, nomCollection] of COLLECTIONS) {
+  const col = parNom.get(nomSveltia);
   const zodCol = collections.collections?.[nomCollection];
   if (!col || !zodCol?.schema) {
-    console.log(`—      ${nomKeystatic} : contrôle impossible`);
+    console.log(`—      ${nomSveltia} : contrôle impossible`);
     continue;
   }
-  confronter(nomKeystatic, zodCol.schema, col.schema);
+  confronter(nomSveltia, zodCol.schema, col.fields);
 }
 
 console.log(

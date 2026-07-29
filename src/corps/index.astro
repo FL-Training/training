@@ -1,0 +1,381 @@
+---
+import Base from "../layouts/Base.astro";
+import DeescalationLine from "../components/DeescalationLine.astro";
+import Picto from "../components/Picto.astro";
+import { href } from "../lib/url";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue } from "../lib/routes";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { accueil } = contenuLangue(langue);
+import { enrichir } from "../lib/texte";
+
+/*
+  Les schémas d'ARCA sont désignés par le nom du pilier et non par son
+  initiale : « Anticiper » et « Agir » commencent tous deux par A.
+*/
+const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
+---
+
+<Base title={accueil.seo.titre} description={accueil.seo.description}>
+  <!-- ============ Hero ============ -->
+  <section class="hero-section relative overflow-hidden">
+    {/*
+      Le logo en filigrane occupe la colonne laissée libre à droite de
+      l'accroche, à sa hauteur — il fait face au titre au lieu de fuir
+      hors du cadre par le coin.
+
+      Il reste ancré au MÊME repère à toutes les largeurs (milieu du
+      bord droit) : seuls sa taille et son retrait varient, sinon on le
+      voit sauter en redimensionnant. Plus l'écran est large, plus il
+      rentre dans la page — sur les formats étroits il déborde encore un
+      peu, faute de colonne libre.
+    */}
+    <img
+      src={href("/logo-400.webp")}
+      alt=""
+      width="420"
+      height="420"
+      aria-hidden="true"
+      class="logo-filigrane pointer-events-none absolute top-1/2 right-[-2rem] h-36 w-36 -translate-y-1/2 opacity-[0.11] select-none sm:right-[-1rem] sm:h-56 sm:w-56 md:right-[3rem] md:h-80 md:w-80 lg:right-[7rem] lg:h-88 lg:w-88 xl:right-[11rem] xl:h-96 xl:w-96"
+    />
+    <div class="mx-auto max-w-6xl px-6 pt-14 pb-8 sm:pt-20 md:pt-28 md:pb-10">
+      <p class="eyebrow reveal reveal-1">{accueil.hero.surtitre}</p>
+      <h1
+        class="display reveal reveal-2 mt-4 max-w-4xl text-[2.1rem] text-navy-deep sm:text-[2.7rem] md:mt-5 md:text-[3.4rem] lg:text-[3.8rem]"
+        data-hero-titre
+        set:html={enrichir(accueil.hero.titre)}
+      />
+      <p
+        class="reveal reveal-3 mt-5 max-w-xl text-lg leading-relaxed text-ink-soft md:mt-7"
+        set:html={enrichir(accueil.hero.texte)}
+      />
+      <div class="reveal reveal-4 mt-7 flex flex-wrap gap-4 md:mt-9">
+        <a href={href(cheminLangue(langue, "/formations"))} class="btn btn-primary">
+          {accueil.hero.bouton_principal}
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href={href(cheminLangue(langue, "/approche"))} class="btn btn-ghost">
+          {accueil.hero.bouton_secondaire}
+        </a>
+      </div>
+    </div>
+    <div class="mx-auto max-w-6xl px-6">
+      <DeescalationLine class="h-12 sm:h-16 md:h-24" />
+    </div>
+  </section>
+
+  <!-- ============ Publics ============ -->
+  <section
+    class="mx-auto max-w-6xl px-6 py-20"
+    data-reveal-group
+    data-reveal-stagger="50"
+  >
+    <div class="grid gap-12 md:grid-cols-[45fr_55fr] md:gap-16">
+      <div>
+        <p class="eyebrow" data-reveal>{accueil.publics.surtitre}</p>
+        <h2
+          class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+          data-reveal
+        >
+          {accueil.publics.titre}
+        </h2>
+        <p
+          class="mt-5 max-w-xl text-ink-soft"
+          data-reveal
+          set:html={enrichir(accueil.publics.texte)}
+        />
+      </div>
+      {/*
+        LES QUATRE SECTEURS, ET RIEN D'AUTRE.
+
+        L'accueil dit à qui Pacivis Academy s'adresse ; c'est la seule
+        chose que l'internaute a besoin de savoir ici. Ni photographie,
+        ni résumé, ni quatre liens concurrents : quatre plaques et un
+        bouton unique vers la rubrique, qui montre et détaille.
+
+        Chaque plaque porte le filet vert de la marque, qui se trace à
+        la révélation comme les séparations éditoriales du site — le
+        pictogramme et le nom suffisent au reste.
+      */}
+      {/*
+        Les plaques et leur lien forment UNE cellule de la grille.
+        Enfants directs, ils en occupaient deux : le bouton retombait
+        sous le texte, dans la colonne de gauche.
+      */}
+      <div class="secteurs-colonne">
+      {/*
+        Le damier tout entier est UN lien vers la rubrique, comme le
+        bouton qui le suit : ce ne sont pas quatre destinations mais
+        quatre repères, et l'on a toujours envie de cliquer sur ce que
+        l'on regarde. Ni liste ni éléments interactifs à l'intérieur —
+        le lien reste unique, et son libellé est celui du bouton.
+      */}
+      <a
+        href={href(cheminLangue(langue, "/formations"))}
+        class="secteurs"
+        aria-label={accueil.publics.bouton}
+        data-reveal-group
+        data-reveal-stagger="90"
+      >
+        {
+          accueil.publics.liste.map((p) => (
+            <span class="secteur" data-reveal>
+              <span class="secteur-filet" aria-hidden="true" />
+              <span class="secteur-ligne">
+                <span class="secteur-picto" aria-hidden="true">
+                  <Picto nom={p.picto} />
+                </span>
+                <span class="secteur-nom display">{p.label}</span>
+              </span>
+            </span>
+          ))
+        }
+      </a>
+        <a href={href(cheminLangue(langue, "/formations"))} class="btn btn-ghost secteurs-lien" data-reveal>
+          {accueil.publics.bouton} <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Méthode : 4 piliers ============ -->
+  <section class="bg-abysse text-paper">
+    <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
+      <p class="eyebrow !text-sage" data-reveal>{accueil.methode.surtitre}</p>
+      <h2
+        class="display mt-4 max-w-2xl text-3xl md:text-4xl"
+        data-reveal
+        set:html={enrichir(accueil.methode.titre, "text-sage")}
+      />
+      <p
+        class="mt-5 max-w-3xl leading-relaxed text-paper/75"
+        data-reveal
+        set:html={enrichir(accueil.methode.intro, "text-sage")}
+      />
+      {/*
+        Ni les quatre piliers ni leurs schémas ici : l'accueil annonce
+        la méthode, « Notre approche » la déroule. Les répéter donnait à
+        l'accueil un condensé de la page, et retirait sa raison d'être au
+        lien qui suit.
+      */}
+      <a href={href(cheminLangue(langue, "/approche"))} class="btn btn-ghost !border-paper/30 !text-paper mt-9 hover:!border-sage hover:!text-sage" data-reveal>
+        {accueil.methode.bouton} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
+  {/*
+    ============ Spotlight PAXI ============
+
+    La section porte sa respiration EN BAS comme en haut. Sans `pb`, le
+    bloc sombre finissait au ras de la section suivante, dont le fond
+    gris commençait 12 px avant lui : le bas de la carte était mangé, et
+    le bloc paraissait mal posé sur la page.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pt-20 pb-20">
+    <a
+      href={href(cheminLangue(langue, "/formations/paxi"))}
+      class="group flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between md:p-10"
+      data-reveal
+    >
+      <div>
+        <p class="eyebrow !text-sage">{accueil.paxi.surtitre}</p>
+        <h2 class="display mt-2 max-w-2xl text-2xl md:text-3xl">
+          {accueil.paxi.titre}
+        </h2>
+        <p class="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-paper/75">
+          {accueil.paxi.texte}
+        </p>
+      </div>
+      <span
+        class="btn shrink-0 self-start border-1.5 border-sage bg-sage !px-6 text-abysse group-hover:border-paper group-hover:bg-paper md:self-center"
+      >
+        {accueil.paxi.bouton}
+        <span aria-hidden="true">→</span>
+      </span>
+    </a>
+  </section>
+
+  <!-- ============ Teaser Journal ============ -->
+  <section class="mx-auto max-w-6xl px-6 py-20" data-reveal-group>
+    <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
+      <div>
+        <p class="eyebrow">{accueil.journal.surtitre}</p>
+        <h2 class="display mt-4 text-3xl text-navy-deep md:text-4xl">
+          {accueil.journal.titre}
+        </h2>
+        <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft">
+          {accueil.journal.texte}
+        </p>
+      </div>
+      <a href={href(cheminLangue(langue, "/journal"))} class="btn btn-ghost">
+        {accueil.journal.bouton_tous} <span aria-hidden="true">→</span>
+      </a>
+    </div>
+    {/*
+      Aucun article ici : l'accueil annonce le Journal, la rubrique le
+      déroule. Les extraits d'articles y faisaient double emploi — et
+      leur nombre aurait varié au fil des publications, déséquilibrant
+      la page.
+    */}
+  </section>
+
+  <!-- ============ CTA final ============ -->
+  <section class="mx-auto max-w-6xl px-6 py-24" data-reveal-group>
+    <h2
+      class="display max-w-2xl text-4xl text-navy-deep md:text-5xl"
+      data-reveal
+    >
+      {accueil.appel_final.titre}
+    </h2>
+    <p
+      class="mt-5 max-w-xl text-ink-soft"
+      data-reveal
+      set:html={enrichir(accueil.appel_final.texte)}
+    />
+    <a href={href(cheminLangue(langue, "/contact"))} class="btn btn-primary mt-9" data-reveal>
+      {accueil.appel_final.bouton} <span aria-hidden="true">→</span>
+    </a>
+  </section>
+</Base>
+
+<style>
+  /*
+    ---- LES QUATRE SECTEURS ----
+
+    Une grille de deux par deux, chaque plaque ouverte par un filet vert
+    qui se trace à la révélation. Ni carte ni bouton : rien ne se clique
+    ici, l'unique chemin est le lien qui suit. Le pictogramme est celui
+    du sous-menu et des cartes de porte — le visiteur reconnaît les
+    mêmes signes partout.
+  */
+  .secteurs {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: color-mix(in oklab, var(--color-ink) 10%, transparent);
+    border: 1px solid color-mix(in oklab, var(--color-ink) 10%, transparent);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  /*
+    Le damier. Deux teintes de la charte seulement, et les plus pâles :
+    le papier et le vert très clair des puces. Alternées en diagonale,
+    elles donnent au bloc une matière sans que le vert cesse d'être un
+    accent — la charte le veut rare.
+  */
+  .secteur {
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+    padding: 2.25rem 1.75rem 2.1rem;
+    background: var(--color-paper);
+  }
+
+  .secteur:nth-child(1),
+  .secteur:nth-child(4) {
+    background: color-mix(in oklab, var(--color-sage-faint) 55%, var(--color-paper));
+  }
+
+  /* Le damier réagit d'un seul tenant : c'est un seul lien. */
+  .secteurs .secteur {
+    transition: background-color 300ms ease;
+  }
+
+  .secteurs:hover .secteur:nth-child(1),
+  .secteurs:hover .secteur:nth-child(4),
+  .secteurs:focus-visible .secteur:nth-child(1),
+  .secteurs:focus-visible .secteur:nth-child(4) {
+    background: color-mix(in oklab, var(--color-sage-faint) 85%, var(--color-paper));
+  }
+
+  .secteurs:hover .secteur:nth-child(2),
+  .secteurs:hover .secteur:nth-child(3),
+  .secteurs:focus-visible .secteur:nth-child(2),
+  .secteurs:focus-visible .secteur:nth-child(3) {
+    background: color-mix(in oklab, var(--color-sage-faint) 25%, var(--color-paper));
+  }
+
+  /*
+    Le pictogramme et le nom sur une seule ligne, centrés l'un sur
+    l'autre. Empilés, ils flottaient : trois éléments alignés à gauche
+    mais à des hauteurs sans rapport. Ici le signe précède le mot,
+    comme dans le sous-menu et sur les cartes de porte.
+  */
+  .secteur-ligne {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .secteur-filet {
+    display: block;
+    width: 2.5rem;
+    height: 2px;
+    background: var(--color-sage-deep);
+    transform-origin: left center;
+  }
+
+  :global(html.js-reveal) .secteur:not(:global(.revealed)) .secteur-filet {
+    transform: scaleX(0);
+  }
+
+  :global(html.js-reveal) .secteur:global(.revealed) .secteur-filet {
+    transform: scaleX(1);
+    transition: transform 620ms cubic-bezier(0.16, 1, 0.3, 1) 140ms;
+  }
+
+  .secteur-picto {
+    display: inline-flex;
+    color: var(--color-sage-deep);
+  }
+
+  .secteur-picto :global(svg) {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .secteur-nom {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    color: var(--color-navy-deep);
+  }
+
+  .secteurs-colonne {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .secteurs-lien {
+    margin-top: 1.75rem;
+  }
+
+  @media (max-width: 479px) {
+    .secteurs {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .secteur-filet {
+      transition: none;
+    }
+  }
+
+  /*
+    Le filigrane du logo s'efface progressivement vers la gauche : côté
+    texte il a totalement disparu, côté marge il reste visible. Le titre
+    ne repose donc jamais sur une trame.
+  */
+  .logo-filigrane {
+    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 85%);
+    mask-image: linear-gradient(to left, black 30%, transparent 85%);
+  }
+</style>

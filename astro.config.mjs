@@ -3,7 +3,6 @@ import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import keystatic from "@keystatic/astro";
 import tailwindcss from "@tailwindcss/vite";
 import yaml from "@rollup/plugin-yaml";
 
@@ -22,10 +21,10 @@ import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
     - la BASE passe à la racine. Sous GitHub Pages le site est un projet
       parmi d'autres, servi sous /training/ ; sur un serveur à nous il
       est seul et vit à la racine.
-    - la SORTIE devient un serveur, avec l'adaptateur node. Il en faut
-      un pour l'éditeur de Fabien, qui a besoin de routes vivantes —
-      c'est ce que GitHub Pages, qui ne sert que des fichiers, ne pourra
-      jamais faire. C'est la raison même de la bascule.
+    - la SORTIE devient un serveur, avec l'adaptateur node. C'est le
+      choix du runtime Dokploy (Dockerfile) ; l'éditeur, lui, n'exige
+      plus rien du serveur — Sveltia est une page statique servie sous
+      /admin/, voir public/admin/ et doc/sveltia-requis-hebergement.md.
     - l'ORIGINE vient de PUBLIC_SITE_URL. Elle alimente les URLs
       canoniques, le sitemap, Open Graph et JSON-LD. Tant qu'elle
       désigne une adresse IP, le site demande à n'être pas indexé (voir
@@ -39,18 +38,11 @@ import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
 /*
   LA BASE EN DÉVELOPPEMENT : la racine, comme sur Dokploy.
 
-  Keystatic ne sait pas vivre ailleurs qu'à la racine. Son routeur
-  découpe l'adresse avec une expression écrite en dur
-  (`pathname.replace(/^\/keystatic\/?/, "")`) et son gestionnaire d'API
-  lit l'action juste après `/api/keystatic/`. Sous /training/keystatic,
-  l'interface se charge, son menu s'affiche, et toute rubrique ouverte
-  répond « Not found ».
-
-  Rien ne permet de le lui apprendre : la propriété `basePath` que
-  documente Keystatic n'existe pas dans cette version, et un intergiciel
-  ne peut pas rattraper le coup — Astro rejette les requêtes hors base
-  AVANT d'exécuter le moindre intergiciel. Ne pas remettre /training ici
-  en croyant corriger une anomalie : l'éditeur cesserait de s'ouvrir.
+  Le développement local reproduit ainsi l'hébergement de destination —
+  mêmes adresses, mêmes chemins — et l'atelier d'édition s'ouvre sur
+  http://localhost:4321/admin/index.html. Les liens du site passent tous
+  par `href()` et `import.meta.env.BASE_URL` : ils suivent la base sans
+  rien changer, et le build GitHub Pages reste servi sous /training.
 */
 const enDeveloppement = process.argv.includes("dev");
 const cibleDokploy = process.env.DEPLOY_TARGET === "dokploy";
@@ -91,7 +83,6 @@ export default defineConfig({
           page.replace(/\/+$/, "").endsWith(chemin),
         ),
     }),
-    ...(enDeveloppement || cibleDokploy ? [keystatic()] : []),
   ],
   vite: {
     plugins: [tailwindcss(), yaml()],

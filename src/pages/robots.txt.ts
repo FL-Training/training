@@ -2,8 +2,8 @@ import type { APIRoute } from "astro";
 
 /**
  * Generated so the Sitemap URL always follows the configured site + base.
- * The Keystatic admin and its API are excluded: they are auth-gated pages
- * with no value in a search index.
+ * The Sveltia admin (/admin) is excluded: an auth-gated page with no
+ * value in a search index.
  */
 
 /**
@@ -27,6 +27,9 @@ function accepteLIndexation(origine: URL | undefined): boolean {
 export const GET: APIRoute = ({ site }) => {
   const base = import.meta.env.BASE_URL.replace(/\/*$/, "/");
   const sitemap = new URL(`${base}sitemap-index.xml`, site).href;
+  // La règle suit la base, comme le sitemap : sous GitHub Pages,
+  // l'atelier vit sous /training/admin — « /admin » ne couvrirait rien.
+  const admin = `${base}admin`;
 
   if (!accepteLIndexation(site)) {
     return new Response(["User-agent: *", "Disallow: /", ""].join("\n"), {
@@ -40,13 +43,11 @@ export const GET: APIRoute = ({ site }) => {
   const body = [
     "User-agent: OAI-SearchBot",
     "Allow: /",
-    "Disallow: /keystatic",
-    "Disallow: /api/",
+    `Disallow: ${admin}`,
     "",
     "User-agent: *",
     "Allow: /",
-    "Disallow: /keystatic",
-    "Disallow: /api/",
+    `Disallow: ${admin}`,
     "",
     `Sitemap: ${sitemap}`,
     "",

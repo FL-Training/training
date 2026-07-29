@@ -15,7 +15,45 @@
  * entrées plus deux boutons d'action.
  */
 import { href } from "../lib/url";
-import { commun } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue, correspondanceRoute, lienContenu } from "../lib/routes";
+import { LANGUES, LANGUE_PAR_DEFAUT } from "../lib/langues";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { commun } = contenuLangue(langue);
+
+/*
+  Le sélecteur de langue : n'existe qu'à partir de deux langues
+  publiées. Chaque langue mène à la page jumelle quand la table des
+  routes la connaît, à son accueil sinon (entrées de collections — leurs
+  jumelles exactes viendront avec l'étape SEO).
+*/
+const autresLangues = (() => {
+  const publiees = LANGUES.filter((l) => l.publiee);
+  if (publiees.length < 2) return [];
+  const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
+  let chemin = Astro.url.pathname.startsWith(base)
+    ? Astro.url.pathname.slice(base.length)
+    : Astro.url.pathname;
+  if (langue !== LANGUE_PAR_DEFAUT) chemin = chemin.slice(langue.length + 1) || "/";
+  const r = correspondanceRoute(langue, chemin);
+  return publiees
+    .filter((l) => l.code !== langue)
+    .map((l) => {
+      const cheminCible = r
+        ? (r.chemins as Record<string, string>)[l.code]
+        : "/";
+      const prefixe = l.code === LANGUE_PAR_DEFAUT ? "" : `/${l.code}`;
+      return {
+        code: l.code,
+        nom: l.nom,
+        href: href(`${prefixe}${cheminCible === "/" && prefixe ? "/" : cheminCible}`),
+      };
+    });
+})();
 import Picto from "./Picto.astro";
 
 /**
@@ -56,7 +94,7 @@ function isCurrent(path: string): boolean {
   <div
     class="mx-auto flex max-w-6xl items-center justify-between gap-5 px-6 py-4"
   >
-    <a href={href("/")} class="group flex items-center gap-3" aria-label="Accueil">
+    <a href={href(cheminLangue(langue, "/"))} class="group flex items-center gap-3" aria-label="Accueil">
       <img
         src={href("/logo-96.png")}
         alt=""
@@ -67,6 +105,16 @@ function isCurrent(path: string): boolean {
       <span class="display text-lg text-navy-deep">{commun.marque.nom}</span>
     </a>
 
+    {autresLangues.length > 0 && (
+      <nav class="hidden items-center gap-2 lg:flex" aria-label="Langues">
+        {autresLangues.map((l) => (
+          <a href={l.href} hreflang={l.code} lang={l.code} class="nav-link uppercase" aria-label={l.nom}>
+            {l.code}
+          </a>
+        ))}
+      </nav>
+    )}
+
     <nav
       class="hidden items-center gap-3 lg:flex xl:gap-4"
       aria-label="Navigation principale"
@@ -74,7 +122,7 @@ function isCurrent(path: string): boolean {
       {
         commun.navigation.map((item) =>
           item.accent ? (
-            <a href={href(item.chemin)} class="btn btn-primary !px-4 !py-2.5 text-sm">
+            <a href={href(lienContenu(langue, item.chemin))} class="btn btn-primary !px-4 !py-2.5 text-sm">
               {item.label}
             </a>
           ) : item.sous_menu.length > 0 ? (
@@ -86,12 +134,12 @@ function isCurrent(path: string): boolean {
             */
             <div class="groupe-nav relative">
               <a
-                href={href(item.chemin)}
+                href={href(lienContenu(langue, item.chemin))}
                 class="nav-link !text-[0.92rem]"
-                aria-current={isCurrent(item.chemin) ? "page" : undefined}
+                aria-current={isCurrent(lienContenu(langue, item.chemin)) ? "page" : undefined}
               >
                 {item.label}
-                {isCurrent(item.chemin) && (
+                {isCurrent(lienContenu(langue, item.chemin)) && (
                   <span
                     class="nav-souligne"
                     transition:name="nav-actif"
@@ -106,8 +154,8 @@ function isCurrent(path: string): boolean {
                       <a
                         href={
                           r.ancre
-                            ? `${href(item.chemin)}#${r.ancre}`
-                            : href(r.chemin!)
+                            ? `${href(lienContenu(langue, item.chemin))}#${r.ancre}`
+                            : href(lienContenu(langue, r.chemin!))
                         }
                         class="sous-menu-lien"
                       >
@@ -136,12 +184,12 @@ function isCurrent(path: string): boolean {
             </div>
           ) : (
             <a
-              href={href(item.chemin)}
+              href={href(lienContenu(langue, item.chemin))}
               class="nav-link !text-[0.92rem]"
-              aria-current={isCurrent(item.chemin) ? "page" : undefined}
+              aria-current={isCurrent(lienContenu(langue, item.chemin)) ? "page" : undefined}
             >
               {item.label}
-              {isCurrent(item.chemin) && (
+              {isCurrent(lienContenu(langue, item.chemin)) && (
                 <span
                   class="nav-souligne"
                   transition:name="nav-actif"
@@ -188,18 +236,27 @@ function isCurrent(path: string): boolean {
       </summary>
       <nav class="menu-panneau" aria-label="Navigation mobile">
         <div class="menu-contenu">
+          {autresLangues.length > 0 && (
+            <div class="menu-groupe" style="--i: 0">
+              {autresLangues.map((l) => (
+                <a href={l.href} hreflang={l.code} lang={l.code} class="menu-entree uppercase">
+                  {l.nom}
+                </a>
+              ))}
+            </div>
+          )}
           {
             commun.navigation.map((item, i) =>
               item.accent ? (
-                <a href={href(item.chemin)} class="menu-accent" style={`--i: ${i}`}>
+                <a href={href(lienContenu(langue, item.chemin))} class="menu-accent" style={`--i: ${i}`}>
                   {item.label}
                 </a>
               ) : (
                 <div class="menu-groupe" style={`--i: ${i}`}>
                   <a
-                    href={href(item.chemin)}
+                    href={href(lienContenu(langue, item.chemin))}
                     class="menu-entree"
-                    aria-current={isCurrent(item.chemin) ? "page" : undefined}
+                    aria-current={isCurrent(lienContenu(langue, item.chemin)) ? "page" : undefined}
                   >
                     {item.label}
                   </a>
@@ -216,8 +273,8 @@ function isCurrent(path: string): boolean {
                           <a
                             href={
                               r.ancre
-                                ? `${href(item.chemin)}#${r.ancre}`
-                                : href(r.chemin!)
+                                ? `${href(lienContenu(langue, item.chemin))}#${r.ancre}`
+                                : href(lienContenu(langue, r.chemin!))
                             }
                             class="menu-raccourci"
                           >

@@ -18,10 +18,18 @@
  *   />
  */
 import { getCollection } from "astro:content";
+import { localeLangue, nomCollection } from "../lib/langues";
 import { href } from "../lib/url";
 import { nomLabel } from "../lib/labels";
 import type { IdLabel } from "../lib/labels";
-import { commun } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue } from "../lib/routes";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { commun } = contenuLangue(langue);
 import { tempsDeLecture } from "../lib/texte";
 
 interface Props {
@@ -34,12 +42,12 @@ interface Props {
 
 const { label, titre, limite = 3, class: classe } = Astro.props;
 
-const articles = (await getCollection("journal"))
+const articles = (await getCollection(nomCollection("journal", langue) as "journal"))
   .filter((a) => a.data.labels.includes(label))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, limite);
 
-const formatDate = new Intl.DateTimeFormat("fr-FR", {
+const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
   day: "numeric",
   month: "long",
   year: "numeric",
@@ -51,10 +59,10 @@ const formatDate = new Intl.DateTimeFormat("fr-FR", {
     <section class:list={["mt-16", classe]} data-reveal-group>
       <div class="flex flex-wrap items-baseline justify-between gap-4">
         <h2 class="display text-2xl text-navy-deep md:text-3xl" data-reveal>
-          {titre ?? `À lire sur le thème « ${nomLabel(label)} »`}
+          {titre ?? `À lire sur le thème « ${nomLabel(label, langue)} »`}
         </h2>
         <a
-          href={`${href("/journal")}?label=${label}`}
+          href={`${href(cheminLangue(langue, "/journal"))}?label=${label}`}
           class="text-sm font-semibold text-sage-deep hover:text-navy-deep"
         >
           Tous les articles <span aria-hidden="true">→</span>
@@ -64,7 +72,7 @@ const formatDate = new Intl.DateTimeFormat("fr-FR", {
       <div class="mt-8 grid gap-5 md:grid-cols-3">
         {articles.map((article) => (
           <a
-            href={href(`/journal/${article.id}`)}
+            href={href(`${cheminLangue(langue, "/journal")}/${article.data.chemin ?? article.id}`)}
             class="card group flex flex-col p-6"
             data-reveal
           >

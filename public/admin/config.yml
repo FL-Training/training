@@ -1,0 +1,1948 @@
+# ============================================================
+# GÉNÉRÉ — ne pas modifier à la main.
+#
+# Ce fichier est produit par outils/generer-config-sveltia.mjs :
+#
+#   npm run cms:config
+#
+# Les listes de choix (flux, labels) viennent de src/lib/flux.ts et
+# src/lib/labels.ts — les mêmes listes que la validation au build.
+# La cohérence éditeur ↔ site est vérifiée par npm run test:cms.
+# ============================================================
+backend:
+  name: github
+  repo: FL-Training/training
+  branch: main
+media_folder: public
+public_folder: /
+i18n:
+  structure: multiple_folders
+  locales:
+    - fr
+    - en
+  default_locale: fr
+slug:
+  encoding: ascii
+  clean_accents: true
+editor:
+  preview: false
+collections:
+  - name: pages
+    label: Pages du site
+    i18n: true
+    editor:
+      preview: false
+    files:
+      - i18n: true
+        name: accueil
+        label: Accueil
+        file: contenu/{{locale}}/accueil.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: hero
+            label: Bandeau d'ouverture (hero)
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre principal
+                widget: text
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton_principal
+                label: Bouton principal
+                widget: string
+                i18n: true
+              - name: bouton_secondaire
+                label: Bouton secondaire
+                widget: string
+                i18n: true
+          - name: publics
+            label: Bloc « Votre situation »
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: >-
+                  Repris mot pour mot de la page « Formations » — ne pas reformuler sans reprendre
+                  le livrable.
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+                hint: Repris mot pour mot de la page « Formations ».
+              - name: liste
+                label: Les quatre secteurs
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: label
+                    label: Nom du secteur
+                    widget: string
+                    i18n: true
+                  - name: picto
+                    label: Pictogramme
+                    widget: string
+                    i18n: duplicate
+                    hint: Nom du picto (voir la liste dans LISEZMOI.md)
+                hint: >-
+                  Nom et pictogramme seulement : l'accueil dit à qui l'activité s'adresse, la
+                  rubrique « Formations » explique. Le damier entier mène à cette rubrique.
+                summary: "{{fields.label}}"
+              - name: bouton
+                label: Bouton vers la rubrique Formations
+                widget: string
+                i18n: true
+          - name: paxi
+            label: Bloc PAXI
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton
+                label: Bouton
+                widget: string
+                i18n: true
+          - name: journal
+            label: Bloc Journal
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Chapô
+                widget: text
+                i18n: true
+                hint: Repris du haut de la page « Le Journal ».
+              - name: bouton_tous
+                label: Bouton « Tous les articles »
+                widget: string
+                i18n: true
+          - name: methode
+            label: Bloc méthode
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: Repris de « Notre approche ». Le mot entre [crochets] s'affiche en vert.
+              - name: intro
+                label: Teaser
+                widget: text
+                i18n: true
+                hint: Repris mot pour mot de l'introduction de la méthode, sur « Notre approche ».
+              - name: bouton
+                label: Bouton vers « Notre approche »
+                widget: string
+                i18n: true
+            hint: >-
+              L'accueil annonce ARCA, il ne le déroule pas : les quatre piliers vivent sur « Notre
+              approche ».
+          - name: appel_final
+            label: Appel final
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton
+                label: Bouton
+                widget: string
+                i18n: true
+      - i18n: true
+        name: formationsPage
+        label: Formations (hub)
+        file: contenu/{{locale}}/formations-page.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+          - name: portes
+            label: Introduction des quatre portes
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+          - name: carte
+            label: Textes des cartes du hub
+            widget: object
+            i18n: true
+            fields:
+              - name: lien_porte
+                label: Lien des cartes (« Découvrir »)
+                widget: string
+                i18n: true
+              - name: badge_stub
+                label: Badge « En préparation »
+                widget: string
+                i18n: true
+          - name: porte
+            label: Libellés communs aux pages de porte
+            widget: object
+            i18n: true
+            fields:
+              - name: retour
+                label: Lien retour
+                widget: string
+                i18n: true
+              - name: libelle_publics
+                label: Libellé « Publics concernés »
+                widget: string
+                i18n: true
+              - name: libelle_resultat
+                label: Libellé « Ce que la formation change »
+                widget: string
+                i18n: true
+              - name: libelle_ouvrir
+                label: Libellé « Afficher le détail »
+                widget: string
+                i18n: true
+              - name: libelle_fermer
+                label: Libellé « Masquer le détail »
+                widget: string
+                i18n: true
+              - name: encart_paxi_surtitre
+                label: Surtitre de l'encart PAXI
+                widget: string
+                i18n: true
+              - name: encart_paxi_titre
+                label: Titre de l'encart PAXI
+                widget: string
+                i18n: true
+      - i18n: true
+        name: paxi
+        label: PAXI (produit phare)
+        file: contenu/{{locale}}/paxi.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable PAXI.
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable PAXI.
+          - name: conformite
+            label: Conformité
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre de l'encart
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+                hint: La mention de conformité EASA/IOSA.
+            hint: >-
+              Encart à part entière, placé AVANT le programme : c'est la première chose qu'un
+              responsable formation vérifie.
+          - name: programme
+            label: Programme commun
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: liste
+                label: Modules du programme commun
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: titre
+                    label: Titre
+                    widget: string
+                    i18n: true
+                  - name: texte
+                    label: Texte
+                    widget: text
+                    i18n: true
+                summary: "{{fields.titre}}"
+          - name: declinaisons
+            label: Déclinaisons métiers
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: liste
+                label: Déclinaisons
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: titre
+                    label: Titre de la déclinaison
+                    widget: string
+                    i18n: true
+                  - name: paragraphes
+                    label: Paragraphes
+                    widget: list
+                    i18n: true
+                    required: true
+                    field:
+                      name: paragraphe
+                      label: Paragraphe
+                      widget: text
+                    min: 1
+                summary: "{{fields.titre}}"
+            hint: >-
+              Deux déclinaisons métiers, jamais deux offres : la page ne s'organise pas par type de
+              client.
+          - name: pedagogie
+            label: Pédagogie
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: paragraphes
+                label: Paragraphes
+                widget: list
+                i18n: true
+                required: true
+                field:
+                  name: paragraphe
+                  label: Paragraphe
+                  widget: text
+                min: 1
+          - name: adaptables
+            label: Contenus adaptables
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: liste
+                label: Contenus adaptables
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: titre
+                    label: Titre
+                    widget: string
+                    i18n: true
+                  - name: texte
+                    label: Texte
+                    widget: text
+                    i18n: true
+                summary: "{{fields.titre}}"
+          - name: cta
+            label: Appel à l'échange
+            widget: object
+            i18n: true
+            fields:
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton
+                label: Libellé du bouton
+                widget: string
+                i18n: true
+            hint: Un seul pour toute la page — le livrable n'en prévoit pas d'autre.
+      - i18n: true
+        name: approche
+        label: Notre approche
+        file: contenu/{{locale}}/approche.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique Notre approche », version 7.
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique Notre approche », version 7.
+          - name: intro
+            label: Chapô (paragraphes sous l'entête)
+            widget: list
+            i18n: true
+            required: false
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+          - name: methode
+            label: La méthode ARCA
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: intro
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+              - name: piliers
+                label: Les quatre piliers ARCA
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: numero
+                    label: Numéro affiché
+                    widget: string
+                    i18n: true
+                  - name: titre
+                    label: Titre
+                    widget: string
+                    i18n: true
+                  - name: texte
+                    label: Texte
+                    widget: text
+                    i18n: true
+                summary: "{{fields.titre}}"
+              - name: note
+                label: Note finale (ARCA n'est pas une procédure rigide…)
+                widget: text
+                i18n: true
+          - name: sections
+            label: Sections éditoriales
+            widget: list
+            i18n: true
+            required: false
+            fields:
+              - name: titre
+                label: Titre de section
+                widget: string
+                i18n: true
+              - name: paragraphes
+                label: Paragraphes
+                widget: list
+                i18n: true
+                required: true
+                field:
+                  name: paragraphe
+                  label: Paragraphe
+                  widget: text
+                min: 1
+            summary: "{{fields.titre}}"
+          - name: conclusion
+            label: Conclusion (bloc sombre)
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton_formations
+                label: Bouton formations
+                widget: string
+                i18n: true
+              - name: bouton_contact
+                label: Bouton contact
+                widget: string
+                i18n: true
+      - i18n: true
+        name: aPropos
+        label: À propos
+        file: contenu/{{locale}}/a-propos.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique À propos », V1 consolidée.
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique À propos », V1 consolidée.
+          - name: intro
+            label: Chapô (paragraphes sous l'entête)
+            widget: list
+            i18n: true
+            required: false
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+          - name: fondateur
+            label: Le fondateur
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: paragraphes
+                label: Biographie
+                widget: list
+                i18n: true
+                required: true
+                field:
+                  name: paragraphe
+                  label: Paragraphe
+                  widget: text
+                min: 1
+          - name: engagement
+            label: Notre engagement
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: paragraphes
+                label: Paragraphes
+                widget: list
+                i18n: true
+                required: true
+                field:
+                  name: paragraphe
+                  label: Paragraphe
+                  widget: text
+                min: 1
+              - name: bouton_contact
+                label: Bouton contact
+                widget: string
+                i18n: true
+              - name: bouton_linkedin
+                label: Bouton LinkedIn
+                widget: string
+                i18n: true
+      - i18n: true
+        name: contactPage
+        label: Contact
+        file: contenu/{{locale}}/contact.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+          - name: etapes
+            label: Étapes après l'envoi
+            widget: list
+            i18n: true
+            min: 1
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+            summary: "{{fields.titre}}"
+          - name: contact_direct
+            label: Contact direct (LinkedIn)
+            widget: object
+            i18n: true
+            fields:
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: lien
+                label: Libellé du lien
+                widget: string
+                i18n: true
+          - name: formulaire
+            label: Formulaire
+            widget: object
+            i18n: true
+            fields:
+              - name: champ_nom
+                label: Champ nom
+                widget: string
+                i18n: true
+              - name: champ_nom_exemple
+                label: Exemple champ nom
+                widget: string
+                i18n: true
+              - name: champ_email
+                label: Champ email
+                widget: string
+                i18n: true
+              - name: champ_email_exemple
+                label: Exemple champ email
+                widget: string
+                i18n: true
+              - name: champ_organisation
+                label: Champ organisation
+                widget: string
+                i18n: true
+              - name: champ_organisation_exemple
+                label: Exemple champ organisation
+                widget: string
+                i18n: true
+              - name: champ_sujet
+                label: Champ sujet
+                widget: string
+                i18n: true
+              - name: sujets
+                label: Sujets proposés
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: valeur
+                    label: Valeur technique
+                    widget: string
+                    i18n: duplicate
+                    hint: Enregistrée avec le message (100 caractères maximum).
+                  - name: label
+                    label: Libellé affiché
+                    widget: string
+                    i18n: true
+                summary: "{{fields.label}}"
+              - name: champ_message
+                label: Champ message
+                widget: string
+                i18n: true
+              - name: champ_message_exemple
+                label: Exemple champ message
+                widget: string
+                i18n: true
+              - name: bouton_envoyer
+                label: Bouton envoyer
+                widget: string
+                i18n: true
+              - name: bouton_envoi_en_cours
+                label: Bouton pendant l'envoi
+                widget: string
+                i18n: true
+              - name: succes_titre
+                label: Titre de confirmation
+                widget: string
+                i18n: true
+              - name: succes_texte
+                label: Texte de confirmation
+                widget: text
+                i18n: true
+              - name: erreur_generique
+                label: Erreur générique
+                widget: text
+                i18n: true
+              - name: erreur_trop_de_messages
+                label: Erreur « trop de messages »
+                widget: text
+                i18n: true
+              - name: erreur_saturation
+                label: Erreur « service saturé »
+                widget: text
+                i18n: true
+              - name: erreur_invalide
+                label: Erreur « champs invalides »
+                widget: text
+                i18n: true
+              - name: mention_donnees
+                label: Mention données personnelles
+                widget: text
+                i18n: true
+              - name: repli_titre
+                label: Repli sans formulaire — titre
+                widget: string
+                i18n: true
+              - name: repli_texte
+                label: Repli sans formulaire — texte
+                widget: text
+                i18n: true
+              - name: repli_bouton
+                label: Repli sans formulaire — bouton
+                widget: string
+                i18n: true
+      - i18n: true
+        name: journalPage
+        label: Le Journal (entête de la page)
+        file: contenu/{{locale}}/journal.yaml
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+          - name: filtres
+            label: Libellés des filtres
+            widget: object
+            i18n: true
+            fields:
+              - name: tous
+                label: Bouton « Tous »
+                widget: string
+                i18n: true
+              - name: filtrer_par_flux
+                label: Intitulé du filtre par flux (accessibilité)
+                widget: string
+                i18n: true
+              - name: filtrer_par_label
+                label: Intitulé du filtre par label (accessibilité)
+                widget: string
+                i18n: true
+              - name: aucun_article_flux
+                label: Mention « aucun article » d'un flux vide
+                widget: string
+                i18n: true
+              - name: aucun_article_encore
+                label: Suffixe lu par les lecteurs d'écran sur un flux vide
+                widget: string
+                i18n: true
+              - name: aucune_selection
+                label: Mention d'une sélection vide
+                widget: string
+                i18n: true
+          - name: article
+            label: Page d'un article
+            widget: object
+            i18n: true
+            fields:
+              - name: retour
+                label: Lien retour vers le Journal
+                widget: string
+                i18n: true
+              - name: sources
+                label: Titre du bloc des sources
+                widget: string
+                i18n: true
+              - name: cta_titre
+                label: Titre de l'appel final
+                widget: string
+                i18n: true
+              - name: cta_formations
+                label: Bouton vers les formations
+                widget: string
+                i18n: true
+              - name: cta_approche
+                label: Bouton vers l'approche
+                widget: string
+                i18n: true
+      - i18n: true
+        name: espaceApprenant
+        label: Espace apprenant
+        file: contenu/{{locale}}/espace-apprenant.yaml
+        fields:
+          - name: lance
+            label: Espace lancé
+            widget: boolean
+            i18n: duplicate
+            required: false
+            default: false
+            hint: "Cochez quand l'espace est ouvert : le bouton d'accès remplace le renvoi vers Contact."
+          - name: url_skool
+            label: Adresse de la communauté (Skool)
+            widget: string
+            i18n: duplicate
+            hint: Laisser vide tant que l'espace n'est pas lancé.
+            required: false
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: entete
+            label: En-tête de page
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique Espace apprenant ».
+              - name: texte
+                label: Texte d'introduction
+                widget: text
+                i18n: true
+                hint: >-
+                  Texte validé par Fabien : à ne pas reformuler sans reprendre le document
+                  d'origine. Livrable « Rubrique Espace apprenant ».
+          - name: contenu
+            label: Contenu de l'espace
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: liste
+                label: Ce que l'espace proposera
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: titre
+                    label: Titre
+                    widget: string
+                    i18n: true
+                  - name: texte
+                    label: Texte
+                    widget: text
+                    i18n: true
+                summary: "{{fields.titre}}"
+          - name: statut
+            label: Bloc statut
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+                hint: Une ligne vide sépare deux paragraphes.
+              - name: bouton_contact
+                label: Bouton vers Contact (tant que l'espace n'est pas ouvert)
+                widget: string
+                i18n: true
+              - name: bouton_acces
+                label: Bouton d'accès (quand l'espace est ouvert)
+                widget: string
+                i18n: true
+  - name: portes
+    label: Pages Formations (les 4 portes)
+    label_singular: Porte
+    folder: contenu/portes
+    i18n: true
+    extension: yaml
+    format: yaml
+    create: true
+    identifier_field: nom
+    summary: "{{nom}}"
+    sortable_fields:
+      - ordre
+      - nom
+    editor:
+      preview: false
+    fields:
+      - name: nom
+        label: Nom de la porte
+        widget: string
+        i18n: true
+      - name: chemin
+        label: Adresse de la page dans cette langue (slug)
+        widget: string
+        i18n: true
+        hint: >-
+          Par exemple « corporate » pour l'anglais. Laisser vide en français : l'adresse française
+          est le nom du fichier.
+        required: false
+      - name: ordre
+        label: Ordre d'affichage
+        widget: number
+        value_type: int
+        i18n: duplicate
+      - name: statut
+        label: Statut
+        widget: select
+        i18n: duplicate
+        required: false
+        default: complet
+        hint: « En préparation » affiche la page avec un badge « présentation détaillée à venir ».
+        options:
+          - label: Page complète
+            value: complet
+          - label: En préparation
+            value: stub
+      - name: picto
+        label: Pictogramme
+        widget: string
+        i18n: duplicate
+        hint: >-
+          building-2, landmark, graduation-cap, user-round, plane, shield-check, users-round,
+          messages-square
+      - name: seo
+        label: Référencement (SEO)
+        widget: object
+        i18n: true
+        fields:
+          - name: titre
+            label: Titre (onglet + Google)
+            widget: string
+            i18n: true
+          - name: description
+            label: Description (résumé affiché par Google)
+            widget: text
+            i18n: true
+      - name: signature
+        label: Tracé de marque de la page
+        widget: select
+        i18n: duplicate
+        required: false
+        hint: Laisser vide pour ne pas afficher de tracé.
+        options:
+          - label: Oscillation (la tension va et vient)
+            value: oscillation
+          - label: Pic (la montée brutale)
+            value: pic
+          - label: Endurance (la durée qui use)
+            value: endurance
+          - label: Paliers (la réponse graduée)
+            value: paliers
+          - label: Greffe (l'apport qui s'intègre)
+            value: greffe
+          - label: Référentiel (le cadre qui tient)
+            value: referentiel
+          - label: Construction (ce qui s'élabore)
+            value: construction
+          - label: Progression (le chemin qui avance)
+            value: progression
+      - name: visuel
+        label: Photographie de la porte
+        widget: object
+        i18n: true
+        fields:
+          - name: src
+            label: Photographie
+            widget: image
+            i18n: duplicate
+            required: false
+            hint: >-
+              Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. Une photographie de 5
+              Mo déposée ici ralentirait la page : elle est publiée sans retouche.
+            media_folder: /public/formations
+            public_folder: /formations
+          - name: alt
+            label: Description de l'image
+            widget: string
+            i18n: true
+            hint: Décrit ce que montre la photo, pour les personnes qui ne la voient pas.
+            required: false
+        required: false
+      - name: entete
+        label: Entête de la page
+        widget: object
+        i18n: true
+        fields:
+          - name: surtitre
+            label: Surtitre
+            widget: string
+            i18n: true
+          - name: titre
+            label: Titre
+            widget: string
+            i18n: true
+          - name: texte
+            label: Texte d'introduction
+            widget: text
+            i18n: true
+          - name: bouton
+            label: Bouton d'entête (facultatif)
+            widget: string
+            i18n: true
+            hint: Laisser vide pour ne pas afficher de bouton.
+            required: false
+      - name: intro
+        label: Texte d'introduction de section (facultatif)
+        widget: text
+        i18n: true
+        hint: Une ligne vide sépare deux paragraphes.
+        required: false
+      - name: cartes
+        label: Cartes dépliables
+        widget: list
+        i18n: true
+        required: false
+        fields:
+          - name: titre
+            label: Titre de la carte
+            widget: string
+            i18n: true
+          - name: sous_titre
+            label: Sous-titre (facultatif)
+            widget: string
+            i18n: true
+            hint: Une ligne de précision sous le titre.
+            required: false
+          - name: statut_carte
+            label: Statut (facultatif)
+            widget: string
+            i18n: true
+            hint: >-
+              Par exemple « Prochainement » ou « En préparation ». Affiché en pastille : à utiliser
+              pour une offre annoncée mais pas encore ouverte.
+            required: false
+          - name: resume
+            label: Résumé (visible carte fermée)
+            widget: text
+            i18n: true
+          - name: paragraphes
+            label: Contenu déplié
+            widget: list
+            i18n: true
+            required: false
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+          - name: resultat
+            label: Ce que la formation change (facultatif)
+            widget: text
+            i18n: true
+            required: false
+          - name: publics
+            label: Publics concernés (facultatif)
+            widget: text
+            i18n: true
+            required: false
+          - name: bouton
+            label: Bouton de la carte (facultatif)
+            widget: object
+            i18n: true
+            fields:
+              - name: label
+                label: Libellé
+                widget: string
+                i18n: true
+                required: false
+              - name: chemin
+                label: Chemin, ex. /formations/paxi
+                widget: string
+                i18n: true
+                required: false
+            required: false
+          - name: signature
+            label: Tracé de marque de la carte
+            widget: select
+            i18n: duplicate
+            required: false
+            hint: Laisser vide pour ne pas afficher de tracé.
+            options:
+              - label: Oscillation (la tension va et vient)
+                value: oscillation
+              - label: Pic (la montée brutale)
+                value: pic
+              - label: Endurance (la durée qui use)
+                value: endurance
+              - label: Paliers (la réponse graduée)
+                value: paliers
+              - label: Greffe (l'apport qui s'intègre)
+                value: greffe
+              - label: Référentiel (le cadre qui tient)
+                value: referentiel
+              - label: Construction (ce qui s'élabore)
+                value: construction
+              - label: Progression (le chemin qui avance)
+                value: progression
+          - name: visuel
+            label: Illustration de la carte (facultatif)
+            widget: object
+            i18n: true
+            fields:
+              - name: src
+                label: Illustration
+                widget: image
+                i18n: duplicate
+                required: false
+                hint: >-
+                  Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. Une photographie
+                  de 5 Mo déposée ici ralentirait la page : elle est publiée sans retouche.
+                media_folder: /public/cartes
+                public_folder: /cartes
+              - name: alt
+                label: Description de l'image
+                widget: string
+                i18n: true
+                required: false
+              - name: src_sombre
+                label: Variante pour fond sombre (facultatif)
+                widget: image
+                i18n: duplicate
+                required: false
+                hint: >-
+                  Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. Une photographie
+                  de 5 Mo déposée ici ralentirait la page : elle est publiée sans retouche.
+                media_folder: /public/cartes
+                public_folder: /cartes
+            required: false
+          - name: note_visuel
+            label: Consigne d'illustration (jamais affichée)
+            widget: text
+            i18n: true
+            required: false
+        summary: "{{fields.titre}}"
+      - name: encarts
+        label: Encarts
+        widget: list
+        i18n: true
+        required: false
+        fields:
+          - name: titre
+            label: Titre de l'encart
+            widget: string
+            i18n: true
+          - name: paragraphes
+            label: Paragraphes
+            widget: list
+            i18n: true
+            required: true
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+            min: 1
+          - name: lien
+            label: Lien (facultatif)
+            widget: object
+            i18n: true
+            fields:
+              - name: label
+                label: Libellé du lien
+                widget: string
+                i18n: true
+                required: false
+              - name: chemin
+                label: Chemin, ex. /contact
+                widget: string
+                i18n: true
+                required: false
+            required: false
+        summary: "{{fields.titre}}"
+      - name: encart_paxi
+        label: Encart PAXI (facultatif)
+        widget: object
+        i18n: true
+        fields:
+          - name: paragraphes
+            label: Texte de l'encart
+            widget: list
+            i18n: true
+            required: false
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+          - name: bouton
+            label: Libellé du bouton
+            widget: string
+            i18n: true
+            required: false
+          - name: note_visuel
+            label: Consigne d'illustration (jamais affichée)
+            widget: text
+            i18n: true
+            required: false
+        required: false
+      - name: sections
+        label: Sections éditoriales
+        widget: list
+        i18n: true
+        required: false
+        fields:
+          - name: titre
+            label: Titre de section
+            widget: string
+            i18n: true
+          - name: paragraphes
+            label: Paragraphes
+            widget: list
+            i18n: true
+            required: true
+            field:
+              name: paragraphe
+              label: Paragraphe
+              widget: text
+            min: 1
+        summary: "{{fields.titre}}"
+      - name: cta
+        label: Appel à contact (bas de page)
+        widget: object
+        i18n: true
+        fields:
+          - name: titre
+            label: Titre (facultatif)
+            widget: string
+            i18n: true
+            required: false
+          - name: texte
+            label: Texte (facultatif)
+            widget: text
+            i18n: true
+            required: false
+          - name: bouton
+            label: Libellé du bouton
+            widget: string
+            i18n: true
+        required: false
+  - name: formations
+    label: Fiches formation (non publiées)
+    label_singular: Fiche
+    folder: contenu/formations
+    i18n: true
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    identifier_field: titre
+    summary: "{{titre}}"
+    sortable_fields:
+      - ordre
+      - titre
+    fields:
+      - name: titre
+        label: Titre
+        widget: string
+        i18n: true
+      - name: accroche
+        label: Accroche (affichée sur les cartes)
+        widget: text
+        i18n: true
+      - name: publics
+        label: Publics concernés
+        widget: list
+        i18n: true
+        min: 1
+        field:
+          name: public
+          label: Public
+          widget: string
+      - name: duree
+        label: Durée
+        widget: string
+        i18n: true
+        default: Sur mesure
+      - name: format
+        label: Format
+        widget: string
+        i18n: true
+        default: Présentiel ou distanciel
+      - name: ordre
+        label: Ordre d'affichage
+        widget: number
+        value_type: int
+        i18n: duplicate
+      - name: body
+        label: Contenu de la fiche
+        widget: markdown
+        i18n: true
+  - name: journal
+    label: Articles du Journal
+    label_singular: Article
+    folder: contenu/journal
+    i18n: true
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    identifier_field: titre
+    summary: "{{titre}}"
+    sortable_fields:
+      - date
+      - titre
+    fields:
+      - name: titre
+        label: Titre
+        widget: string
+        i18n: true
+      - name: chemin
+        label: Adresse de l'article dans cette langue (slug)
+        widget: string
+        i18n: true
+        hint: >-
+          Par exemple « from-reaction-to-action » pour l'anglais. Laisser vide en français :
+          l'adresse française est le nom du fichier.
+        required: false
+      - name: resume
+        label: Résumé (affiché sur les cartes et dans Google)
+        widget: text
+        i18n: true
+      - name: flux
+        label: Flux
+        widget: select
+        i18n: duplicate
+        default: methodes-et-reperes
+        options:
+          - label: Revue littéraire
+            value: revue-litteraire
+          - label: Point de vue actu
+            value: point-de-vue-actu
+          - label: Terrain & pratiques
+            value: terrain-et-pratiques
+          - label: Méthodes & repères
+            value: methodes-et-reperes
+      - name: labels
+        label: Labels
+        widget: select
+        i18n: duplicate
+        multiple: true
+        required: false
+        hint: >-
+          Thèmes de l'article. Ils servent aux filtres du Journal et permettront de rassembler des
+          articles ailleurs sur le site.
+        options:
+          - label: Anticiper
+            value: anticiper
+          - label: Réguler
+            value: reguler
+          - label: Communiquer
+            value: communiquer
+          - label: Agir
+            value: agir
+          - label: Gestion des conflits
+            value: gestion-des-conflits
+          - label: Stabilité opérationnelle
+            value: stabilite-operationnelle
+          - label: Leadership sous pression
+            value: leadership-sous-pression
+          - label: Coopération
+            value: cooperation
+          - label: Cadre légal
+            value: cadre-legal
+      - name: date
+        label: Date de publication
+        widget: datetime
+        i18n: duplicate
+        format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+      - name: auteur
+        label: Auteur
+        widget: string
+        i18n: true
+        default: Fabien Lacombe
+      - name: vignette
+        label: Vignette de la carte
+        widget: object
+        i18n: true
+        fields:
+          - name: src
+            label: Vignette
+            widget: image
+            i18n: duplicate
+            required: false
+            hint: >-
+              Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. Une photographie de 5
+              Mo déposée ici ralentirait la page : elle est publiée sans retouche.
+            media_folder: /public/journal/vignettes
+            public_folder: /journal/vignettes
+          - name: alt
+            label: Description de l'image
+            widget: string
+            i18n: true
+            hint: Décrit ce que montre l'image, pour les personnes qui ne la voient pas.
+            required: false
+        required: false
+        hint: >-
+          Image affichée en haut de la carte, dans la liste du Journal. Laisser vide si l'article
+          n'en a pas.
+      - name: sources
+        label: Sources
+        widget: list
+        i18n: true
+        required: false
+        fields:
+          - name: titre
+            label: Titre de la source
+            widget: string
+            i18n: true
+          - name: url
+            label: Adresse (URL)
+            widget: string
+            i18n: duplicate
+        summary: "{{fields.titre}}"
+      - name: body
+        label: Contenu de l'article
+        widget: markdown
+        i18n: true
+  - name: reglages
+    label: Réglages & légal
+    i18n: true
+    editor:
+      preview: false
+    files:
+      - i18n: true
+        name: commun
+        label: Marque, menu & pied de page
+        file: contenu/{{locale}}/commun.yaml
+        fields:
+          - name: journal
+            label: Le Journal
+            widget: object
+            i18n: true
+            fields:
+              - name: duree_lecture
+                label: Mention de durée de lecture
+                widget: string
+                i18n: true
+                hint: >-
+                  Suit le nombre de minutes calculé automatiquement — par exemple « min de lecture
+                  ».
+          - name: marque
+            label: Marque
+            widget: object
+            i18n: true
+            fields:
+              - name: nom
+                label: Nom
+                widget: string
+                i18n: true
+              - name: slogan
+                label: Slogan
+                widget: string
+                i18n: true
+              - name: signature
+                label: Signature
+                widget: string
+                i18n: true
+          - name: navigation
+            label: Navigation principale (7 entrées)
+            widget: list
+            i18n: true
+            min: 1
+            fields:
+              - name: label
+                label: Libellé
+                widget: string
+                i18n: true
+              - name: chemin
+                label: Chemin
+                widget: string
+                i18n: true
+                hint: "Exemple : /formations ou /contact"
+              - name: accent
+                label: Mettre l'entrée en évidence (fond plein)
+                widget: boolean
+                i18n: duplicate
+                required: false
+                default: false
+              - name: sous_menu
+                label: Raccourcis du sous-menu
+                widget: list
+                i18n: true
+                required: false
+                fields:
+                  - name: label
+                    label: Libellé
+                    widget: string
+                    i18n: true
+                  - name: chemin
+                    label: Chemin (page entière)
+                    widget: string
+                    i18n: true
+                    hint: Par exemple /formations/paxi. Laisser vide si l'on vise une ancre.
+                    required: false
+                  - name: ancre
+                    label: Ancre (endroit dans la page de l'entrée)
+                    widget: string
+                    i18n: true
+                    hint: Par exemple notre-ambition. Laisser vide si l'on vise une page.
+                    required: false
+                  - name: picto
+                    label: Pictogramme (facultatif)
+                    widget: string
+                    i18n: duplicate
+                    hint: Repris de la page visée, pour que le raccourci la reconnaisse.
+                    required: false
+                hint: Se déploient sous l'entrée au survol. Laisser vide pour une entrée sans sous-menu.
+                summary: "{{fields.label}}"
+            summary: "{{fields.label}}"
+          - name: menu
+            label: Menu mobile (accessibilité)
+            widget: object
+            i18n: true
+            fields:
+              - name: ouvrir
+                label: Ouvrir
+                widget: string
+                i18n: true
+              - name: fermer
+                label: Fermer
+                widget: string
+                i18n: true
+          - name: liens
+            label: Liens externes
+            widget: object
+            i18n: true
+            fields:
+              - name: linkedin
+                label: Profil LinkedIn
+                widget: string
+                i18n: duplicate
+                hint: Adresse complète (https://…).
+          - name: photos
+            label: Photos
+            widget: object
+            i18n: true
+            fields:
+              - name: portrait_alt
+                label: Description du portrait (accessibilité)
+                widget: string
+                i18n: true
+              - name: og_alt
+                label: Description de l'image de partage
+                widget: string
+                i18n: true
+          - name: pied_de_page
+            label: Pied de page
+            widget: object
+            i18n: true
+            fields:
+              - name: description
+                label: Description
+                widget: text
+                i18n: true
+              - name: titre_site
+                label: Titre de la colonne « Site »
+                widget: string
+                i18n: true
+              - name: liens_site
+                label: Liens de la colonne « Site »
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: label
+                    label: Libellé
+                    widget: string
+                    i18n: true
+                  - name: chemin
+                    label: Chemin
+                    widget: string
+                    i18n: true
+                    hint: "Exemple : /formations ou /contact"
+                  - name: accent
+                    label: Mettre le lien en évidence
+                    widget: boolean
+                    i18n: duplicate
+                    required: false
+                    default: false
+                summary: "{{fields.label}}"
+              - name: titre_echanger
+                label: Titre de la colonne « Échanger »
+                widget: string
+                i18n: true
+              - name: texte_echanger
+                label: Texte de la colonne « Échanger »
+                widget: text
+                i18n: true
+              - name: bouton_contact
+                label: Bouton contact
+                widget: string
+                i18n: true
+              - name: bouton_linkedin
+                label: Bouton LinkedIn
+                widget: string
+                i18n: true
+              - name: copyright
+                label: Ligne de copyright
+                widget: string
+                i18n: true
+              - name: titre_secteurs
+                label: Titre de la colonne secteurs
+                widget: string
+                i18n: true
+              - name: liens_secteurs
+                label: Liens secteurs
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: label
+                    label: Libellé
+                    widget: string
+                    i18n: true
+                  - name: chemin
+                    label: Chemin
+                    widget: string
+                    i18n: true
+                    hint: "Exemple : /formations ou /contact"
+                  - name: accent
+                    label: Mettre le lien en évidence
+                    widget: boolean
+                    i18n: duplicate
+                    required: false
+                    default: false
+                summary: "{{fields.label}}"
+              - name: liens_legaux
+                label: Liens légaux
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: label
+                    label: Libellé
+                    widget: string
+                    i18n: true
+                  - name: chemin
+                    label: Chemin
+                    widget: string
+                    i18n: true
+                    hint: "Exemple : /formations ou /contact"
+                  - name: accent
+                    label: Mettre le lien en évidence
+                    widget: boolean
+                    i18n: duplicate
+                    required: false
+                    default: false
+                summary: "{{fields.label}}"
+          - name: page_introuvable
+            label: Page introuvable (404)
+            widget: object
+            i18n: true
+            fields:
+              - name: surtitre
+                label: Surtitre
+                widget: string
+                i18n: true
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+              - name: bouton
+                label: Bouton
+                widget: string
+                i18n: true
+      - name: mentionsLegales
+        label: Mentions légales
+        file: contenu/{{locale}}/mentions-legales.yaml
+        i18n: true
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: titre
+            label: Titre
+            widget: string
+            i18n: true
+          - name: intro
+            label: Introduction
+            widget: text
+            i18n: true
+          - name: sections
+            label: Sections
+            widget: list
+            i18n: true
+            min: 1
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+            summary: "{{fields.titre}}"
+      - name: confidentialite
+        label: Politique de confidentialité
+        file: contenu/{{locale}}/confidentialite.yaml
+        i18n: true
+        fields:
+          - name: seo
+            label: Référencement (SEO)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre (onglet + Google)
+                widget: string
+                i18n: true
+              - name: description
+                label: Description (résumé affiché par Google)
+                widget: text
+                i18n: true
+          - name: titre
+            label: Titre
+            widget: string
+            i18n: true
+          - name: intro
+            label: Introduction
+            widget: text
+            i18n: true
+          - name: sections
+            label: Sections
+            widget: list
+            i18n: true
+            min: 1
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: texte
+                label: Texte
+                widget: text
+                i18n: true
+            summary: "{{fields.titre}}"

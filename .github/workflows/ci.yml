@@ -33,11 +33,18 @@ jobs:
         run: npm run check
 
       # L'éditeur de contenu doit connaître tous les champs que le site
-      # exige : un champ requis absent de keystatic.config.ts serait
+      # exige : un champ requis absent de la config Sveltia serait
       # effacé du fichier dès que Fabien enregistre la page, et le build
       # suivant refuserait le contenu.
       - name: Cohérence éditeur ↔ schémas
         run: npm run test:cms
+
+      # Les contrats de contenu, un par un : les tolérances (aucune
+      # saisie de l'éditeur ne bloque la publication), les gardes (le
+      # vide interdit reste interdit), les langues et leur arborescence,
+      # la structure de la config Sveltia, et href().
+      - name: Tests unitaires des contrats
+        run: npm run test:unitaires
 
       # PUBLIC_CONVEX_URL is intentionally absent: the build must succeed
       # without it (forms fall back to LinkedIn), and this also validates

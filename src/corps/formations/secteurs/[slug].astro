@@ -1,0 +1,24 @@
+---
+/**
+ * Redirections des quatre anciennes pages « secteur » vers les portes V2.
+ * Aéronautique et sécurité privée n'ont plus de page propre : elles sont
+ * devenues deux cartes de la page « Organisme de formation ».
+ */
+import Redirection from "../../../components/Redirection.astro";
+import { ANCIENS_SECTEURS } from "../../../lib/redirections.mjs";
+
+export function getStaticPaths() {
+  return Object.entries(ANCIENS_SECTEURS).map(([slug, vers]) => ({
+    params: { slug },
+    props: { vers },
+  }));
+}
+
+interface Props {
+  vers: string;
+}
+
+const { vers } = Astro.props;
+---
+
+<Redirection vers={vers} />

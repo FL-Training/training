@@ -6,7 +6,8 @@
  * automatically. Only facts visible on the site are asserted — no invented
  * prices, reviews, dates or certifications.
  */
-import { commun } from "./contenu";
+import { contenuLangue } from "./contenu";
+import { LANGUE_PAR_DEFAUT, localeLangue } from "./langues";
 
 export type TypePage =
   | "WebPage"
@@ -29,6 +30,8 @@ interface OptionsGraphe {
   imageUrl: string;
   fil?: Fil[];
   noeudsSupplementaires?: Record<string, unknown>[];
+  /** La langue de la page ; celle par défaut si absente. */
+  langue?: string;
 }
 
 export function racineSite(site: URL, base: string): string {
@@ -40,6 +43,12 @@ export function urlAbsolue(site: URL, chemin: string): string {
 }
 
 export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
+  // La langue de la page : ses métadonnées structurées doivent dire la
+  // même chose que son HTML — relevé de revue croisée du 29/07, où les
+  // pages /en/ auraient publié un JSON-LD français.
+  const langue = options.langue ?? LANGUE_PAR_DEFAUT;
+  const commun = contenuLangue(langue).commun;
+  const locale = localeLangue(langue);
   const {
     site,
     base,
@@ -89,7 +98,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
     url: racine,
     name: commun.marque.nom,
     publisher: { "@id": idOrganisation },
-    inLanguage: "fr-FR",
+    inLanguage: locale,
   };
 
   const page: Record<string, unknown> = {
@@ -101,7 +110,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
     isPartOf: { "@id": idSite },
     about: { "@id": idOrganisation },
     primaryImageOfPage: { "@type": "ImageObject", url: imageUrl },
-    inLanguage: "fr-FR",
+    inLanguage: locale,
   };
   if (typePage === "AboutPage") {
     page.mainEntity = { "@id": idPersonne };

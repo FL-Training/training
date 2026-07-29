@@ -7,16 +7,17 @@
  */
 import { z } from "astro/zod";
 
-import communBrut from "../../contenu/commun.yaml";
-import accueilBrut from "../../contenu/accueil.yaml";
-import formationsPageBrut from "../../contenu/formations-page.yaml";
-import approcheBrut from "../../contenu/approche.yaml";
-import aProposBrut from "../../contenu/a-propos.yaml";
-import contactBrut from "../../contenu/contact.yaml";
-import mentionsLegalesBrut from "../../contenu/mentions-legales.yaml";
-import confidentialiteBrut from "../../contenu/confidentialite.yaml";
-import paxiBrut from "../../contenu/paxi.yaml";
-import espaceApprenantBrut from "../../contenu/espace-apprenant.yaml";
+import communBrut from "../../contenu/fr/commun.yaml";
+import accueilBrut from "../../contenu/fr/accueil.yaml";
+import formationsPageBrut from "../../contenu/fr/formations-page.yaml";
+import approcheBrut from "../../contenu/fr/approche.yaml";
+import aProposBrut from "../../contenu/fr/a-propos.yaml";
+import contactBrut from "../../contenu/fr/contact.yaml";
+import mentionsLegalesBrut from "../../contenu/fr/mentions-legales.yaml";
+import confidentialiteBrut from "../../contenu/fr/confidentialite.yaml";
+import paxiBrut from "../../contenu/fr/paxi.yaml";
+import espaceApprenantBrut from "../../contenu/fr/espace-apprenant.yaml";
+import journalPageBrut from "../../contenu/fr/journal.yaml";
 
 // Required text: an emptied or whitespace-only field must fail the build
 // (otherwise the CI would happily publish blank pages).
@@ -228,6 +229,32 @@ const aProposSchema = z.object({
   }),
 });
 
+/*
+  La page « Le Journal » : entête et libellés des filtres. Longtemps la
+  seule page écrite dans le code — donc invisible pour l'éditeur et
+  intraduisible (relevé de revue croisée, 29/07).
+*/
+const journalPageSchema = z.object({
+  seo,
+  entete,
+  filtres: z.object({
+    tous: texteRequis,
+    filtrer_par_flux: texteRequis,
+    filtrer_par_label: texteRequis,
+    aucun_article_flux: texteRequis,
+    aucun_article_encore: texteRequis,
+    aucune_selection: texteRequis,
+  }),
+  // La page d'un article : lien retour, sources, appel final.
+  article: z.object({
+    retour: texteRequis,
+    sources: texteRequis,
+    cta_titre: texteRequis,
+    cta_formations: texteRequis,
+    cta_approche: texteRequis,
+  }),
+});
+
 const contactSchema = z.object({
   seo,
   entete,
@@ -355,11 +382,12 @@ function valider<T>(fichier: string, schema: z.ZodType<T>, data: unknown): T {
 /**
  * Les schémas eux-mêmes, exposés pour le contrôle de cohérence avec
  * l'éditeur (tests/cms-schemas.mjs) : un champ requis ici et absent de
- * keystatic.config.ts serait effacé du fichier dès que Fabien
+ * l'éditeur (public/admin/config.yml) serait effacé du fichier dès que Fabien
  * enregistre la page. Le site, lui, ne consomme que les valeurs
  * validées ci-dessous.
  */
 export const schemas = {
+  journalPageSchema,
   communSchema,
   accueilSchema,
   formationsPageSchema,
@@ -392,6 +420,7 @@ export const confidentialite = valider(
   confidentialiteBrut,
 );
 export const paxi = valider("paxi.yaml", paxiSchema, paxiBrut);
+export const journalPage = valider("journal.yaml", journalPageSchema, journalPageBrut);
 export const espaceApprenant = valider(
   "espace-apprenant.yaml",
   espaceApprenantSchema,
@@ -416,6 +445,106 @@ export type TextesWaitlist = {
   erreur: string;
   mention: string;
 };
+
+/*
+  LE MÊME JEU DE PAGES, POUR N'IMPORTE QUELLE LANGUE.
+
+  Les exports constants ci-dessus restent la voie du français — la
+  langue de référence, servie à la racine. `contenuLangue()` est la voie
+  générale : elle charge les fichiers de `contenu/<code>/` et les valide
+  avec les mêmes schémas. Pour le français, elle rend exactement les
+  mêmes objets que les exports — un seul parcours de validation, un seul
+  contenu.
+
+  Les fichiers de toutes les langues sont embarqués par le glob ; une
+  langue dont il manque des fichiers ne casse rien tant qu'on ne la
+  demande pas — et on ne la demande que publiée, ce que les garde-fous
+  conditionnent à un contenu complet.
+*/
+const FICHIERS_LANGUES = import.meta.glob("../../contenu/*/*.yaml", {
+  eager: true,
+  import: "default",
+}) as Record<string, unknown>;
+
+export interface ContenuLangue {
+  commun: typeof commun;
+  accueil: typeof accueil;
+  formationsPage: typeof formationsPage;
+  approche: typeof approche;
+  aPropos: typeof aPropos;
+  contact: typeof contact;
+  mentionsLegales: typeof mentionsLegales;
+  confidentialite: typeof confidentialite;
+  paxi: typeof paxi;
+  espaceApprenant: typeof espaceApprenant;
+  journalPage: typeof journalPage;
+}
+
+const CACHE_LANGUES = new Map<string, ContenuLangue>();
+
+export function contenuLangue(langue: string): ContenuLangue {
+  const connu = CACHE_LANGUES.get(langue);
+  if (connu) return connu;
+
+  const lire = (fichier: string): unknown => {
+    const cle = `../../contenu/${langue}/${fichier}`;
+    if (!(cle in FICHIERS_LANGUES)) {
+      throw new Error(
+        `contenu/${langue}/${fichier} introuvable : la langue « ${langue} » ` +
+          `n'a pas tout son contenu — elle ne peut pas être servie.`,
+      );
+    }
+    return FICHIERS_LANGUES[cle];
+  };
+
+  const jeu: ContenuLangue =
+    langue === "fr"
+      ? {
+          commun,
+          accueil,
+          formationsPage,
+          approche,
+          aPropos,
+          contact,
+          mentionsLegales,
+          confidentialite,
+          paxi,
+          espaceApprenant,
+          journalPage,
+        }
+      : {
+          commun: valider(`${langue}/commun.yaml`, communSchema, lire("commun.yaml")),
+          accueil: valider(`${langue}/accueil.yaml`, accueilSchema, lire("accueil.yaml")),
+          formationsPage: valider(
+            `${langue}/formations-page.yaml`,
+            formationsPageSchema,
+            lire("formations-page.yaml"),
+          ),
+          approche: valider(`${langue}/approche.yaml`, approcheSchema, lire("approche.yaml")),
+          aPropos: valider(`${langue}/a-propos.yaml`, aProposSchema, lire("a-propos.yaml")),
+          contact: valider(`${langue}/contact.yaml`, contactSchema, lire("contact.yaml")),
+          mentionsLegales: valider(
+            `${langue}/mentions-legales.yaml`,
+            pageLegaleSchema,
+            lire("mentions-legales.yaml"),
+          ),
+          confidentialite: valider(
+            `${langue}/confidentialite.yaml`,
+            pageLegaleSchema,
+            lire("confidentialite.yaml"),
+          ),
+          paxi: valider(`${langue}/paxi.yaml`, paxiSchema, lire("paxi.yaml")),
+          espaceApprenant: valider(
+            `${langue}/espace-apprenant.yaml`,
+            espaceApprenantSchema,
+            lire("espace-apprenant.yaml"),
+          ),
+          journalPage: valider(`${langue}/journal.yaml`, journalPageSchema, lire("journal.yaml")),
+        };
+
+  CACHE_LANGUES.set(langue, jeu);
+  return jeu;
+}
 
 export type TextesFormulaire = z.infer<typeof contactSchema>["formulaire"] & {
   linkedin: string;
