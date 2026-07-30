@@ -317,10 +317,36 @@ if (segmentLangue === 0) {
     document.querySelector("header").style.getPropertyValue("--pont-langues"),
   );
   verifier(
-    "liseré du panneau aligné sur le filet",
+    "la mesure du pont est bien calculée",
     /^\d+px$/.test(pont) && pont !== "0px",
     `--pont-langues vaut « ${pont} »`,
   );
+
+  /*
+    Le liseré vert RECOUVRE le filet du bandeau — il ne se pose pas
+    dessous. Mesurer le haut des deux traits, pas seulement l'existence
+    du pont : le calcul visait le bord EXTÉRIEUR de la bordure basse du
+    bandeau, ce qui posait le vert un pixel plus bas. Deux traits
+    parallèles à un pixel d'écart, signalés deux fois à la relecture.
+  */
+  await p.locator(".groupe-langues button").hover();
+  await p.waitForTimeout(400);
+  const traits = await p.evaluate(() => {
+    const entete = document.querySelector("header");
+    const liste = document.querySelector("#panneau-langues .sous-menu-liste");
+    const e = entete.getBoundingClientRect();
+    const filet = parseFloat(getComputedStyle(entete).borderBottomWidth) || 0;
+    return { hautFilet: e.bottom - filet, hautLisere: liste.getBoundingClientRect().top };
+  });
+  verifier(
+    "le liseré recouvre le filet du bandeau",
+    Math.abs(traits.hautLisere - traits.hautFilet) < 0.5,
+    `filet à ${traits.hautFilet}, liseré à ${traits.hautLisere} — ` +
+      `${(traits.hautLisere - traits.hautFilet).toFixed(2)} px d'écart`,
+  );
+  await p.keyboard.press("Escape");
+  await p.mouse.move(700, 640);
+  await p.waitForTimeout(300);
 
   verifier(
     "replié au repos",

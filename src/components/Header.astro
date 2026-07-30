@@ -901,8 +901,24 @@ function isCurrent(path: string): boolean {
     */
     const boutonLangue = document.querySelector<HTMLElement>(".groupe-langues button");
     if (boutonLangue) {
+      /*
+        Le liseré vert RECOUVRE le filet du bandeau, il ne se pose pas
+        dessous.
+
+        `getBoundingClientRect().bottom` compte la bordure basse du
+        bandeau : viser ce bord posait le vert juste APRÈS le gris —
+        mesuré au pixel, filet gris de 76 à 77, liseré vert de 77 à 79.
+        Deux traits parallèles à un pixel d'écart, ce qui se voit.
+
+        On retire donc l'épaisseur du filet : le vert démarre là où le
+        gris commence et le remplace sur toute la largeur du panneau. Le
+        panneau redevient la continuation du bandeau, sans couture.
+      */
+      const filet = parseFloat(getComputedStyle(entete).borderBottomWidth) || 0;
       const pontLangues =
-        entete.getBoundingClientRect().bottom - boutonLangue.getBoundingClientRect().bottom;
+        entete.getBoundingClientRect().bottom -
+        filet -
+        boutonLangue.getBoundingClientRect().bottom;
       entete.style.setProperty("--pont-langues", `${Math.max(0, Math.round(pontLangues))}px`);
     }
   }
