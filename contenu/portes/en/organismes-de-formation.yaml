@@ -1,0 +1,59 @@
+# "Training providers" door — English working translation (29/07/2026),
+# to be reviewed by Fabien. Same constraints as the French original: a
+# single section, three cards of EQUAL rank, no invented programme /
+# duration / certification. French regulatory acronyms (TFP APS, MAC
+# APS, CNAPS) are kept: they name French credentials and do not
+# translate. `chemin` carries the arbitrated English address.
+nom: "Training providers"
+chemin: "training-providers"
+ordre: 3
+statut: "complet"
+picto: "graduation-cap"
+
+seo:
+  titre: "Working with training providers"
+  description: "Content integrated into your programmes: PAXI for aviation, TFP and MAC APS in private security, tailored interventions for other professions."
+
+entete:
+  surtitre: "Training providers"
+  titre: "Integrating our interventions into your training programmes"
+  texte: "Pacivis Academy supports training providers in designing and delivering content adapted to the professions they prepare for."
+
+visuel:
+  src: "/formations/organismes-de-formation/visuel/src.webp"
+  alt: "A trainer leads a workshop in front of a small group of adults in professional training."
+intro: "Pacivis Academy supports training providers in designing and delivering content adapted to the professions they prepare for. It can offer a specialised module, take charge of certain sequences of an existing programme, or contribute to a broader arrangement, in keeping with the pedagogical objectives and, where they apply, the regulatory frameworks.\n\nInterventions are built with each provider and can fit into initial or continuing training programmes."
+
+cartes:
+  - titre: "Aviation and airport environments — Integrating the PAXI course into your programmes"
+    resume: "Preparing aviation and airport professionals for difficult or degraded relational situations."
+    signature: "greffe"
+    paragraphes:
+      - "The PAXI course prepares aviation and airport professionals for the difficult or degraded relational situations they may encounter in the exercise of their profession."
+      - "The course integrates into existing programmes and adapts to the audiences being prepared, their level of experience and the pedagogical objectives of each provider."
+    bouton:
+      label: "Discover PAXI"
+      chemin: "/training/unruly-passengers"
+
+  - titre: "Private security — Bringing in an APS trainer"
+    resume: "Taking charge of the teaching entrusted within TFP APS and MAC APS programmes, in keeping with your frameworks and progression."
+    signature: "referentiel"
+    paragraphes:
+      - "Pacivis Academy works with training providers within TFP APS and MAC APS programmes. The trainer takes charge of the teaching entrusted to him in keeping with the frameworks, the progression and the pedagogical arrangements defined by the provider, so as to fit fully into the coherence of the programme."
+      - "His legal training and ten years of experience in the French National Police allow him to anchor the regulatory content in the realities of the profession. The legal framework is worked on as a marker for analysing a situation, assessing one's room for action and taking an appropriate decision."
+      - "All teaching is approached with a concrete pedagogy, nourished by operational experience and professional training practice. The management of conflict and of degraded conflict situations receives particular attention, without being the sole dimension of the intervention."
+      - "Pacivis Academy holds the manager accreditation and the practice authorisation issued by the CNAPS."
+
+  - titre: "Other professional sectors — Building an intervention adapted to your vocational programmes"
+    resume: "Preparing for a profession also means preparing for what can disrupt its exercise."
+    signature: "construction"
+    paragraphes:
+      - "Preparing for a profession also means preparing for what can disrupt its exercise."
+      - "Pacivis Academy works with providers that train for professions in which the quality of the relationship, stability under pressure, cooperation or the continuity of action are decisive. The aim is to prepare participants for the situations likely to put their technical skills to the test, without separating this learning from the realities of their future professional environment."
+      - "Starting from the targeted profession and the situations participants may face, Pacivis Academy builds content dedicated in particular to tension and conflict, communication under pressure, stress regulation, human factors, cooperation and leadership in degraded situations."
+      - "The intervention can take the form of a targeted sequence, a module or a contribution to a broader programme. It is designed with the provider so as to respect its objectives, its progression and its pedagogical arrangements."
+
+cta:
+  titre: "Building the intervention with your organisation"
+  texte: "A first exchange helps specify the programmes concerned, the audiences being prepared, the pedagogical objectives and the arrangements for integration."
+  bouton: "Discuss your programme"

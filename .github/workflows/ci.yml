@@ -61,3 +61,17 @@ jobs:
 
       - name: Styles survive navigation
         run: npm run test:styles
+
+      # Référencement : les défauts qui coûtent le plus cher sont
+      # relationnels (une canonique qui contredit le sitemap, un hreflang
+      # sans réciproque) et n'apparaissent qu'en comparant les pages entre
+      # elles — ce que ni le build ni une revue page à page ne font.
+      - name: Cohérence de référencement
+        run: npm run audit:seo
+
+      # Accessibilité : axe-core sur chaque page du build et sur les états
+      # qui n'existent qu'après interaction (panneau mobile ouvert,
+      # sous-menu survolé), plus les contrôles qu'axe ne fait pas —
+      # lien d'évitement, focus visible, cibles tactiles, zoom 200 %.
+      - name: Accessibilité WCAG 2.1 AA
+        run: npm run audit:a11y

@@ -42,7 +42,13 @@ const { LABELS } = await charger("src/lib/labels.ts");
 const PAGES = readdirSync(join(RACINE, "contenu", LANGUE_PAR_DEFAUT)).filter((f) =>
   f.endsWith(".yaml"),
 );
-const COLLECTIONS = ["portes", "journal", "formations"];
+/*
+  Les fiches `formations` sont hors périmètre : non publiées depuis
+  l'architecture V2 (aucune route ne les sert), elles n'ont pas à être
+  traduites pour publier une langue. Elles réintégreront ce rapport si
+  elles reviennent au site.
+*/
+const COLLECTIONS = ["portes", "journal"];
 
 const frontmatter = (chemin) => {
   const texte = readFileSync(chemin, "utf8");
@@ -77,11 +83,11 @@ for (const langue of LANGUES.filter((l) => l.code !== LANGUE_PAR_DEFAUT)) {
     });
     let ligne = `  ${collection.padEnd(11)}: ${presents.length}/${reference.length}`;
     if (absents.length) ligne += ` — manquent : ${absents.join(", ")}`;
-    if (sansChemin.length && collection !== "formations")
+    if (sansChemin.length)
       ligne += ` — sans adresse traduite (chemin) : ${sansChemin.join(", ")}`;
     if (!absents.length && !sansChemin.length) ligne += " ✅";
     console.log(ligne);
-    aFaire += absents.length + (collection !== "formations" ? sansChemin.length : 0);
+    aFaire += absents.length + sansChemin.length;
   }
 
   const fluxSans = FLUX.filter((f) => !f.traductions?.[code]?.nom).map((f) => f.id);

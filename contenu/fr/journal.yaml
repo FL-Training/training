@@ -15,6 +15,7 @@ filtres:
   tous: "Tous"
   filtrer_par_flux: "Filtrer par flux"
   filtrer_par_label: "Filtrer par label"
+  labels_titre: "Labels"
   aucun_article_flux: "Aucun article publié pour le moment."
   aucun_article_encore: "— aucun article pour le moment"
   aucune_selection: "Aucun article dans cette sélection pour le moment."

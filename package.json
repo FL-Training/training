@@ -19,7 +19,9 @@
     "cms:config": "node outils/generer-config-sveltia.mjs",
     "test:unitaires": "node --test tests/unitaires/*.test.mjs",
     "i18n:etat": "node outils/etat-traduction.mjs",
-    "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles"
+    "audit:seo": "node outils/audit-seo.mjs",
+    "audit:a11y": "node outils/audit-accessibilite.mjs",
+    "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles && npm run audit:seo && npm run audit:a11y"
   },
   "dependencies": {
     "@astrojs/node": "11.0.2",
@@ -44,6 +46,7 @@
     "@rollup/plugin-yaml": "^5.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "axe-core": "^4.12.1",
     "lucide-static": "^1.24.0",
     "playwright-core": "^1.62.0",
     "typescript": "^6.0.3"

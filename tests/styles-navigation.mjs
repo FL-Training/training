@@ -228,6 +228,11 @@ verifierChargement("mise en page stable", decalage < 0.02, `décalage cumulé ${
   vu comme un défaut de chargement. On vérifie les trois états, car la
   correction ne doit pas non plus condamner le survol.
 */
+const verifier = (nom, ok, detail) => {
+  if (!ok) echecs++;
+  console.log(`${ok ? "OK   " : "ÉCHEC"}  ${nom}${ok ? "" : ` — ${detail}`}`);
+};
+
 console.log("\n— sous-menus");
 const etatSousMenu = (p, selecteurGroupe) =>
   p.evaluate((sel) => {
@@ -271,6 +276,164 @@ verifierSousMenu(
 );
 
 /*
+  LE SÉLECTEUR DE LANGUE.
+
+  Trois choses s'y sont déjà cassées sans que rien ne le dise :
+
+  1. Il n'était rendu que dans l'entrée portant `accent`, un booléen que
+     l'atelier laisse décocher — le retirer supprimait tout moyen de
+     changer de langue au bandeau, l'anglais restant publié.
+  2. `aria-expanded` doit suivre l'ouverture RÉELLE, décidée en CSS par
+     le survol : le bouton annonçait « replié » en permanence.
+  3. La mesure qui aligne le liseré du panneau sur le filet du bandeau
+     visait `button[aria-haspopup="true"]` ; le jour où cette sémantique
+     fautive a été retirée, le sélecteur est devenu muet et l'alignement
+     serait tombé en silence.
+
+  Ces contrôles ne s'exécutent qu'à partir de deux langues publiées —
+  sans quoi le sélecteur n'existe pas, et c'est correct.
+*/
+console.log("\n— sélecteur de langue");
+/*
+  Rechargement complet AVANT de juger le sélecteur.
+
+  Les contrôles précédents y sont arrivés par navigation côté client, où
+  le bandeau est reconstruit et le script ne s'exécute qu'une fois. Le
+  défaut de double enregistrement, lui, n'existe qu'au PREMIER
+  chargement — appel direct plus `astro:page-load` émis dans la foulée.
+  Tester après une navigation client le rendait invisible.
+*/
+await p.goto(RACINE + "/", { waitUntil: "networkidle" });
+await p.evaluate(() => document.documentElement.classList.remove("nav-figee"));
+await p.waitForTimeout(400);
+
+const segmentLangue = await p.locator(".groupe-langues button").count();
+if (segmentLangue === 0) {
+  console.log("OK     absent, une seule langue publiée");
+} else {
+  const bouton = p.locator(".groupe-langues button");
+
+  const pont = await p.evaluate(() =>
+    document.querySelector("header").style.getPropertyValue("--pont-langues"),
+  );
+  verifier(
+    "liseré du panneau aligné sur le filet",
+    /^\d+px$/.test(pont) && pont !== "0px",
+    `--pont-langues vaut « ${pont} »`,
+  );
+
+  verifier(
+    "replié au repos",
+    (await bouton.getAttribute("aria-expanded")) === "false",
+    `aria-expanded = ${await bouton.getAttribute("aria-expanded")}`,
+  );
+
+  await bouton.hover();
+  await p.waitForTimeout(350);
+  verifier(
+    "déplié au survol, état exposé",
+    (await bouton.getAttribute("aria-expanded")) === "true" &&
+      (await p.locator("#panneau-langues").isVisible()),
+    `aria-expanded = ${await bouton.getAttribute("aria-expanded")}`,
+  );
+
+  /* Sans survol : une tablette en paysage reçoit ce bandeau. */
+  await p.mouse.move(700, 620);
+  await p.waitForTimeout(350);
+  await bouton.click();
+  await p.waitForTimeout(300);
+  /*
+    On vérifie la CLASSE, pas seulement la visibilité du panneau.
+
+    Un clic laisse le focus sur le bouton, donc `:focus-within` rend le
+    panneau visible même quand le clic n'a rien fait : le contrôle
+    passait au vert alors que deux gestionnaires concurrents s'annulaient
+    — ouvert par le premier, refermé par le second. Sur une tablette,
+    sans survol ni focus au tap, le sélecteur était inutilisable.
+  */
+  verifier(
+    "s'ouvre au clic, pointeur ailleurs",
+    (await p.locator(".groupe-langues.langues-ouvert").count()) === 1 &&
+      (await bouton.getAttribute("aria-expanded")) === "true" &&
+      (await p.locator("#panneau-langues").isVisible()),
+    "le clic n'a pas ouvert le panneau (gestionnaires en double ?)",
+  );
+
+  await p.keyboard.press("Escape");
+  await p.waitForTimeout(300);
+  /*
+    Fermer doit faire DISPARAÎTRE le panneau, pas seulement changer
+    l'attribut. Refermer au clavier laisse le focus sur le bouton — voulu,
+    l'utilisateur ne doit pas perdre sa place — et `:focus-within` le
+    rouvrait aussitôt : `aria-expanded="false"` sous un panneau affiché.
+  */
+  verifier(
+    "l'échappement referme pour de bon",
+    (await p.locator("#panneau-langues").isVisible()) === false &&
+      (await bouton.getAttribute("aria-expanded")) === "false",
+    `panneau encore visible ou aria-expanded = ${await bouton.getAttribute("aria-expanded")}`,
+  );
+
+  /* Le comportement ordinaire doit reprendre : sinon le sélecteur reste
+     bloqué fermé jusqu'au prochain clic. */
+  await p.mouse.move(700, 640);
+  await p.evaluate(() => document.activeElement?.blur());
+  await p.waitForTimeout(400);
+  await bouton.hover();
+  await p.waitForTimeout(400);
+  verifier(
+    "le survol rouvre après une fermeture",
+    await p.locator("#panneau-langues").isVisible(),
+    "le panneau reste bloqué fermé",
+  );
+  await p.keyboard.press("Escape");
+  await p.mouse.move(700, 640);
+  await p.waitForTimeout(300);
+
+  /* La sémantique de menu ARIA a été retirée : le panneau est un groupe
+     de liens, pas un menu. */
+  verifier(
+    "pas de sémantique de menu ARIA",
+    (await bouton.getAttribute("aria-haspopup")) === null,
+    "aria-haspopup est encore posé",
+  );
+
+  /*
+    Le fil d'Ariane ne doit pas survivre à un changement de langue.
+
+    Les étapes sont mémorisées par session, libellés et adresses compris.
+    Sans cloisonnement, basculer en anglais depuis la page PAXI française
+    affichait « Home › Formations › PAXI › PAXI » : un maillon français
+    conservé, et la page d'arrivée comptée deux fois.
+  */
+  await p.goto(RACINE + "/formations/", { waitUntil: "networkidle" });
+  await p.waitForTimeout(400);
+  await p.goto(RACINE + "/formations/paxi/", { waitUntil: "networkidle" });
+  await p.waitForTimeout(700);
+  const filFr = await p.$$eval(".fil-parcours li", (ls) =>
+    ls.map((l) => l.textContent.trim()),
+  );
+  verifier(
+    "le fil suit le parcours dans une même langue",
+    filFr.join(" › ") === "Accueil › Formations › PAXI",
+    `obtenu « ${filFr.join(" › ")} »`,
+  );
+
+  await p.locator(".groupe-langues button").hover();
+  await p.waitForTimeout(300);
+  await p.locator("#panneau-langues a").first().click();
+  await p.waitForTimeout(1500);
+  const filApres = await p.$$eval(".fil-parcours li", (ls) =>
+    ls.map((l) => l.textContent.trim()),
+  );
+  verifier(
+    "le fil repart de zéro après changement de langue",
+    filApres.length === 2 && !filApres.some((e) => /Accueil|Formations/.test(e)),
+    `obtenu « ${filApres.join(" › ")} » — parcours d'une autre langue conservé`,
+  );
+}
+
+/*
   PASSE PETIT ÉCRAN.
 
   Ce qui casse sur un téléphone ne casse pas de la même façon : une
@@ -285,11 +448,6 @@ const m = await b.newPage({
   isMobile: true,
   hasTouch: true,
 });
-
-const verifier = (nom, ok, detail) => {
-  if (!ok) echecs++;
-  console.log(`${ok ? "OK   " : "ÉCHEC"}  ${nom}${ok ? "" : ` — ${detail}`}`);
-};
 
 // 1. Aucune page ne défile latéralement.
 for (const chemin of ["/", "/formations/", "/approche/", "/formations/paxi/", "/journal/"]) {
@@ -327,14 +485,23 @@ const menu = await m.evaluate(() => {
   const p = document.querySelector(".menu-panneau");
   if (!p) return null;
   p.scrollTop = p.scrollHeight;
-  const liens = [...p.querySelectorAll("a")];
-  const dernier = liens.at(-1).getBoundingClientRect();
+  /*
+    Ne mesurer que les cibles RÉELLEMENT atteignables : depuis le
+    30/07, les raccourcis d'une entrée sont repliés par défaut — leur
+    hauteur est nulle tant qu'on ne les a pas dépliés, ce qui n'est pas
+    un défaut de cible tactile mais l'état fermé. Le dépliage, lui, est
+    contrôlé juste après.
+  */
+  const visible = (el) => el.getBoundingClientRect().height > 0;
+  const liens = [...p.querySelectorAll("a"), ...p.querySelectorAll("button")].filter(visible);
+  const dernier = [...p.querySelectorAll("a")].filter(visible).at(-1).getBoundingClientRect();
   return {
     bas: Math.round(p.getBoundingClientRect().bottom),
     fenetre: window.innerHeight,
     defilable: getComputedStyle(p).overflowY,
     dernierVisible: dernier.bottom <= window.innerHeight + 1,
     plusPetiteCible: Math.min(...liens.map((a) => Math.round(a.getBoundingClientRect().height))),
+    entreesRepliees: p.querySelectorAll(".menu-raccourcis[hidden]").length,
   };
 });
 verifier(
@@ -351,6 +518,33 @@ verifier(
   "cibles du menu ≥ 44 px",
   menu && menu.plusPetiteCible >= 44,
   menu ? `plus petite : ${menu.plusPetiteCible}px` : "panneau introuvable",
+);
+
+/*
+  Les raccourcis repliés doivent s'ouvrir, et leurs liens être des
+  cibles tactiles à part entière. Sans ce contrôle, un repliage cassé
+  rendrait la moitié du site inatteignable sur téléphone sans qu'aucun
+  test ne rougisse.
+*/
+const deplie = await m.evaluate(async () => {
+  const bouton = document.querySelector(".menu-deplier");
+  if (!bouton) return { sansObjet: true };
+  bouton.click();
+  await new Promise((r) => setTimeout(r, 250));
+  const liste = bouton.closest(".menu-groupe").querySelector(".menu-raccourcis");
+  const liens = [...liste.querySelectorAll("a")];
+  return {
+    ouvert: !liste.hidden && bouton.getAttribute("aria-expanded") === "true",
+    nombre: liens.length,
+    plusPetite: Math.min(...liens.map((a) => Math.round(a.getBoundingClientRect().height))),
+  };
+});
+verifier(
+  "les raccourcis repliés s'ouvrent et restent des cibles ≥ 44 px",
+  deplie.sansObjet || (deplie.ouvert && deplie.nombre > 0 && deplie.plusPetite >= 44),
+  deplie.sansObjet
+    ? "aucune entrée à raccourcis"
+    : `ouvert : ${deplie.ouvert}, ${deplie.nombre} raccourcis, plus petite ${deplie.plusPetite}px`,
 );
 
 await b.close();

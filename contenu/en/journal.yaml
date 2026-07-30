@@ -1,0 +1,27 @@
+# "Blog" page (The Pacivis Journal) — English working translation
+# (29/07/2026), to be reviewed by Fabien. URL /blog per his decision;
+# the publication keeps its brand name.
+seo:
+  titre: "The Pacivis Journal"
+  description: "In-depth articles on conflict prevention and management: methods, markers, field experience and points of view — by Fabien Lacombe."
+
+entete:
+  surtitre: "The Pacivis Journal"
+  titre: "Understand before acting."
+  texte: "Methods, markers, field feedback and points of view: in-depth articles for those who face conflict in their work."
+
+filtres:
+  tous: "All"
+  filtrer_par_flux: "Filter by section"
+  filtrer_par_label: "Filter by topic"
+  labels_titre: "Topics"
+  aucun_article_flux: "No article published yet."
+  aucun_article_encore: "— no article yet"
+  aucune_selection: "No article in this selection yet."
+
+article:
+  retour: "The Journal"
+  sources: "Sources"
+  cta_titre: "These markers are trained in our courses."
+  cta_formations: "See the training"
+  cta_approche: "Our approach"

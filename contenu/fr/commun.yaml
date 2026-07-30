@@ -7,6 +7,9 @@ marque:
   nom: "Pacivis Academy"
   slogan: "Prévention & gestion des conflits"
   signature: "La maîtrise commence avant le conflit."
+  # Le titre professionnel de Fabien, publié aux moteurs dans les
+  # données structurées (Person.jobTitle).
+  fonction: "Formateur en prévention et gestion des conflits"
 
 # Menu principal — architecture V2 : sept entrées, dans cet ordre.
 # « accent: true » met l'entrée en évidence (fond plein), comme sur le
@@ -93,6 +96,10 @@ navigation:
     chemin: "/espace-apprenant"
     accent: true
 
+# Le fil d'Ariane : le libellé du maillon « Accueil ».
+fil:
+  accueil: "Accueil"
+
 menu:
   ouvrir: "Ouvrir le menu"
   fermer: "Fermer le menu"
@@ -102,6 +109,9 @@ journal:
   # de l'article : il n'y a rien à saisir, et il ne peut pas se
   # désynchroniser d'une relecture. Seul ce libellé est modifiable.
   duree_lecture: "min de lecture"
+  # Le bouton de chaque carte d'article, dans le Journal et dans les
+  # listes par label.
+  lire_article: "Lire l'article"
 
 liens:
   linkedin: "https://www.linkedin.com/in/fabien-lacombe/"

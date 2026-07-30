@@ -49,7 +49,7 @@ const { carte, porte: libelles } = formationsPage;
   title={seo.titre}
   description={seo.description}
   fil={[
-    { label: "Formations", chemin: cheminLangue(langue, "/formations") },
+    { label: libelles.fil, chemin: cheminLangue(langue, "/formations") },
     { label: nom, chemin: `${cheminLangue(langue, "/formations")}/${entry.data.chemin ?? entry.id}` },
   ]}
 >

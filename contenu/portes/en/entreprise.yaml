@@ -1,0 +1,85 @@
+# "Corporate" door — English working translation (29/07/2026), to be
+# reviewed by Fabien. The French original is a VALIDATED deliverable.
+# `chemin` carries the English address arbitrated by Fabien; the file
+# name stays identical to the French one — that is how the editor pairs
+# the languages. `note_visuel` fields are design notes, never displayed.
+nom: "Corporate"
+chemin: "corporate"
+ordre: 1
+statut: "complet"
+picto: "building-2"
+
+seo:
+  titre: "Corporate training — conflict and tension"
+  description: "Preventing and managing internal conflict, incivility and aggression, preparing managers and teams for crisis situations. In-company."
+
+entete:
+  surtitre: "Corporate"
+  titre: "Preparing your teams to face tension, intensity and degraded situations"
+  texte: "Pacivis Academy supports companies that want to strengthen the stability of their teams, prevent or address conflict, and better prepare their managers and employees for situations likely to degrade cooperation, quality of service, safety or the continuity of the activity."
+  bouton: "Discuss your situation"
+
+visuel:
+  src: "/formations/entreprise/visuel/src.webp"
+  alt: "A team and its manager around a meeting table, in serious, constructive work discussion."
+cartes:
+  - titre: "Preventing, defusing and managing conflict between your employees or departments"
+    resume: "Acting on emerging tension, open conflict or lastingly blocked situations in order to restore the conditions necessary for work and cooperation."
+    paragraphes:
+      - "Tension can remain diffuse, turn into open conflict, or end up durably blocking the relationship and the work. What matters is being able to intervene at each of these moments, before the situation bogs down or when it already needs untangling."
+      - "The training helps managers and employees understand the dynamics of conflict, situate its level of deterioration and adjust their behaviour. They work on their capacity to defuse a tense exchange, address an open conflict and seek a workable outcome without denying the disagreements."
+      - "They also learn to identify what they can handle themselves, and the moment when the intervention of a third party, management or human resources becomes necessary."
+    resultat: "Conflict handled with more discernment, fewer situations left without a response, and a better capacity to restore the conditions necessary for work and cooperation."
+    publics: "Managers, team leaders, employees, teams or departments facing recurring tension, open conflict or lastingly blocked working relationships."
+    note_visuel: "A work scene in which two people or two departments can no longer cooperate, with the possibility of showing the moment when an exchange becomes workable again. Avoid generic depictions of arguments or artificially dramatic visuals."
+    signature: "oscillation"
+
+  - titre: "Facing incivility, aggression and difficult relationships with customers or the public"
+    resume: "Preparing exposed professionals to react accurately, prevent the situation from worsening, and protect their own integrity as well as people and property."
+    paragraphes:
+      - "Facing a difficult customer or user, the situation can tighten quickly. The employee must then preserve their safety, uphold the rules and continue to represent the organisation without making the situation worse."
+      - "The training prepares employees to spot the deterioration of an interaction and to distinguish dissatisfaction, incivility, aggression and a situation carrying a higher risk. They learn to adjust their posture, their communication and their level of engagement."
+      - "Participants learn to formulate a refusal, restate a rule, reframe a behaviour and end the exchange when the safety of people or property requires it. They also work on raising the alert, handing over and coordinating with colleagues."
+    resultat: "Better-prepared employees, more consistent responses and behaviour better adjusted to the real level of the situation, serving the protection of people and property as well as the continuity of the service relationship."
+    publics: "Professionals in direct contact with customers, users, patients, passengers or the public, as well as their managers."
+    note_visuel: "A realistic face-to-face situation with the public, showing the tension, the presence of a colleague or a relay and the constraints of the place. The visual universe must be able to vary by sector: reception, transport, healthcare, service, control, security."
+    signature: "pic"
+
+  - titre: "Optimising the performance and operational stability of your teams"
+    resume: "Helping teams stay lucid, coordinated and effective over time, without exhausting the resources the activity depends on."
+    paragraphes:
+      - "Sustained activity does not necessarily become a crisis. But when it lasts, it can reduce lucidity, weaken coordination and progressively exhaust the resources on which performance rests."
+      - "The training helps teams and their managers understand what sustains or degrades their capacity to act under constraint. They work on managing energy and attention, regulating stress, recovery, and mastering the effects of pressure on action. The work also covers the concrete organisation of the activity: priorities, distribution of the load, coordination, rhythms, relays and friction points. The aim is to optimise collective functioning to maintain regular, reliable and sustainable performance."
+    resultat: "A more legible organisation of the work, better use of available resources and steadier performance in periods of high intensity, without compromising the teams' capacity to last."
+    publics: "Managers, operational teams and groups working at sustained rhythms, through activity peaks or under strong reliability requirements."
+    note_visuel: "A team in sustained activity, facing several priorities, with a visible distribution of the load, relays and coordination points. Avoid imagery of self-surpassing and favour collective mastery of intensity."
+    signature: "endurance"
+
+  - titre: "Preparing your teams and managers to act in crisis situations"
+    resume: "Preserving lucidity, regulating reactions under pressure, communicating clearly, deciding and coordinating action in a crisis."
+    paragraphes:
+      - "In a crisis, procedures and technical means are not enough. Pressure, uncertainty and fatigue alter perception, amplify emotional reactions and can weaken communication, decision-making and cooperation."
+      - "The training prepares teams and their leaders to recognise these effects and to work on regulating emotions and emotional contagion. It develops their capacity to share a common understanding of the situation, maintain clear and coherent crisis communication, decide under constraint, set priorities and coordinate action."
+      - "These capacities can be put to the test in scenario work or prepared crisis exercises, observed and debriefed. The analysis identifies what supported or weakened the collective response, and turns the experience into concrete adjustments."
+    note_visuel: "An evolving crisis situation, bringing together people who must observe, share information, arbitrate and coordinate action. Show several levels of responsibility and incomplete information rather than a spectacular image of catastrophe."
+    signature: "paliers"
+
+encart_paxi:
+  paragraphes:
+    - "The PAXI course prepares crews to prevent and manage unruly passenger behaviour, whether incivility, aggression or threats to flight safety."
+    - "The course develops observation of the situation and of behaviours, risk-level assessment, communication, stress and emotion management, and coordination between cabin crew and pilots."
+    - "Where the situation requires it, it also covers team protection and restraint techniques, and the use of the on-board intervention kit."
+  bouton: "Discover PAXI"
+  note_visuel: "An identifiable aviation and airport universe, able to represent cabin crew as well as ground handling teams. The block must remain distinctive without reducing PAXI to a single client category or profession."
+
+sections:
+  - titre: "How the training is built"
+    paragraphes:
+      - "Training is delivered in-company: Pacivis Academy works directly on your premises to train your organisation's teams."
+      - "Courses are built from the situations actually encountered by the company, the employees concerned, their level of exposure, the responsibilities entrusted to them and the constraints of the activity."
+      - "Depending on the need, Pacivis Academy can adapt an existing course or build a specific response. Scenario work, experiential workshops and exercises are designed to keep a direct link with real work."
+
+cta:
+  titre: "Clarifying your need before building the training"
+  texte: "A first exchange helps specify the situations encountered, the audiences concerned, the expected results and the most suitable arrangements."
+  bouton: "Discuss your situation"

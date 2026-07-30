@@ -3,7 +3,7 @@ import { getCollection } from "astro:content";
 import { localeLangue, nomCollection } from "../../lib/langues";
 import Base from "../../layouts/Base.astro";
 import { href } from "../../lib/url";
-import { contenuLangue } from "../../lib/contenu";
+import { contenuLangue, libelleNavigation } from "../../lib/contenu";
 import { langueActive } from "../../lib/langue-active";
 import { cheminLangue } from "../../lib/routes";
 
@@ -60,7 +60,7 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
   title={journalPage.seo.titre}
   description={journalPage.seo.description}
   typePage="CollectionPage"
-  fil={[{ label: "Le Journal", chemin: cheminLangue(langue, "/journal") }]}
+  fil={[{ label: libelleNavigation(langue, "journal"), chemin: cheminLangue(langue, "/journal") }]}
 >
   {/*
     L'ENTÊTE, et elle seule, porte le visuel.
@@ -152,7 +152,7 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
             aria-label={journalPage.filtres.filtrer_par_label}
           >
             <span class="mr-2 text-[0.68rem] font-semibold tracking-[0.14em] text-ink-faint uppercase">
-              Labels
+              {journalPage.filtres.labels_titre}
             </span>
             <button type="button" data-label="tous" class="mot-label mot-actif">
               {journalPage.filtres.tous}
@@ -253,7 +253,7 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
               </ul>
             )}
             <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep">
-              Lire l'article
+              {commun.journal.lire_article}
               <span
                 aria-hidden="true"
                 class="transition-transform duration-200 group-hover:translate-x-1"

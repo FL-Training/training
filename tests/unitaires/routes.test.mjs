@@ -76,8 +76,9 @@ test("cheminLangue traduit les liens écrits en dur, par la correspondance la pl
   // Une page de la table.
   assert.equal(cheminLangue("en", "/formations"), "/en/training");
   assert.equal(cheminLangue("en", "/approche"), "/en/approach");
-  // La plus longue correspondance gagne : PAXI avant « formations ».
-  assert.equal(cheminLangue("en", "/formations/paxi"), "/en/training/paxi");
+  // La plus longue correspondance gagne : PAXI avant « formations » —
+  // et son adresse anglaise est celle arbitrée par Fabien le 29/07.
+  assert.equal(cheminLangue("en", "/formations/paxi"), "/en/training/unruly-passengers");
   // Le reste d'un chemin d'entrée est conservé tel quel.
   assert.equal(cheminLangue("en", "/formations/corporate"), "/en/training/corporate");
   // La racine.

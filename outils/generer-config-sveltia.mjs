@@ -301,6 +301,7 @@ const pageFormations = {
       t("badge_stub", "Badge « En préparation »"),
     ]),
     objet("porte", "Libellés communs aux pages de porte", [
+      t("fil", "Libellé « Formations » du fil d'Ariane"),
       t("retour", "Lien retour"),
       t("libelle_publics", "Libellé « Publics concernés »"),
       t("libelle_resultat", "Libellé « Ce que la formation change »"),
@@ -469,6 +470,7 @@ const pageJournal = {
       t("tous", "Bouton « Tous »"),
       t("filtrer_par_flux", "Intitulé du filtre par flux (accessibilité)"),
       t("filtrer_par_label", "Intitulé du filtre par label (accessibilité)"),
+      t("labels_titre", "Titre de la rangée des labels"),
       t("aucun_article_flux", "Mention « aucun article » d'un flux vide"),
       t("aucun_article_encore", "Suffixe lu par les lecteurs d'écran sur un flux vide"),
       t("aucune_selection", "Mention d'une sélection vide"),
@@ -522,10 +524,12 @@ const pageCommun = {
   fields: [
     objet("journal", "Le Journal", [
       t("duree_lecture", "Mention de durée de lecture", "Suit le nombre de minutes calculé automatiquement — par exemple « min de lecture »."),
+      t("lire_article", "Bouton des cartes d'article", "Le libellé au bas de chaque carte, dans le Journal et dans les listes par label."),
     ]),
     objet("marque", "Marque", [
       t("nom", "Nom"),
       t("slogan", "Slogan"),
+      t("fonction", "Titre professionnel de Fabien", "Publié aux moteurs de recherche dans les données structurées — par exemple « Formateur en prévention et gestion des conflits »."),
       t("signature", "Signature"),
     ]),
     listeMin1("navigation", "Navigation principale (7 entrées)", [
@@ -537,6 +541,7 @@ const pageCommun = {
         summary: "{{fields.label}}",
       }),
     ], { summary: "{{fields.label}}" }),
+    objet("fil", "Fil d'Ariane", [t("accueil", "Libellé du maillon « Accueil »")]),
     objet("menu", "Menu mobile (accessibilité)", [
       t("ouvrir", "Ouvrir"),
       t("fermer", "Fermer"),

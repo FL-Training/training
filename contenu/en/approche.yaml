@@ -1,0 +1,51 @@
+# "Our approach" page — English working translation (29/07/2026), to be
+# reviewed by Fabien. The French original is a VALIDATED text (livrable
+# version 7): this translation must follow any revision of the original
+# and be validated in the same way before publication.
+seo:
+  titre: "Our approach"
+  description: "The ARCA method — anticipate, regulate, communicate, act: preserving the capacity to act when pressure or conflict sets in."
+
+entete:
+  surtitre: "Our approach"
+  titre: "An embodied, structured and directly applicable approach"
+  texte: "When pressure, tension or crisis push people and teams outside their ordinary conditions of stability, their capacity to perceive, communicate, decide and act is put to the test. Pacivis Academy works on these mechanisms and on the means of preserving an appropriate capacity to act."
+
+intro:
+  - "Conflict management is one of its core specialities, within a broader field that also includes operational stability, leadership under pressure, cooperation, and the continuity of action in degraded or critical situations."
+
+methode:
+  surtitre: "The method"
+  titre: "ARCA: the Pacivis Academy method"
+  intro: "The ARCA method structures this approach around four pillars: anticipate, regulate, communicate and act. They can be worked on together or selectively, depending on the needs, situations and responsibilities of the professionals involved."
+  piliers:
+    - numero: "A"
+      titre: "Anticipate"
+      texte: "Anticipating means observing the environment and behaviours in order to spot the signs of a shift early enough. It is not about predicting everything, but about identifying the factors that increase the risk of deterioration or can change the nature of the situation."
+    - numero: "R"
+      titre: "Regulate"
+      texte: "Regulating means preserving or regaining sufficient stability when pressure rises. This pillar draws on physiological and cognitive regulation, but also on emotional intelligence: recognising what is happening within oneself, understanding what the emotion signals, and preventing it from driving the response on its own. What is at stake is keeping lucidity, a coherent posture and a genuine capacity to decide."
+    - numero: "C"
+      titre: "Communicate"
+      texte: "Communicating means listening, formulating a clear intention and setting a framework appropriate to the situation. This pillar works on the three dimensions of communication: verbal, paraverbal and non-verbal. It is not only about delivering a message, but about observing its effects and adjusting one's communication accordingly."
+    - numero: "A"
+      titre: "Act"
+      texte: "Acting, finally, means choosing and implementing a response appropriate to the nature, evolution and criticality of the situation. Depending on the context, the action may aim to preserve the continuity of activity or to respond to a dangerous situation. It remains graduated, proportionate and set within the applicable legal, regulatory and professional framework."
+  note: "ARCA is not a rigid procedure. Its four pillars interact and adjust as the situation evolves. The method provides a shared framework, without requiring every dimension to be mobilised with the same intensity in every course."
+
+sections:
+  - titre: "Solid foundations, integrated into a single approach"
+    paragraphes:
+      - "The ARCA method draws on proven tools, notably from transactional analysis, Nonviolent Communication, influence negotiation and potential-optimisation techniques. It is also nourished by an operational culture forged in environments where risk assessment, decision-making under constraint and the proportionality of action have concrete consequences."
+      - "Pacivis Academy does not juxtapose these different contributions, nor does it take them up as closed methods. It integrates them into an approach grounded in experience, the analysis of one's own reactions and adjustment to the effects actually produced. Their use depends on the context, the objectives pursued and the participants' concrete possibilities."
+  - titre: "A pedagogy that links understanding and practice"
+    paragraphes:
+      - "The ARCA method is worked on through targeted theoretical input, experiential workshops, progressive scenario work and debriefings. This pedagogy allows participants to understand the mechanisms at play, observe their own reactions and measure the gap between their intention and the effects produced."
+      - "The courses also pass on concrete tools and lines of practice so that participants can continue appropriating them beyond the training and transfer them into the professional situations they encounter."
+
+conclusion:
+  surtitre: "Our ambition"
+  titre: "Recognising earlier what is deteriorating."
+  texte: "Pacivis Academy does not promise to eliminate tension or master every crisis. Its ambition is to help people and teams recognise earlier what is deteriorating, preserve their capacities and build a more lucid response when pressure puts the relationship, cooperation or the continuity of action to the test."
+  bouton_formations: "See the training"
+  bouton_contact: "Get in touch"

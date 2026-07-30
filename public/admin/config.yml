@@ -272,6 +272,10 @@ collections:
             widget: object
             i18n: true
             fields:
+              - name: fil
+                label: Libellé « Formations » du fil d'Ariane
+                widget: string
+                i18n: true
               - name: retour
                 label: Lien retour
                 widget: string
@@ -930,6 +934,10 @@ collections:
                 i18n: true
               - name: filtrer_par_label
                 label: Intitulé du filtre par label (accessibilité)
+                widget: string
+                i18n: true
+              - name: labels_titre
+                label: Titre de la rangée des labels
                 widget: string
                 i18n: true
               - name: aucun_article_flux
@@ -1635,6 +1643,11 @@ collections:
                 hint: >-
                   Suit le nombre de minutes calculé automatiquement — par exemple « min de lecture
                   ».
+              - name: lire_article
+                label: Bouton des cartes d'article
+                widget: string
+                i18n: true
+                hint: Le libellé au bas de chaque carte, dans le Journal et dans les listes par label.
           - name: marque
             label: Marque
             widget: object
@@ -1648,6 +1661,13 @@ collections:
                 label: Slogan
                 widget: string
                 i18n: true
+              - name: fonction
+                label: Titre professionnel de Fabien
+                widget: string
+                i18n: true
+                hint: >-
+                  Publié aux moteurs de recherche dans les données structurées — par exemple «
+                  Formateur en prévention et gestion des conflits ».
               - name: signature
                 label: Signature
                 widget: string
@@ -1704,6 +1724,15 @@ collections:
                 hint: Se déploient sous l'entrée au survol. Laisser vide pour une entrée sans sous-menu.
                 summary: "{{fields.label}}"
             summary: "{{fields.label}}"
+          - name: fil
+            label: Fil d'Ariane
+            widget: object
+            i18n: true
+            fields:
+              - name: accueil
+                label: Libellé du maillon « Accueil »
+                widget: string
+                i18n: true
           - name: menu
             label: Menu mobile (accessibilité)
             widget: object

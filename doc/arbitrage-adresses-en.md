@@ -50,6 +50,29 @@ au moment de sa traduction (par exemple l'article « Anticiper » →
 `/en/journal/from-reaction-to-action`). Pas d'arbitrage global : titre
 par titre, au fil des traductions.
 
+## Décisions — 29/07/2026
+
+Fabien a retourné le document commenté. Décisions intégrées dans
+`src/lib/routes.ts` :
+
+| Ligne | Décision | Adresse retenue |
+|---|---|---|
+| Formations | validé | `/en/training` |
+| PAXI | « Remplace PAXI par "Unruly passengers" » | `/en/training/unruly-passengers` ¹ |
+| Notre approche | validé | `/en/approach` |
+| Le Journal | « Blog c'est ok » | `/en/blog` |
+| Espace apprenant | « Pourquoi pas simplement "Log in" » | `/en/login` ² |
+| Entreprise | validé | `corporate` |
+| Organismes de formation | validé | `training-providers` |
+| En individuel | « Pas d'avis, fais au mieux » | `individuals` |
+| Lignes sans commentaire | proposition retenue | accueil, about, contact, privacy-policy, public-sector, legal-notice |
+
+¹ Interprété comme l'**adresse seulement** : la page continue de nommer
+le produit PAXI. À confirmer.
+² « Log in » est une action ; la page présente l'espace et sa liste
+d'attente. Adresse appliquée telle que demandée — si la page reste une
+présentation, `/en/learners` resterait plus juste. À confirmer.
+
 ## Comment trancher
 
 Pour chaque ligne : la proposition convient, ou l'alternative, ou autre

@@ -6,6 +6,7 @@
  * with a readable message, and the live site keeps its last version.
  */
 import { z } from "astro/zod";
+import { route } from "./routes";
 
 import communBrut from "../../contenu/fr/commun.yaml";
 import accueilBrut from "../../contenu/fr/accueil.yaml";
@@ -87,10 +88,13 @@ const communSchema = z.object({
     nom: texteRequis,
     slogan: texteRequis,
     signature: texteRequis,
+    fonction: texteRequis,
   }),
   navigation: z.array(lienNavigation).min(1),
   menu: z.object({ ouvrir: texteRequis, fermer: texteRequis }),
-  journal: z.object({ duree_lecture: texteRequis }),
+  // Le fil d'Ariane : le libellé du maillon « Accueil ».
+  fil: z.object({ accueil: texteRequis }),
+  journal: z.object({ duree_lecture: texteRequis, lire_article: texteRequis }),
   liens: z.object({ linkedin: z.url() }),
   photos: z.object({ portrait_alt: texteRequis, og_alt: texteRequis }),
   pied_de_page: z.object({
@@ -172,6 +176,7 @@ const formationsPageSchema = z.object({
     badge_stub: texteRequis,
   }),
   porte: z.object({
+    fil: texteRequis,
     retour: texteRequis,
     libelle_publics: texteRequis,
     libelle_resultat: texteRequis,
@@ -241,6 +246,7 @@ const journalPageSchema = z.object({
     tous: texteRequis,
     filtrer_par_flux: texteRequis,
     filtrer_par_label: texteRequis,
+    labels_titre: texteRequis,
     aucun_article_flux: texteRequis,
     aucun_article_encore: texteRequis,
     aucune_selection: texteRequis,
@@ -549,3 +555,33 @@ export function contenuLangue(langue: string): ContenuLangue {
 export type TextesFormulaire = z.infer<typeof contactSchema>["formulaire"] & {
   linkedin: string;
 };
+
+/**
+ * Le libellé d'une page, dans la langue demandée, tel qu'il figure au menu.
+ *
+ * Les fils d'Ariane écrivaient leur premier maillon en dur — « À propos »,
+ * « Le Journal », « Espace apprenant » — ce qui les laissait en français
+ * sur les pages anglaises, y compris dans les données structurées
+ * `BreadcrumbList` envoyées aux moteurs.
+ *
+ * La liste `navigation` de commun.yaml porte déjà ces libellés dans chaque
+ * langue : on les lit là plutôt que d'ouvrir de nouveaux champs. Un
+ * bénéfice de structure en prime — le fil et le menu ne peuvent plus
+ * nommer la même page différemment.
+ *
+ * L'appariement se fait par chemin, celui de la table des routes : les
+ * `chemin` de `navigation` sont écrits sans préfixe de langue, exactement
+ * comme `ROUTES[].chemins[langue]`.
+ */
+export function libelleNavigation(langue: string, idRoute: string): string {
+  const { commun } = contenuLangue(langue);
+  const cible = (route(idRoute).chemins as Record<string, string>)[langue];
+  const entree = commun.navigation.find((n) => n.chemin === cible);
+  if (!entree) {
+    throw new Error(
+      `contenu/${langue}/commun.yaml : aucune entrée de navigation pour « ${cible} » ` +
+        `(route « ${idRoute} ») — le fil d'Ariane ne peut pas être nommé.`,
+    );
+  }
+  return entree.label;
+}

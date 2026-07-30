@@ -15,7 +15,7 @@
 import Base from "../layouts/Base.astro";
 import Picto from "../components/Picto.astro";
 import { href } from "../lib/url";
-import { contenuLangue } from "../lib/contenu";
+import { contenuLangue, libelleNavigation } from "../lib/contenu";
 import { langueActive } from "../lib/langue-active";
 import { cheminLangue } from "../lib/routes";
 
@@ -34,7 +34,7 @@ const PICTOS = ["graduation-cap", "shield-check", "messages-square", "users-roun
 <Base
   title={seo.titre}
   description={seo.description}
-  fil={[{ label: "Espace apprenant", chemin: cheminLangue(langue, "/espace-apprenant") }]}
+  fil={[{ label: libelleNavigation(langue, "espace-apprenant"), chemin: cheminLangue(langue, "/espace-apprenant") }]}
 >
   <section class="mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24">
     <p class="eyebrow">{entete.surtitre}</p>

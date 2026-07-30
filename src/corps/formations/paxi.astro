@@ -15,7 +15,8 @@
 import Base from "../../layouts/Base.astro";
 import DeescalationLine from "../../components/DeescalationLine.astro";
 import { href } from "../../lib/url";
-import { contenuLangue } from "../../lib/contenu";
+import { contenuLangue, libelleNavigation } from "../../lib/contenu";
+import { texteInterface } from "../../lib/interface";
 import { langueActive } from "../../lib/langue-active";
 import { localeLangue } from "../../lib/langues";
 import { cheminLangue } from "../../lib/routes";
@@ -23,7 +24,7 @@ import { cheminLangue } from "../../lib/routes";
 // La langue se lit dans l'adresse : ce composant sert toutes les
 // langues publiées, le contenu suit.
 const langue = langueActive(Astro.url.pathname);
-const { paxi } = contenuLangue(langue);
+const { paxi, commun } = contenuLangue(langue);
 import { enrichir } from "../../lib/texte";
 import { racineSite } from "../../lib/seo";
 
@@ -43,7 +44,13 @@ const noeudsSeo = [
   {
     "@type": "Course",
     "@id": `${new URL(Astro.url.pathname, Astro.site).href}#course`,
-    name: "PAXI — Prévenir et gérer les comportements de passagers indisciplinés",
+    /*
+      Le nom du cours vient du contenu de la langue affichée. Écrit en
+      dur, il publiait un nœud `Course` français sous un `inLanguage:
+      en-GB` — une donnée structurée qui se contredit elle-même. Le titre
+      de référencement porte déjà exactement ce nom, dans chaque langue.
+    */
+    name: seo.titre,
     description: seo.description,
     provider: { "@id": `${racine}#organization` },
     inLanguage: localeLangue(langue),
@@ -59,7 +66,7 @@ const noeudsSeo = [
   title={seo.titre}
   description={seo.description}
   fil={[
-    { label: "Formations", chemin: cheminLangue(langue, "/formations") },
+    { label: libelleNavigation(langue, "formations"), chemin: cheminLangue(langue, "/formations") },
     { label: "PAXI", chemin: cheminLangue(langue, "/formations/paxi") },
   ]}
   noeudsSeo={noeudsSeo}
@@ -74,9 +81,9 @@ const noeudsSeo = [
         côté serveur, donc juste même sans JavaScript et pour qui arrive
         par un lien direct ; le script y insère les étapes traversées.
       */}
-      <nav class="fil-parcours" aria-label="Fil d'Ariane" data-fil-parcours="repli">
+      <nav class="fil-parcours" aria-label={texteInterface(langue, "filAriane")} data-fil-parcours="repli">
         <ol>
-          <li><a href={href(cheminLangue(langue, "/"))}>Accueil</a></li>
+          <li><a href={href(cheminLangue(langue, "/"))}>{commun.fil.accueil}</a></li>
           <li aria-current="page">PAXI</li>
         </ol>
       </nav>
@@ -130,7 +137,13 @@ const noeudsSeo = [
             class="grid gap-4 border-t border-ink/10 pt-6 md:grid-cols-[90px_1fr] md:gap-8"
             data-reveal
           >
-            <span class="display text-4xl text-sage/60 md:text-5xl">
+            {/*
+              sage/60 ne donnait que 1.54:1 sur le fond papier : le numéro
+              du module était invisible pour qui voit mal. sage-deep/80
+              monte à 3.77:1, au-delà du 3:1 exigé pour du texte large,
+              en gardant le chiffre plus léger que le titre qu'il annonce.
+            */}
+            <span class="display text-4xl text-sage-deep/80 md:text-5xl">
               {String(i + 1).padStart(2, "0")}
             </span>
             <div>

@@ -41,8 +41,16 @@ const year = new Date().getFullYear();
         />
       </div>
 
-      <nav aria-label="Navigation pied de page">
-        <h2 class="eyebrow !text-sage">{pied.titre_site}</h2>
+      {/*
+        Chaque bloc du pied de page est nommé par son titre VISIBLE, pas
+        par un `aria-label` écrit à côté. Deux raisons : le nom suit
+        automatiquement la langue et les retouches de Fabien, et le
+        lecteur d'écran annonce exactement ce que l'écran affiche —
+        l'ancien `aria-label="Secteurs"` nommait une colonne intitulée
+        « Formations ».
+      */}
+      <nav aria-labelledby="pied-titre-site">
+        <h2 id="pied-titre-site" class="eyebrow !text-sage">{pied.titre_site}</h2>
         <ul class="mt-4 space-y-2 text-sm">
           {
             pied.liens_site.map((item) => (
@@ -59,8 +67,8 @@ const year = new Date().getFullYear();
         </ul>
       </nav>
 
-      <nav aria-label="Secteurs">
-        <h2 class="eyebrow !text-sage">{pied.titre_secteurs}</h2>
+      <nav aria-labelledby="pied-titre-secteurs">
+        <h2 id="pied-titre-secteurs" class="eyebrow !text-sage">{pied.titre_secteurs}</h2>
         <ul class="mt-4 space-y-2 text-sm">
           {
             pied.liens_secteurs.map((item) => (
@@ -111,7 +119,7 @@ const year = new Date().getFullYear();
           pied.liens_legaux.map((l) => (
             <>
               {" · "}
-              <a class="hover:text-paper" href={href(lienContenu(langue, l.chemin))}>
+              <a class="lien-legal hover:text-paper" href={href(lienContenu(langue, l.chemin))}>
                 {l.label}
               </a>
             </>
@@ -139,5 +147,21 @@ const year = new Date().getFullYear();
       align-items: center;
       min-height: 2.75rem;
     }
+  }
+
+  /*
+    Les mentions légales sont des liens en ligne dans la phrase de
+    signature : WCAG 2.5.8 les exempte du minimum de 24 px puisque la
+    hauteur de ligne du texte voisin les contraint. On l'atteint tout de
+    même : la cible passe de 14 à 26 px de haut.
+
+    Contrairement à un inline pur, c'est la boîte de marge d'un
+    inline-block qui fixe la hauteur de la ligne — mesuré, le paragraphe
+    de signature grandit de 16 à 26 px. Dix pixels au bas du pied de
+    page, sur une ligne seule : sans conséquence de mise en page.
+  */
+  .lien-legal {
+    display: inline-block;
+    padding-block: 0.3125rem;
   }
 </style>

@@ -11,7 +11,7 @@
 
 seo:
   titre: "Formations"
-  description: "Prévention et gestion des conflits, stabilité opérationnelle, situations dégradées et de crise : des interventions construites avec les entreprises, le secteur public, les organismes de formation, ou suivies à titre individuel."
+  description: "Prévention et gestion des conflits, stabilité opérationnelle, situations de crise : des interventions construites avec votre organisation."
 
 entete:
   surtitre: "Formations"
@@ -28,6 +28,7 @@ carte:
 
 # Libellés communs aux quatre pages de porte
 porte:
+  fil: "Formations"
   retour: "Toutes les formations"
   libelle_publics: "Publics concernés"
   libelle_resultat: "Ce que la formation change"

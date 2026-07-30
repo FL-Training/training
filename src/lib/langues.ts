@@ -43,7 +43,7 @@ export const LANGUES = [
   // L'anglais est en préparation : déclaré pour l'éditeur et les
   // contrôles, pas encore servi. Passera à `publiee: true` à la fin du
   // chantier i18n, quand sa traduction sera complète.
-  { code: "en", nom: "English", locale: "en-GB", publiee: false },
+  { code: "en", nom: "English", locale: "en-GB", publiee: true },
 ] as const satisfies readonly Langue[];
 
 export const LANGUE_PAR_DEFAUT = "fr";

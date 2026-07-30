@@ -1,0 +1,53 @@
+# "Contact" page — English working translation (29/07/2026), to be
+# reviewed by Fabien. The technical values of the subjects (valeur)
+# are shared across languages and must not be translated.
+seo:
+  titre: "Contact"
+  description: "A training project in conflict prevention and management? A first exchange with no commitment, then a tailored proposal."
+
+entete:
+  surtitre: "Contact"
+  titre: "Let's talk about your context."
+  texte: "Every request receives an answer. Simply describe your situation: no need to have specifications ready."
+
+etapes:
+  - titre: "A first exchange"
+    texte: "You describe your teams, your real situations and your constraints. No commitment."
+  - titre: "A needs analysis"
+    texte: "We analyse your situation to clarify the stakes, the priorities and the objectives of the intervention."
+  - titre: "A tailored proposal"
+    texte: "Programme, duration, format (on-site or remote) and practical arrangements, in black and white."
+
+contact_direct:
+  texte: "Would you rather make direct contact?"
+  lien: "Write to Fabien on LinkedIn."
+
+formulaire:
+  champ_nom: "Name"
+  champ_nom_exemple: "Your name"
+  champ_email: "Email"
+  champ_email_exemple: "you@company.com"
+  champ_organisation: "Organisation"
+  champ_organisation_exemple: "Company, public body…"
+  champ_sujet: "Subject"
+  sujets:
+    - valeur: "formation"
+      label: "Training request"
+    - valeur: "renseignement"
+      label: "Enquiry"
+    - valeur: "autre"
+      label: "Other"
+  champ_message: "Your message"
+  champ_message_exemple: "Describe your context: the teams involved, the situations encountered, your objectives…"
+  bouton_envoyer: "Send the message"
+  bouton_envoi_en_cours: "Sending…"
+  succes_titre: "Message sent"
+  succes_texte: "Thank you for your message. Fabien will reply to the address you provided, usually within 48 working hours."
+  erreur_generique: "Sending failed. You can try again, or write to Fabien directly via"
+  erreur_trop_de_messages: "Too many messages have been sent recently from this address. Please try again in an hour, or write to Fabien directly via"
+  erreur_saturation: "The form is in heavy demand right now. Please try again a little later, or write to Fabien directly via"
+  erreur_invalide: "One of the fields could not be accepted (message too long or invalid address). Check your input, or write to Fabien directly via"
+  mention_donnees: "The information you provide is used only to answer your request. It is neither shared nor used for any other purpose."
+  repli_titre: "The form is coming soon"
+  repli_texte: "Until it goes live, the simplest way is to contact Fabien Lacombe directly via LinkedIn — a prompt reply is assured."
+  repli_bouton: "Write on LinkedIn"

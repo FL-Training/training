@@ -35,8 +35,9 @@ import { cheminLangue } from "../lib/routes";
 const langue = langueActive(Astro.url.pathname);
 const { commun } = contenuLangue(langue);
 import { grapheSeo, urlAbsolue } from "../lib/seo";
-import { LANGUES, LANGUE_PAR_DEFAUT, localeLangue } from "../lib/langues";
-import { correspondanceRoute } from "../lib/routes";
+import { LANGUE_PAR_DEFAUT, localeLangue } from "../lib/langues";
+import { jumellesLangue } from "../lib/jumelles";
+import { texteInterface } from "../lib/interface";
 import type { Fil, TypePage } from "../lib/seo";
 
 interface Props {
@@ -67,27 +68,24 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = urlAbsolue(Astro.site!, `${base}${image}`);
 
 /*
-  Les jumelles de langue (hreflang) : émises seulement quand plusieurs
-  langues sont publiées, et pour les pages de la table des routes — les
-  entrées (portes, articles) recevront les leurs avec l'étape SEO. Tant
-  qu'une seule langue est publiée, rien ne change au document.
+  Les `hreflang` : même résolution que le sélecteur de langue du bandeau
+  (lib/jumelles.ts), pour qu'ils ne puissent pas diverger.
+
+  Filtre sur `exacte` : le sélecteur a le droit de replier sur l'accueil
+  d'une langue quand la page n'y existe pas — c'est un service rendu au
+  visiteur. Une balise `hreflang` ne l'a pas : annoncer une traduction
+  qui n'existe pas est une fausse déclaration faite au moteur, et notre
+  audit de référencement la refuserait au contrôle de réciprocité.
 */
-const langsPubliees = LANGUES.filter((l) => l.publiee);
-const jumelles = (() => {
-  if (langsPubliees.length < 2) return [];
-  let chemin = Astro.url.pathname.startsWith(base)
-    ? Astro.url.pathname.slice(base.length)
-    : Astro.url.pathname;
-  if (langue !== LANGUE_PAR_DEFAUT) chemin = chemin.slice(langue.length + 1) || "/";
-  const r = correspondanceRoute(langue, chemin);
-  if (!r) return [];
-  const adresse = (code: string) => {
-    const cible = r.chemins[code as keyof typeof r.chemins];
-    const prefixe = code === LANGUE_PAR_DEFAUT ? "" : `/${code}`;
-    return urlAbsolue(Astro.site!, href(`${prefixe}${cible === "/" && prefixe ? "/" : cible}`));
-  };
+const jumelles = await (async () => {
+  const paires = (
+    await jumellesLangue(langue, Astro.url.pathname, import.meta.env.BASE_URL)
+  ).filter((j) => j.exacte);
+  if (paires.length < 2) return [];
+  const adresse = (code: string) =>
+    urlAbsolue(Astro.site!, href(paires.find((j) => j.code === code)!.chemin));
   return [
-    ...langsPubliees.map((l) => ({ hreflang: l.code, href: adresse(l.code) })),
+    ...paires.map((j) => ({ hreflang: j.code, href: adresse(j.code) })),
     { hreflang: "x-default", href: adresse(LANGUE_PAR_DEFAUT) },
   ];
 })();
@@ -448,7 +446,7 @@ const jsonLd = grapheSeo({
       href="#contenu"
       class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-navy focus:px-4 focus:py-2 focus:text-paper"
     >
-      Aller au contenu
+      {texteInterface(langue, "allerAuContenu")}
     </a>
     <Header />
     <main id="contenu" class="flex-1">

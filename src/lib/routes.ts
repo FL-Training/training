@@ -12,10 +12,12 @@
  * langue. Ajouter une langue = une clé dans chaque entrée — aucune
  * migration.
  *
- * ⚠️ ADRESSES ANGLAISES EN PROPOSITION — arbitrage de Fabien attendu,
- * voir doc/arbitrage-adresses-en.md. Elles portent le référencement
- * anglophone : tant que l'anglais n'est pas publié, les changer ne
- * coûte rien ; après publication, chaque changement casse des liens.
+ * ADRESSES ANGLAISES ARBITRÉES par Fabien le 29/07/2026 (document
+ * retourné commenté — voir doc/arbitrage-adresses-en.md, décisions en
+ * bas de page). Deux interprétations restent à lui confirmer : PAXI
+ * sous « unruly-passengers » (l'adresse seulement — la page continue de
+ * nommer le produit PAXI), et l'espace apprenant sous « login ».
+ * Après publication de l'anglais, chaque changement cassera des liens.
  *
  * Les entrées de collections (portes, articles) ne sont pas ici : leur
  * adresse traduite vient du champ `chemin` de leur contenu — l'éditeur
@@ -34,12 +36,12 @@ export interface Route {
 export const ROUTES = [
   { id: "accueil", chemins: { fr: "/", en: "/" } },
   { id: "formations", chemins: { fr: "/formations", en: "/training" } },
-  { id: "paxi", chemins: { fr: "/formations/paxi", en: "/training/paxi" } },
+  { id: "paxi", chemins: { fr: "/formations/paxi", en: "/training/unruly-passengers" } },
   { id: "approche", chemins: { fr: "/approche", en: "/approach" } },
   { id: "a-propos", chemins: { fr: "/a-propos", en: "/about" } },
-  { id: "journal", chemins: { fr: "/journal", en: "/journal" } },
+  { id: "journal", chemins: { fr: "/journal", en: "/blog" } },
   { id: "contact", chemins: { fr: "/contact", en: "/contact" } },
-  { id: "espace-apprenant", chemins: { fr: "/espace-apprenant", en: "/learners" } },
+  { id: "espace-apprenant", chemins: { fr: "/espace-apprenant", en: "/login" } },
   { id: "confidentialite", chemins: { fr: "/confidentialite", en: "/privacy-policy" } },
 ] as const satisfies readonly Route[];
 
