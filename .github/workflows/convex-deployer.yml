@@ -74,6 +74,8 @@ jobs:
               test "$(cat /opt/application/.lacneu-source-ref)" = "'"${GITHUB_SHA}"'"
               test "$(cat /opt/application/.lacneu-convex-cli-version)" = "'"${CONVEX_CLI_VERSION}"'"
               test "$(/opt/application/node_modules/.bin/convex --version)" = "'"${CONVEX_CLI_VERSION}"'"
+              ! command -v npm
+              ! command -v npx
               test -x /convex/generate_admin_key.sh
               test -f /opt/application/convex/schema.ts
             '

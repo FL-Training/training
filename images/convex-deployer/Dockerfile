@@ -13,28 +13,22 @@ LABEL com.lacneu.reconciler.source="lacneu/platform-automation@d3fce32"
 
 WORKDIR /opt/application
 
-# Convex actions need npm at runtime. Replace the inherited copy with the
-# reviewed release instead of modifying it in place.
-RUN npm install --global --prefix /opt/lacneu/npm npm@11.18.0 \
-    && test -x /opt/lacneu/npm/lib/node_modules/npm/bin/npm-cli.js \
-    && rm -rf /usr/lib/node_modules/npm \
-    && ln -s /opt/lacneu/npm/lib/node_modules/npm /usr/lib/node_modules/npm \
-    && npm cache clean --force \
-    && node -e "if (require('/usr/lib/node_modules/npm/node_modules/tar/package.json').version !== '7.5.19') process.exit(1)"
-
 COPY --chown=10001:10001 images/convex-deployer/package.json images/convex-deployer/package-lock.json ./
 RUN npm ci --ignore-scripts \
     && test "$(node_modules/.bin/convex --version)" = "${CONVEX_CLI_VERSION}"
 COPY --chown=10001:10001 convex ./convex
 COPY --chown=10001:10001 images/convex-deployer/entrypoint.mjs /usr/local/libexec/lacneu/convex-app-deployer.mjs
 
+# The reconciler invokes the pinned local Convex CLI directly. The site has
+# no Node actions, so a package manager is unnecessary at runtime.
 RUN printf '%s\n' "${APPLICATION_SOURCE_REF}" > .lacneu-source-ref \
     && printf '%s\n' "${CONVEX_CLI_VERSION}" > .lacneu-convex-cli-version \
     && chmod -R a+rX,go-w /opt/application \
     && chmod 0555 /usr/local/libexec/lacneu/convex-app-deployer.mjs \
       /convex/generate_admin_key.sh /convex/read_credentials.sh /convex/generate_key \
     && chown -R 10001:10001 /opt/application \
-    && rm -rf /root/.npm /tmp/*
+    && rm -rf /root/.npm /usr/lib/node_modules/npm /usr/bin/npm /usr/bin/npx /tmp/* \
+    && ! find / -type f -path '*/node_modules/npm/package.json' -print -quit 2>/dev/null | grep -q .
 
 USER 10001:10001
 ENTRYPOINT ["node", "/usr/local/libexec/lacneu/convex-app-deployer.mjs"]
