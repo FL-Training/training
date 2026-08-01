@@ -1,0 +1,137 @@
+name: Déployeur Convex auto-hébergé
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/convex-deployer.yml"
+      - "convex/**"
+      - "images/convex-deployer/**"
+  push:
+    branches:
+      - main
+      - production
+    paths:
+      - ".github/workflows/convex-deployer.yml"
+      - "convex/**"
+      - "images/convex-deployer/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pacivis-convex-deployer-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  CONVEX_CLI_VERSION: "1.42.1"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+          cache-dependency-path: images/convex-deployer/package-lock.json
+
+      - name: Install deployer test dependencies
+        run: npm ci --ignore-scripts --prefix images/convex-deployer
+
+      - name: Test deployer contract
+        run: node --test images/convex-deployer/entrypoint.test.mjs
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Build deployer image
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: images/convex-deployer/Dockerfile
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: pacivis-training-convex-deployer:ci
+          build-args: |
+            APPLICATION_SOURCE_REF=${{ github.sha }}
+            CONVEX_CLI_VERSION=${{ env.CONVEX_CLI_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Verify immutable runtime contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm --entrypoint /bin/sh \
+            pacivis-training-convex-deployer:ci -ec '
+              test "$(id -u)" = 10001
+              test "$(cat /opt/application/.lacneu-source-ref)" = "'"${GITHUB_SHA}"'"
+              test "$(cat /opt/application/.lacneu-convex-cli-version)" = "'"${CONVEX_CLI_VERSION}"'"
+              test "$(/opt/application/node_modules/.bin/convex --version)" = "'"${CONVEX_CLI_VERSION}"'"
+              test -x /convex/generate_admin_key.sh
+              test -f /opt/application/convex/schema.ts
+            '
+
+      - name: Scan deployer image
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: pacivis-training-convex-deployer:ci
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: 1
+
+  publish:
+    if: github.event_name != 'pull_request'
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract OCI metadata
+        id: metadata
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
+        with:
+          images: ghcr.io/fl-training/training-convex-deployer
+          tags: |
+            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=prod,enable=${{ github.ref == 'refs/heads/production' }}
+            type=sha,format=long
+
+      - name: Build and publish deployer
+        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: .
+          file: images/convex-deployer/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
+          build-args: |
+            APPLICATION_SOURCE_REF=${{ github.sha }}
+            CONVEX_CLI_VERSION=${{ env.CONVEX_CLI_VERSION }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          provenance: mode=max
+          sbom: true

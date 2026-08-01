@@ -1,67 +1,47 @@
-# Convex backend — FL Training
+# Backend Convex auto-hébergé du site Pacivis
 
-Backend minimal du site : réception des messages du formulaire de contact
-(table `messages`), protection honeypot, statuts de suivi. L'envoi d'email
-vers l'adresse pro de Fabien (via Resend ou équivalent) viendra dans une
-phase ultérieure.
+Ce répertoire contient le schéma et les fonctions Convex du **site
+d'entreprise Pacivis**. Il est déployé dans deux instances totalement
+indépendantes :
 
-## Développement local (mode anonyme, sans compte)
+| Environnement | Backend public | Données |
+|---|---|---|
+| Développement | `site-convex-dev.app.pacivisacademy.com` | volume et secret propres au développement |
+| Production | `site-convex.app.pacivisacademy.com` | volume et secret propres à la production |
 
-Le dev local utilise un déploiement Convex **local et anonyme** (backend
-open-source lancé comme sous-processus de la CLI) — aucun lien avec le
-compte cloud. Convex choisit un port libre automatiquement (3214 lors du
-premier setup ; 3210-3213 sont occupés par d'autres projets locaux).
+Le Convex utilisé par Atrium constitue une troisième instance distincte. Il
+ne partage ni secret, ni volume, ni sauvegarde, ni cycle de restauration avec
+le site.
+
+## Réconciliation
+
+L'image `training-convex-deployer` embarque cette arborescence et une version
+exacte de la CLI Convex. À chaque déploiement Dokploy, elle :
+
+1. attend que le backend cible soit prêt ;
+2. lit le secret d'instance depuis un secret Docker dédié ;
+3. génère une clé d'administration éphémère ;
+4. applique le schéma et les fonctions avec vérification TypeScript ;
+5. termine sans persister la clé générée.
+
+Les images de développement et de production sont construites séparément à
+partir de leurs branches Git respectives. Les déploiements ne dépendent pas de
+Convex Cloud ni d'une clé `CONVEX_DEPLOY_KEY` GitHub.
+
+## Développement local
+
+Un backend local et anonyme reste utilisable pour travailler hors ligne :
 
 ```bash
-# Doit tourner pendant le dev : héberge le backend local + push à chaud
 CONVEX_AGENT_MODE=anonymous npx convex dev
 ```
 
-`.env.local` (généré) contient `CONVEX_DEPLOYMENT` / `CONVEX_URL` ; `.env`
-contient `PUBLIC_CONVEX_URL` pour le frontend Astro. Les données locales
-vivent dans `~/.convex/`.
+La commande génère une URL locale à placer dans `PUBLIC_CONVEX_URL`. Les
+données locales vivent hors du dépôt et ne doivent jamais être commitées.
 
-## Projet cloud (compte Pro d'Olivier — créé le 2026-07-09)
+## Sauvegarde et restauration
 
-Projet **fl-training** (team `olivier-neu`), région Europe (Ireland) :
-
-| Déploiement | Nom | Cloud URL |
-|---|---|---|
-| Development | `hearty-squid-510` | `https://hearty-squid-510.eu-west-1.convex.cloud` |
-| Production | `festive-rooster-441` | `https://festive-rooster-441.eu-west-1.convex.cloud` |
-
-### Déploiement prod — automatisé par le CI
-
-`.github/workflows/deploy.yml` exécute `npx convex deploy` à chaque push
-sur `main`, avant le build Astro. Prérequis côté GitHub (une seule fois) :
-
-1. **Secret** `CONVEX_DEPLOY_KEY` : clé générée dans le dashboard Convex →
-   projet fl-training → déploiement **Production** → Settings → Deploy keys.
-2. **Variable** `PUBLIC_CONVEX_URL` = `https://festive-rooster-441.eu-west-1.convex.cloud`.
-
-Sans ces deux réglages, le CI saute l'étape Convex et publie le site avec
-le repli LinkedIn sur le formulaire.
-
-### Déploiement prod — manuel (alternative)
-
-```bash
-npx convex login   # interactif, navigateur
-npx convex deploy  # choisir le projet fl-training
-```
-
-Note : `npx convex dev` après login proposera de lier le projet cloud et
-réécrira `.env.local` — répondre « local » pour conserver le dev anonyme.
-
-Tant que `PUBLIC_CONVEX_URL` est vide, le formulaire du site affiche un
-repli propre (lien LinkedIn) — rien ne casse.
-
-## Déploiement production
-
-```bash
-npx convex deploy
-```
-
-Puis déclarer `PUBLIC_CONVEX_URL` comme variable du repo GitHub
-(`Settings → Secrets and variables → Actions → Variables`) : le workflow
-`deploy.yml` l'injecte au build. Cette URL est publique par nature — aucun
-secret ne transite côté frontend.
+Chaque backend est sauvegardé comme une unité indépendante. Un test de
+restauration doit toujours viser un volume temporaire et vérifier le schéma,
+les fonctions et les données avant toute promotion. Restaurer le site ne doit
+jamais modifier l'instance Atrium, et inversement.
