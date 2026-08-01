@@ -1,0 +1,25 @@
+# "Legal notice" page — English working translation (29/07/2026), to be
+# reviewed. Same caveat as the French original: complete the publisher
+# section once Fabien provides his official details (legal form, SIREN,
+# business address). The hosting section must follow the Dokploy move,
+# in both languages.
+seo:
+  titre: "Legal notice"
+  description: "Legal notice of the Pacivis Academy website: publisher, publication director, hosting."
+
+titre: "Legal notice"
+intro: "Legal information about the Pacivis Academy website."
+
+sections:
+  - titre: "Website publisher"
+    texte: |
+      The Pacivis Academy website is published by **Fabien Lacombe**, independent trainer in conflict prevention and management.
+      Contact: via the form on the Contact page or Fabien Lacombe's LinkedIn profile.
+  - titre: "Publication director"
+    texte: "Fabien Lacombe."
+  - titre: "Hosting"
+    texte: |
+      The website is hosted by **Vercel Inc.**, 440 N Barranca Ave #4133, Covina, CA 91723, United States — https://vercel.com.
+      Contact-form data is hosted by **Convex, Inc.** on infrastructure located in the European Union (Ireland) — https://www.convex.dev.
+  - titre: "Intellectual property"
+    texte: "All content on this website (texts, logo, photographs, visual identity) is the property of Fabien Lacombe, unless stated otherwise. Any reproduction without prior authorisation is prohibited."

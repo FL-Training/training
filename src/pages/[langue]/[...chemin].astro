@@ -1,0 +1,118 @@
+---
+/*
+  LE DISTRIBUTEUR DES LANGUES PRÉFIXÉES.
+
+  Une seule route pour toutes les langues autres que celle par défaut :
+  /en/…, et chaque suivante par sa seule déclaration dans langues.ts.
+  `getStaticPaths()` construit langues publiées × pages — et rend une
+  liste VIDE tant qu'aucune langue n'est publiée : l'interrupteur de
+  publication est le drapeau `publiee`, jamais la présence de fichiers
+  (mécanisme validé le 29/07).
+
+  Trois familles d'adresses par langue :
+    - les pages de la table des routes (src/lib/routes.ts) ;
+    - les portes, sous la route « formations » de la langue, à l'adresse
+      portée par leur champ `chemin` (le nom de fichier en secours) ;
+    - les articles du Journal, même contrat.
+
+  Les corps rendus sont ceux de src/corps/ — les mêmes que les routes
+  françaises : ils lisent la langue dans l'adresse et chargent le
+  contenu correspondant.
+*/
+import { getCollection, type CollectionEntry } from "astro:content";
+import { LANGUES, LANGUE_PAR_DEFAUT, nomCollection, type Langue } from "../../lib/langues";
+import { ROUTES, route } from "../../lib/routes";
+
+import Accueil from "../../corps/index.astro";
+import Formations from "../../corps/formations/index.astro";
+import Paxi from "../../corps/formations/paxi.astro";
+import Approche from "../../corps/approche.astro";
+import APropos from "../../corps/a-propos.astro";
+import JournalIndex from "../../corps/journal/index.astro";
+import Article from "../../corps/journal/[slug].astro";
+import Contact from "../../corps/contact.astro";
+import EspaceApprenant from "../../corps/espace-apprenant.astro";
+import Confidentialite from "../../corps/confidentialite.astro";
+import PagePorte from "../../components/PagePorte.astro";
+
+const CORPS = {
+  accueil: Accueil,
+  formations: Formations,
+  paxi: Paxi,
+  approche: Approche,
+  "a-propos": APropos,
+  journal: JournalIndex,
+  contact: Contact,
+  "espace-apprenant": EspaceApprenant,
+  confidentialite: Confidentialite,
+} as const;
+
+/*
+  Pré-rendue quelles que soient les sorties : en mode serveur
+  (runtime Dokploy), une route dynamique non pré-rendue n'appelle
+  jamais getStaticPaths — ses props arrivent vides et la page
+  répond 500. Constaté le 29/07 sur les portes françaises.
+*/
+export const prerender = true;
+export async function getStaticPaths() {
+  const chemins = [];
+
+  /*
+    Le tuple constant de LANGUES rétrécit `publiee` à son littéral : tant
+    qu'aucune langue n'est publiée, le filtre se typerait `never`. On
+    repasse par l'interface — le drapeau est une donnée, pas un type.
+  */
+  const declarees: readonly Langue[] = LANGUES;
+  for (const langue of declarees) {
+    if (!langue.publiee || langue.code === LANGUE_PAR_DEFAUT) continue;
+    const code = langue.code;
+    // Le paramètre attrape-tout : « /training » → « training », et la
+    // racine de la langue (« / ») → paramètre absent.
+    const versParam = (chemin: string) => chemin.replace(/^\//, "") || undefined;
+
+    for (const r of ROUTES) {
+      chemins.push({
+        params: { langue: code, chemin: versParam((r.chemins as Record<string, string>)[code]) },
+        props: { type: "page" as const, id: r.id },
+      });
+    }
+
+    const racineFormations = (route("formations").chemins as Record<string, string>)[code].slice(1);
+    for (const porte of await getCollection(nomCollection("portes", code) as "portes")) {
+      chemins.push({
+        params: { langue: code, chemin: `${racineFormations}/${porte.data.chemin ?? porte.id}` },
+        props: { type: "porte" as const, entry: porte },
+      });
+    }
+
+    const racineJournal = (route("journal").chemins as Record<string, string>)[code].slice(1);
+    for (const article of await getCollection(nomCollection("journal", code) as "journal")) {
+      chemins.push({
+        params: { langue: code, chemin: `${racineJournal}/${article.data.chemin ?? article.id}` },
+        props: { type: "article" as const, entry: article },
+      });
+    }
+  }
+
+  return chemins;
+}
+
+interface Props {
+  type: "page" | "porte" | "article";
+  id?: keyof typeof CORPS;
+  entry?: CollectionEntry<"portes"> | CollectionEntry<"journal">;
+}
+
+const { type, id, entry } = Astro.props;
+const Corps = CORPS[id ?? "accueil"];
+---
+
+{
+  type === "page" ? (
+    <Corps />
+  ) : type === "porte" ? (
+    <PagePorte entry={entry as CollectionEntry<"portes">} />
+  ) : (
+    <Article entry={entry as CollectionEntry<"journal">} />
+  )
+}

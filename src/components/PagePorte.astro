@@ -12,7 +12,14 @@ import Base from "../layouts/Base.astro";
 import Picto from "./Picto.astro";
 import SignatureCarte from "./SignatureCarte.astro";
 import { href } from "../lib/url";
-import { formationsPage } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue, lienContenu } from "../lib/routes";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { formationsPage } = contenuLangue(langue);
 import { enrichir } from "../lib/texte";
 
 interface Props {
@@ -42,8 +49,8 @@ const { carte, porte: libelles } = formationsPage;
   title={seo.titre}
   description={seo.description}
   fil={[
-    { label: "Formations", chemin: "/formations" },
-    { label: nom, chemin: `/formations/${entry.id}` },
+    { label: libelles.fil, chemin: cheminLangue(langue, "/formations") },
+    { label: nom, chemin: `${cheminLangue(langue, "/formations")}/${entry.data.chemin ?? entry.id}` },
   ]}
 >
   <section class="porte-section mx-auto max-w-6xl px-6 pt-16 pb-20 md:pt-24">
@@ -75,7 +82,7 @@ const { carte, porte: libelles } = formationsPage;
 
       <div class="relative">
         <a
-          href={href("/formations")}
+          href={href(cheminLangue(langue, "/formations"))}
           class="inline-flex items-center gap-2 text-sm font-semibold text-sage-deep hover:text-navy-deep"
         >
           <span aria-hidden="true">←</span>
@@ -105,7 +112,7 @@ const { carte, porte: libelles } = formationsPage;
         {
           entete.bouton && (
             <div>
-              <a href={href("/contact")} class="btn btn-primary mt-8">
+              <a href={href(cheminLangue(langue, "/contact"))} class="btn btn-primary mt-8">
                 {entete.bouton} <span aria-hidden="true">→</span>
               </a>
             </div>
@@ -271,7 +278,7 @@ const { carte, porte: libelles } = formationsPage;
 
                   {c.bouton && (
                     <a
-                      href={href(c.bouton.chemin)}
+                      href={href(lienContenu(langue, c.bouton.chemin))}
                       class="btn btn-primary self-start"
                     >
                       {c.bouton.label} <span aria-hidden="true">→</span>
@@ -289,7 +296,7 @@ const { carte, porte: libelles } = formationsPage;
     {
       encart_paxi && (
         <a
-          href={href("/formations/paxi")}
+          href={href(cheminLangue(langue, "/formations/paxi"))}
           class="encart-paxi group relative mt-14 flex flex-col gap-5 overflow-hidden rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between"
           data-reveal
         >
@@ -372,7 +379,7 @@ const { carte, porte: libelles } = formationsPage;
               </div>
               {e.lien && (
                 <a
-                  href={href(e.lien.chemin)}
+                  href={href(lienContenu(langue, e.lien.chemin))}
                   class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-sage-deep hover:text-navy-deep"
                 >
                   {e.lien.label}
@@ -418,7 +425,7 @@ const { carte, porte: libelles } = formationsPage;
         )
       }
       <a
-        href={href("/contact")}
+        href={href(cheminLangue(langue, "/contact"))}
         class:list={[
           "btn btn-primary shrink-0 self-start",
           // Le bouton ne se recentre que s'il fait face à une accroche.

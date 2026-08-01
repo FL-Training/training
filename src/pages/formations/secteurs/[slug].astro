@@ -1,24 +1,18 @@
 ---
-/**
- * Redirections des quatre anciennes pages « secteur » vers les portes V2.
- * Aéronautique et sécurité privée n'ont plus de page propre : elles sont
- * devenues deux cartes de la page « Organisme de formation ».
- */
-import Redirection from "../../../components/Redirection.astro";
-import { ANCIENS_SECTEURS } from "../../../lib/redirections.mjs";
-
-export function getStaticPaths() {
-  return Object.entries(ANCIENS_SECTEURS).map(([slug, vers]) => ({
-    params: { slug },
-    props: { vers },
-  }));
-}
-
-interface Props {
-  vers: string;
-}
-
-const { vers } = Astro.props;
+/*
+  Coquille de route : le corps de la page vit dans src/corps/, à
+  l'identique. C'est le socle du site multilingue — chaque langue
+  aura sa coquille (ici le français, /en/… ensuite), toutes rendant
+  le même corps. Ne rien ajouter ici : tout appartient au corps.
+*/
+/*
+  Pré-rendue quelles que soient les sorties : en mode serveur
+  (runtime Dokploy), une route dynamique non pré-rendue n'appelle
+  jamais getStaticPaths — ses props arrivent vides et la page
+  répond 500. Constaté le 29/07 sur les portes françaises.
+*/
+export const prerender = true;
+export { getStaticPaths } from "../../../corps/formations/secteurs/[slug].astro";
+import Corps from "../../../corps/formations/secteurs/[slug].astro";
 ---
-
-<Redirection vers={vers} />
+<Corps {...Astro.props} />

@@ -1,0 +1,99 @@
+# ============================================================
+# PORTE « ENTREPRISE »
+#
+# Textes VALIDÉS par Fabien (livrable « Rubrique Formations —
+# Entreprises », 21 juillet 2026). Ne pas les remplacer par des
+# formulations de l'ancienne maquette.
+#
+# Les champs `note_visuel` sont des consignes de conception : ils ne
+# sont JAMAIS affichés sur le site.
+# ============================================================
+nom: "Entreprise"
+ordre: 1
+statut: "complet"
+picto: "building-2"
+
+seo:
+  titre: "Formations en entreprise — conflits et tensions"
+  description: "Prévenir et gérer les conflits internes, les incivilités et l'agressivité, préparer managers et équipes aux situations de crise. En intra-entreprise."
+
+entete:
+  surtitre: "Entreprise"
+  titre: "Préparer vos équipes à faire face aux tensions, à l'intensité et aux situations dégradées"
+  texte: "Pacivis Academy accompagne les entreprises qui souhaitent renforcer la stabilité de leurs équipes, prévenir ou traiter les conflits et mieux préparer leurs managers et leurs salariés aux situations susceptibles de dégrader la coopération, la qualité de service, la sécurité ou la continuité de l'activité."
+  bouton: "Échanger sur votre situation"
+
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/entreprise/visuel/src.webp"
+  alt: "Une équipe et son manager autour d'une table de réunion, en discussion de travail sérieuse et constructive."
+cartes:
+  - titre: "Prévenir, désamorcer et gérer les conflits entre vos collaborateurs ou vos services"
+    resume: "Agir sur les tensions émergentes, les conflits déclarés ou les situations durablement bloquées afin de rétablir les conditions nécessaires au travail et à la coopération."
+    paragraphes:
+      - "Les tensions peuvent rester diffuses, devenir un conflit ouvert ou finir par bloquer durablement la relation et le travail. L'enjeu est de pouvoir intervenir à chacun de ces moments, avant que la situation ne s'enlise ou lorsqu'elle nécessite déjà d'être dénouée."
+      - "La formation aide les managers et les salariés à comprendre la dynamique du conflit, à situer son niveau de dégradation et à ajuster leur comportement. Ils travaillent leur capacité à désamorcer un échange tendu, à traiter un conflit déclaré et à rechercher une issue praticable sans nier les désaccords."
+      - "Ils apprennent également à identifier ce qu'ils peuvent prendre en charge eux-mêmes et le moment où l'intervention d'un tiers, du management ou des ressources humaines devient nécessaire."
+    resultat: "Des conflits pris en charge avec davantage de discernement, moins de situations laissées sans réponse et une meilleure capacité à rétablir les conditions nécessaires au travail et à la coopération."
+    publics: "Managers, responsables d'équipe, collaborateurs, équipes ou services confrontés à des tensions récurrentes, à des conflits déclarés ou à des relations de travail durablement bloquées."
+    note_visuel: "Une scène de travail dans laquelle deux personnes ou deux services ne parviennent plus à coopérer, avec la possibilité de montrer le moment où un échange redevient praticable. Éviter les représentations génériques de dispute ou les visuels artificiellement dramatiques."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "oscillation"
+
+  - titre: "Faire face aux incivilités, à l'agressivité et aux relations difficiles avec les clients ou les publics"
+    resume: "Préparer les professionnels exposés à réagir avec justesse, à empêcher que la situation ne s'aggrave et à protéger leur intégrité ainsi que les personnes et les biens."
+    paragraphes:
+      - "Face à un client ou à un usager difficile, la situation peut se tendre rapidement. Le salarié doit alors préserver sa sécurité, faire respecter les règles et continuer à représenter l'organisation sans aggraver la situation."
+      - "La formation prépare les salariés à repérer la dégradation d'une interaction et à distinguer le mécontentement, l'incivilité, l'agressivité et une situation présentant un risque plus important. Ils apprennent à ajuster leur posture, leur communication et leur niveau d'engagement."
+      - "Les participants apprennent à formuler un refus, à rappeler une règle, à recadrer un comportement et à interrompre l'échange lorsque la sécurité des personnes ou des biens l'exige. Ils travaillent aussi l'alerte, le passage de relais et la coordination avec leurs collègues."
+    resultat: "Des salariés mieux préparés, des réponses plus cohérentes et des comportements mieux ajustés au niveau réel de la situation, au service de la protection des personnes et des biens ainsi que de la continuité de la relation de service."
+    publics: "Professionnels en contact direct avec des clients, des usagers, des patients, des passagers ou des publics, ainsi que leurs managers."
+    note_visuel: "Une situation réaliste de face-à-face avec un public, montrant la tension, la présence d'un collègue ou d'un relais et les contraintes du lieu. L'univers visuel devra pouvoir varier selon le secteur : accueil, transport, santé, service, contrôle, sûreté ou sécurité."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "pic"
+
+  - titre: "Optimiser la performance et la stabilité opérationnelle de vos équipes"
+    resume: "Aider les équipes à rester lucides, coordonnées et performantes dans la durée, sans épuiser les ressources nécessaires à l'activité."
+    paragraphes:
+      - "Une activité soutenue ne devient pas nécessairement une crise. Mais lorsqu'elle se prolonge, elle peut réduire la lucidité, fragiliser la coordination et épuiser progressivement les ressources sur lesquelles repose la performance."
+      - "La formation aide les équipes et leurs managers à comprendre ce qui soutient ou dégrade leur capacité à agir sous contrainte. Ils travaillent la gestion de l'énergie et de l'attention, la régulation du stress, la récupération et la maîtrise des effets de la pression sur l'action. Le travail porte également sur l'organisation concrète de l'activité : priorités, répartition de la charge, coordination, rythmes, relais et points de friction. L'objectif est d'optimiser le fonctionnement collectif pour maintenir une performance régulière, fiable et soutenable."
+    resultat: "Une organisation du travail plus lisible, une meilleure utilisation des ressources disponibles et une performance plus stable dans les périodes de forte intensité, sans compromettre la capacité des équipes à durer."
+    publics: "Managers, équipes opérationnelles et collectifs soumis à des rythmes soutenus, à des pics d'activité ou à une forte exigence de fiabilité."
+    note_visuel: "Une équipe en activité soutenue, confrontée à plusieurs priorités, avec une répartition visible de la charge, des relais et des points de coordination. Éviter l'imagerie du dépassement de soi et privilégier la maîtrise collective de l'intensité."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "endurance"
+
+  - titre: "Préparer vos équipes et vos managers à agir en situation de crise"
+    resume: "Préserver la lucidité, réguler les réactions sous pression, communiquer avec clarté, décider et coordonner l'action en situation de crise."
+    paragraphes:
+      - "En situation de crise, les procédures et les moyens techniques ne suffisent pas. La pression, l'incertitude et la fatigue modifient la perception, amplifient les réactions émotionnelles et peuvent fragiliser la communication, la décision et la coopération."
+      - "La formation prépare les équipes et leurs responsables à reconnaître ces effets et à travailler la régulation des émotions et de la contagion émotionnelle. Elle développe leur capacité à partager une compréhension commune de la situation, à maintenir une communication de crise claire et cohérente, à décider sous contrainte, à définir les priorités et à coordonner l'action."
+      - "Ces capacités peuvent être mises à l'épreuve lors de mises en situation ou d'exercices de crise préparés, observés et débriefés. L'analyse permet d'identifier ce qui a soutenu ou fragilisé la réponse collective et de transformer l'expérience en ajustements concrets."
+    note_visuel: "Une situation de crise en évolution, réunissant des personnes qui doivent observer, partager des informations, arbitrer et coordonner l'action. Montrer plusieurs niveaux de responsabilité et une information incomplète plutôt qu'une image spectaculaire de catastrophe."
+    # Le tracé de marque décliné : la forme dit la dynamique.
+    signature: "paliers"
+
+# PAXI n'est pas une cinquième carte : encart distinct renvoyant vers sa
+# page dédiée.
+encart_paxi:
+  paragraphes:
+    - "La formation PAXI prépare les équipages à prévenir et gérer les comportements de passagers indisciplinés, qu'il s'agisse d'incivilités, d'agressions ou de menaces pour la sécurité du vol."
+    - "La formation développe l'observation de la situation et des comportements, l'évaluation du niveau de risque, la communication, la gestion du stress et des émotions, ainsi que la coordination entre personnels navigants commerciaux et pilotes."
+    - "Elle intègre également, lorsque la situation l'exige, les techniques de protection et d'immobilisation en équipe, ainsi que l'utilisation du kit d'intervention à bord."
+  bouton: "Découvrir PAXI"
+  note_visuel: "Un univers aérien et aéroportuaire identifiable, capable de représenter aussi bien le personnel navigant que les équipes de ground handling. Le bloc doit rester distinctif sans réduire PAXI à une seule catégorie de client ni à un seul métier."
+
+sections:
+  - titre: "Construction des interventions"
+    paragraphes:
+      - "Les formations sont réalisées en intra-entreprise : Pacivis Academy intervient directement dans vos locaux pour former les équipes de votre organisation."
+      - "Les formations sont construites à partir des situations réellement rencontrées par l'entreprise, des salariés concernés, de leur niveau d'exposition, des responsabilités qui leur sont confiées et des contraintes propres à l'activité."
+      - "Selon le besoin, Pacivis Academy peut adapter une formation existante ou construire une réponse spécifique. Les mises en situation, les ateliers expérientiels et les exercices sont conçus pour conserver un lien direct avec le travail réel."
+
+cta:
+  titre: "Clarifier votre besoin avant de construire la formation"
+  texte: "Un premier échange permet de préciser les situations rencontrées, les publics concernés, les résultats attendus et les modalités les plus adaptées."
+  bouton: "Échanger sur votre situation"

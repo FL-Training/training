@@ -1,43 +1,18 @@
 ---
-/**
- * Une porte de la rubrique « Formations » (architecture V2).
- *
- * Cette route sert aussi les redirections des sept anciennes fiches
- * programme : deux routes dynamiques ne peuvent pas cohabiter au même
- * niveau d'URL, et les regrouper ici garde la liste des URLs héritées
- * visible à un seul endroit (src/lib/redirections.mjs).
- */
-import { getCollection, type CollectionEntry } from "astro:content";
-import PagePorte from "../../components/PagePorte.astro";
-import Redirection from "../../components/Redirection.astro";
-import { ANCIENNES_FICHES } from "../../lib/redirections.mjs";
-
-export async function getStaticPaths() {
-  const portes = await getCollection("portes");
-  return [
-    ...portes.map((entry) => ({
-      params: { slug: entry.id },
-      props: { entry, redirigeVers: undefined },
-    })),
-    ...Object.entries(ANCIENNES_FICHES).map(([slug, vers]) => ({
-      params: { slug },
-      props: { entry: undefined, redirigeVers: vers },
-    })),
-  ];
-}
-
-interface Props {
-  entry?: CollectionEntry<"portes">;
-  redirigeVers?: string;
-}
-
-const { entry, redirigeVers } = Astro.props;
+/*
+  Coquille de route : le corps de la page vit dans src/corps/, à
+  l'identique. C'est le socle du site multilingue — chaque langue
+  aura sa coquille (ici le français, /en/… ensuite), toutes rendant
+  le même corps. Ne rien ajouter ici : tout appartient au corps.
+*/
+/*
+  Pré-rendue quelles que soient les sorties : en mode serveur
+  (runtime Dokploy), une route dynamique non pré-rendue n'appelle
+  jamais getStaticPaths — ses props arrivent vides et la page
+  répond 500. Constaté le 29/07 sur les portes françaises.
+*/
+export const prerender = true;
+export { getStaticPaths } from "../../corps/formations/[slug].astro";
+import Corps from "../../corps/formations/[slug].astro";
 ---
-
-{
-  redirigeVers ? (
-    <Redirection vers={redirigeVers} />
-  ) : (
-    <PagePorte entry={entry!} />
-  )
-}
+<Corps {...Astro.props} />

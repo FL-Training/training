@@ -15,7 +15,13 @@
     "apercu": "astro build && astro preview",
     "astro": "astro",
     "test:styles": "node tests/styles-navigation.mjs",
-    "test": "npm run check && npm run build && npm run test:styles"
+    "test:cms": "node tests/cms-schemas.mjs",
+    "cms:config": "node outils/generer-config-sveltia.mjs",
+    "test:unitaires": "node --test tests/unitaires/*.test.mjs",
+    "i18n:etat": "node outils/etat-traduction.mjs",
+    "audit:seo": "node outils/audit-seo.mjs",
+    "audit:a11y": "node outils/audit-accessibilite.mjs",
+    "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles && npm run audit:seo && npm run audit:a11y"
   },
   "dependencies": {
     "@astrojs/node": "11.0.2",
@@ -23,8 +29,6 @@
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource-variable/archivo": "^5.2.8",
     "@fontsource/marcellus": "^5.3.0",
-    "@keystatic/astro": "^5.2.0",
-    "@keystatic/core": "^0.5.51",
     "@tailwindcss/vite": "^4.3.2",
     "@tanstack/react-query": "^5.101.2",
     "astro": "7.1.3",
@@ -42,13 +46,10 @@
     "@rollup/plugin-yaml": "^5.0.0",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "axe-core": "^4.12.1",
     "lucide-static": "^1.24.0",
     "playwright-core": "^1.62.0",
     "typescript": "^6.0.3"
   },
-  "overrides": {
-    "@keystatic/core": {
-      "minimatch": "10.2.5"
-    }
-  }
+  "overrides": {}
 }

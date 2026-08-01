@@ -9,14 +9,19 @@ RUN npm ci --ignore-scripts
 
 FROM dependencies AS build
 ARG PUBLIC_SITE_URL=https://site.app.pacivisacademy.com
-ARG PUBLIC_CONVEX_URL=https://convex.app.pacivisacademy.com
+ARG PUBLIC_CONVEX_URL=
 ARG PUBLIC_BUILD_ID=local
+ARG SVELTIA_BRANCH=main
+ARG SVELTIA_CLIENT_OAUTH=
 ENV DEPLOY_TARGET=dokploy \
     PUBLIC_SITE_URL=${PUBLIC_SITE_URL} \
     PUBLIC_CONVEX_URL=${PUBLIC_CONVEX_URL} \
-    PUBLIC_BUILD_ID=${PUBLIC_BUILD_ID}
+    PUBLIC_BUILD_ID=${PUBLIC_BUILD_ID} \
+    SVELTIA_BRANCH=${SVELTIA_BRANCH} \
+    SVELTIA_CLIENT_OAUTH=${SVELTIA_CLIENT_OAUTH}
 COPY . .
-RUN npm run check \
+RUN npm run cms:config \
+    && npm run check \
     && npm run build \
     && npm prune --omit=dev --ignore-scripts
 

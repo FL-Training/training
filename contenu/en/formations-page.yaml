@@ -1,0 +1,28 @@
+# "Training" page (hub of the four doors) — English working translation
+# (29/07/2026), to be reviewed by Fabien.
+seo:
+  titre: "Training"
+  description: "Conflict prevention and management, operational stability, crisis situations: training built with your organisation."
+
+entete:
+  surtitre: "Training"
+  titre: "Training built from your real situations."
+  texte: "Pacivis Academy works with organisations as well as with professionals engaging in the process themselves. Choose the entry that matches your situation."
+
+portes:
+  titre: "Your situation"
+  texte: "Four entries, depending on whether you train your teams, your officers, the audiences you prepare — or yourself."
+
+carte:
+  lien_porte: "Discover"
+  badge_stub: "Detailed presentation coming soon"
+
+porte:
+  fil: "Training"
+  retour: "All training"
+  libelle_publics: "Intended audiences"
+  libelle_resultat: "What the training changes"
+  libelle_ouvrir: "Show details"
+  libelle_fermer: "Hide details"
+  encart_paxi_surtitre: "PAXI training"
+  encart_paxi_titre: "PAXI — unruly passengers"

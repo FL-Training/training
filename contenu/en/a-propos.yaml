@@ -1,0 +1,40 @@
+# "About" page — English working translation (29/07/2026), to be
+# reviewed by Fabien. The French original is a VALIDATED text (livrable
+# V1 consolidée): this translation must follow any revision of the
+# original and be validated in the same way before publication.
+seo:
+  titre: "About — Pacivis Academy"
+  description: "Pacivis Academy and Fabien Lacombe: an independent organisation training in conflict prevention and management in professional settings."
+
+entete:
+  surtitre: "Who we are"
+  titre: "About Pacivis Academy"
+  texte: "Pacivis Academy is an independent professional training organisation that supports professionals and organisations when tension, conflict or crisis degrade the ordinary conditions of work, communication and decision-making."
+
+intro:
+  - "Its mission is to help professionals observe, decide, communicate and act better when tension, conflict or crisis make situations harder to read and to master."
+  - "We work with those who are directly exposed to these situations, but also with the organisations that must anticipate them, manage them or bear their effects: companies, public sector actors, training providers, leadership teams, managers, HR managers, training managers and prevention professionals."
+  - "Pacivis Academy works on degraded situations and crisis contexts. Within this field, conflict holds a particular place: it is often the most present, most concrete and most immediately perceptible form of a deteriorating situation."
+  - "These situations have a cost for organisations. When poorly anticipated or poorly regulated, they do not only produce relational discomfort: they weaken trust, absorb managers' attention, slow down decisions and can durably disrupt the activity."
+  - "Pacivis Academy operates at precisely this point: where human tensions, if not prepared for, can produce concrete effects on safety, cooperation, decision-making and the continuity of the activity."
+
+fondateur:
+  surtitre: "The founder"
+  titre: "Fabien Lacombe"
+  paragraphes:
+    - "Founder of Pacivis Academy, Fabien Lacombe has for several years been developing training work dedicated to situations of tension, conflict and crisis."
+    - "His background rests first on ten years of field experience in the French National Police, with supervisory and management responsibilities in contexts where decision-making, coordination, risk management and the securing of interactions are decisive."
+    - "He also trained in influence negotiation, Nonviolent Communication and potential-optimisation techniques. These contributions have shaped his way of approaching situations under pressure and conflict situations, linking them to behaviours, perceptions, the relationship and the capacity to act."
+    - "This trajectory connects operational experience, professional training and an understanding of conflict dynamics. It allows him to work on degraded situations by articulating professional techniques, procedures, emotional intelligence and physiological regulation, in order to prepare more appropriate responses when a situation tightens, deteriorates or becomes critical."
+    - "More than twenty-five years of combat arts practice, including teaching French boxing and aikido, reinforce this professional reading. This experience provides concrete grounding for working on right distance, the transformation of power dynamics, engagement and stability."
+    - "Fabien designs and leads experiential training, in which practice holds a central place. Targeted theoretical input supports this experience, giving participants clear markers on what they live through, observe and can adjust in situation."
+
+engagement:
+  surtitre: "Our commitment"
+  titre: "Preparing seriously for the moments when everything deteriorates."
+  paragraphes:
+    - "Pacivis Academy does not promise ready-made answers to situations which, by nature, remain unstable."
+    - "Our commitment is to help professionals and organisations prepare more seriously for the moments when relationships, decisions and activity deteriorate or become critical."
+    - "The aim is to enable a clearer, more stable and better-adjusted response when pressure rises, conflict sets in, or the situation threatens to leave its ordinary course."
+  bouton_contact: "Get in touch"
+  bouton_linkedin: "LinkedIn profile"

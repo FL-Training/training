@@ -1,0 +1,64 @@
+# "PAXI" page — English working translation (29/07/2026), to be
+# reviewed by Fabien. Same constraints as the French original: nothing
+# beyond the validated deliverable — no invented programme, duration,
+# certification, modality or commercial promise. The product name PAXI
+# is kept; only the page ADDRESS uses "unruly-passengers" (Fabien's
+# arbitration).
+seo:
+  titre: "PAXI — unruly passengers: prevent and manage"
+  description: "PAXI training for pilots, cabin crew and ground staff: qualify the situation, communicate, coordinate action. EASA and IOSA compliant."
+
+entete:
+  surtitre: "PAXI"
+  titre: "Preparing aviation and airport professionals to prevent and manage disruptive behaviour and unruly passengers"
+  texte: "A difficult interaction with a passenger can affect the relationship, the conduct of operations and, in the most serious situations, safety.\n\nThe PAXI course prepares professionals to qualify the situation, maintain their capacities under pressure, adapt their communication and coordinate their action. The course rests on a common foundation, adapted to the professions involved, the situations encountered and the applicable procedures."
+
+conformite:
+  titre: "EASA and IOSA compliance"
+  texte: "The PAXI course complies with the applicable EASA requirements and IOSA standards."
+
+programme:
+  titre: "A common programme in five blocks"
+  liste:
+    - titre: "Understanding and qualifying the situation"
+      texte: "Identifying disruptive behaviour, assessing the level of risk, knowing the legal and regulatory framework and keeping the response proportionate."
+    - titre: "Developing situational vigilance"
+      texte: "Observing behaviours, the context and the dynamics of the interaction."
+    - titre: "Managing stress and emotions"
+      texte: "Understanding the effects of stress on perception, communication, decision-making and action. Using techniques that keep you available and preserve a professional response under pressure."
+    - titre: "Preventing and managing conflict through communication"
+      texte: "Adapting one's posture and communication, in their verbal, paraverbal and non-verbal dimensions. Drawing on a toolbox combining listening, reformulation, framing, and negotiation and influence techniques to obtain compliance without compromising safety rules."
+    - titre: "Coordinating the action and acting"
+      texte: "Sharing useful information quickly, using a common vocabulary, distributing roles and maintaining a collective picture of the situation. Implementing a coordinated and proportionate response when the situation requires intervention."
+
+declinaisons:
+  titre: "Two variants depending on the professions involved"
+  liste:
+    - titre: "Pilots and Cabin Crew"
+      paragraphes:
+        - "In the flight environment, a situation involving a passenger can simultaneously affect the relationship in the cabin, crew coordination, the conduct of operations and safety. The PAXI course prepares pilots and cabin crew to share a common reading of the situation, assess the level of risk, coordinate their decisions and actions, and act within their respective responsibilities."
+        - "The situations worked on are adapted to the realities on board, the airline's procedures and the respective roles of the cabin and the flight deck. They are informed by feedback from professionals in the sector and evolve in a spirit of continuous improvement."
+
+    - titre: "Ground staff"
+      paragraphes:
+        - "Ground staff work in spaces where waiting, operational constraints, misunderstandings and frustration concentrate. Situations can arise at reception, check-in, boarding, passenger assistance, or the handling of baggage and irregularities."
+        - "Content is adapted to the responsibilities of each role. Scenario work reproduces the constraints encountered, the procedures to apply and the support the agent can call upon."
+
+pedagogie:
+  titre: "A pedagogy built from work situations"
+  paragraphes:
+    - "The PAXI course alternates targeted theoretical input, situation analysis, observation exercises, communication practice and scenario work. Participants work from cases close to their activity, connecting knowledge to the decisions and behaviours expected in the field."
+    - "The exercises make it possible to try out different responses and observe their effects. They are accompanied by structured debriefings that encourage analysis, perspective and the transfer to professional situations."
+    - "The duration, the level of depth and the weight given to each sequence are defined according to the objectives, the professions involved and the constraints of the programme the course is part of."
+
+adaptables:
+  titre: "Content adaptable to operational and regulatory requirements"
+  liste:
+    - titre: "Framework, procedures and traceability"
+      texte: "The PAXI foundation can be complemented with the regulatory elements, internal procedures and reporting arrangements matching the context of intervention. For pilots and cabin crew, content can be adapted to the OM-D syllabus and integrate the airline's procedures, notably regarding refusal of carriage, coordination between the cabin and the flight deck, and incident traceability."
+    - titre: "Protection techniques, coordinated intervention and use of an intervention kit"
+      texte: "Where the responsibilities held and the scope of the mission justify it, the course can include content dedicated to maintaining distance, personal protection, coordinated intervention and the use of dedicated equipment. This content is not systematic: it is defined with the organisation concerned according to the participants' roles, the procedures in force and the applicable authorisations."
+
+cta:
+  texte: "Let's discuss the professions involved, the situations encountered and the operational and regulatory requirements, so that together we can define the most relevant format."
+  bouton: "Discuss your needs"

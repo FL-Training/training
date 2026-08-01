@@ -1,0 +1,78 @@
+# ============================================================
+# PORTE « SECTEUR PUBLIC »
+#
+# Textes validés par Fabien (livrable « Rubrique Formations —
+# Secteur public », juillet 2026). Reproduits mot pour mot :
+# la consigne est d'utiliser exclusivement ces textes.
+#
+# ⚠️ LECTURE CONTINUE — consigne explicite de Fabien : pas de cartes,
+# pas d'onglets, pas d'accordéons, pas de sous-rubriques par
+# administration. Les trois axes sont donc des `sections`, dans
+# l'ordre retenu : tensions et conflits, puis leadership en situation
+# dégradée, puis réponse collective en crise. Cette progression
+# distingue trois niveaux — la relation, le fonctionnement collectif
+# dégradé, puis le franchissement d'un seuil de crise — et ne doit pas
+# être réordonnée.
+#
+# Les deux encarts sont transversaux à toute la page. Celui sur le
+# parcours de Fabien ne doit pas être rattaché au seul axe « crise » ;
+# celui sur la construction de l'intervention ne doit pas devenir un
+# quatrième axe.
+# ============================================================
+nom: "Secteur public"
+ordre: 2
+statut: "complet"
+picto: "landmark"
+
+seo:
+  titre: "Formations pour le secteur public"
+  description: "Préparer les agents, les encadrants et les collectifs du secteur public à agir face aux tensions, aux conflits et aux situations de crise."
+
+entete:
+  surtitre: "Secteur public"
+  titre: "Préparer les agents, les encadrants et les collectifs à agir face aux tensions, aux conflits et aux situations de crise"
+  texte: "Les professionnels du secteur public doivent assurer la continuité et la qualité du service, accueillir et accompagner des publics aux attentes multiples, coopérer entre métiers et décider dans des cadres parfois fortement contraints. Lorsque la pression augmente, les tensions relationnelles, les incivilités, les conflits ou les situations dégradées peuvent affecter la sécurité, la qualité de l'action et la capacité du collectif à remplir sa mission."
+
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/secteur-public/visuel/src.webp"
+  alt: "Le comptoir d'accueil d'un service public, des usagers au guichet et d'autres qui patientent en salle d'attente."
+# Le tracé de marque, à l'échelle de la page. « oscillation » : la
+# tension qui monte et redescend, motif du premier axe.
+signature: "oscillation"
+
+intro: "Pacivis Academy conçoit des formations adaptées aux réalités des administrations, des établissements publics et des services de proximité. Elles sont construites à partir des situations réellement rencontrées et des responsabilités exercées, afin de développer des capacités directement mobilisables."
+
+# Les trois axes. Volontairement en lecture continue (voir l'entête).
+sections:
+  - titre: "Prévenir et réguler les tensions et les conflits"
+    paragraphes:
+      - "Les interventions préparent les professionnels à repérer plus tôt les signes de tension, prévenir l'escalade, faire face aux incivilités et à l'agressivité, gérer les conflits déclarés ou rétablir des conditions de coopération lorsque la relation se bloque. Elles concernent aussi bien la relation avec les usagers que les tensions internes aux équipes ou entre services."
+
+  - titre: "Renforcer le leadership en situation dégradée"
+    paragraphes:
+      - "Lorsque l'activité se dégrade sans franchir le seuil d'une crise, les encadrants doivent continuer à donner des repères, arbitrer, décider et réguler la pression, tout en maintenant la coopération et la continuité du service. Pacivis Academy les accompagne dans le développement d'un leadership adapté à ces situations : communication sous tension, régulation du stress, prise de décision et préservation de la capacité d'action collective."
+
+  - titre: "Renforcer la réponse collective en situation de crise"
+    paragraphes:
+      - "Lorsqu'un seuil de crise est franchi, la qualité de la réponse dépend de la capacité des acteurs à percevoir l'évolution de la situation, partager l'information, coordonner leurs rôles, décider et agir collectivement sous forte contrainte. Pacivis Academy intervient sur ces facteurs humains avant, pendant et après l'événement, notamment par des mises en situation ainsi que par l'observation et le débriefing d'exercices. Son apport complète les dispositifs techniques et organisationnels de gestion de crise."
+
+encarts:
+  - titre: "Un parcours ancré dans le terrain"
+    paragraphes:
+      - "Cette approche s'appuie sur les dix années d'expérience de Fabien Lacombe au sein de la Police nationale, notamment dans des secteurs sensibles d'Île-de-France, ainsi que sur son parcours d'encadrement, de management et de formation."
+    lien:
+      label: "En savoir plus sur notre approche"
+      chemin: "/approche"
+
+  - titre: "Une intervention construite avec votre structure"
+    paragraphes:
+      - "Chaque intervention est conçue ou adaptée dans le cadre du cahier des charges. Ses contenus et son format peuvent être co-construits avec la structure commanditaire afin de tenir compte du contexte, des missions, du niveau d'exposition et des contraintes des professionnels concernés. Elle peut associer des apports théoriques ciblés, l'analyse de situations réelles, des mises en situation et des débriefings, afin de renforcer des capacités réellement transférables dans le travail."
+
+# Le livrable ne prévoit ici qu'un appel à l'action, sans accroche :
+# « Bouton : Échanger sur vos besoins ». Rien d'autre n'est ajouté.
+cta:
+  bouton: "Échanger sur vos besoins"

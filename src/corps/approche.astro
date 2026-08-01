@@ -1,0 +1,476 @@
+---
+import Base from "../layouts/Base.astro";
+import DeescalationLine from "../components/DeescalationLine.astro";
+import VisuelFondu from "../components/VisuelFondu.astro";
+import PictoPilier from "../components/PictoPilier.astro";
+import { href } from "../lib/url";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue } from "../lib/routes";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { approche } = contenuLangue(langue);
+import { enrichir } from "../lib/texte";
+
+const { seo, entete, intro, methode, sections, conclusion } = approche;
+
+/*
+  Le titre de section contient le mot ARCA : chacune de ses lettres est
+  isolée pour pouvoir s'illuminer quand le pilier correspondant a fini
+  son vol — le titre se compose sous les yeux du lecteur.
+
+  Découpage tolérant : si Fabien réécrit le titre sans le mot, les
+  lettres ne sont plus isolées et la page reste correcte, simplement
+  sans échos.
+*/
+/*
+  Ancres des quatre piliers, cibles du sous-menu « Notre approche ».
+
+  Fixées ici plutôt que dérivées des titres : si Fabien reformule
+  « Anticiper » en « Anticiper la dégradation », le lien du menu doit
+  continuer de désigner le même bloc. L'ordre suit celui des piliers
+  dans le contenu.
+*/
+const ANCRES_PILIERS = ["anticiper", "reguler", "communiquer", "agir"];
+
+/*
+  Ancres des sections de second niveau, dans l'ordre du contenu. Le
+  sous-menu s'appuie dessus pour couvrir TOUTE la page : la méthode
+  n'est qu'un de ses quatre moments, et les fondations, la pédagogie et
+  l'ambition ne doivent pas rester hors d'atteinte.
+
+  Même principe que les piliers : figées ici, pas dérivées des titres,
+  pour qu'une reformulation de Fabien ne casse aucun lien.
+*/
+const ANCRES_SECTIONS = ["fondations", "pedagogie"];
+
+const MOT = "ARCA";
+const posMot = methode.titre.indexOf(MOT);
+const titreMethode =
+  posMot === -1
+    ? null
+    : {
+        avant: methode.titre.slice(0, posMot),
+        lettres: [...MOT],
+        apres: methode.titre.slice(posMot + MOT.length),
+      };
+---
+
+<Base
+  title={seo.titre}
+  description={seo.description}
+  fil={[{ label: entete.surtitre, chemin: cheminLangue(langue, "/approche") }]}
+>
+  {/*
+    Deux photographies seulement sur cette page, aux endroits où elles
+    disent quelque chose : l'ouverture, et la pédagogie — la seule des
+    deux sections d'appui qui décrive une situation observable. Les
+    fondations relèvent d'outils et de références : les illustrer
+    donnerait une image décorative, ce que Fabien écarte. ARCA n'en
+    reçoit pas non plus : ses lettres, son titre qui se fige et ses
+    quatre piliers portent déjà tout le regard.
+  */}
+  <section class="relative mx-auto max-w-6xl px-6 pt-16 md:pt-24">
+    {/*
+      Cadrage déporté à droite : les deux personnes en tension s'y
+      trouvent, et le cadre centré par défaut les coupait au bord.
+    */}
+    <VisuelFondu
+      src="/approche/ouverture.webp"
+      largeur="42%"
+      cadrage="78% 50%"
+    />
+    <p class="eyebrow relative">{entete.surtitre}</p>
+    <h1 class="display relative mt-4 max-w-3xl text-4xl text-navy-deep md:text-5xl">
+      {entete.titre}
+    </h1>
+    <p
+      class="relative mt-6 max-w-2xl text-lg leading-relaxed text-ink"
+      set:html={enrichir(entete.texte)}
+    />
+    {
+      intro.map((p) => (
+        <p
+          class="relative mt-5 max-w-2xl leading-relaxed text-ink-soft"
+          set:html={enrichir(p)}
+        />
+      ))
+    }
+    <DeescalationLine class="mt-12 h-14 md:h-20" />
+  </section>
+
+  <!-- ARCA : les quatre piliers -->
+  <section id="arca" class="cible-ancre mx-auto max-w-6xl px-6 py-16">
+    <p class="eyebrow">{methode.surtitre}</p>
+    {/*
+      Le titre reste à l'écran pendant toute la traversée des piliers :
+      c'est là que chacune de ses lettres s'illumine, à mesure que le
+      pilier correspondant se dévoile. Sans cela, l'écho se jouerait
+      au-dessus de la ligne de flottaison, invisible.
+    */}
+    <h2
+      class="titre-arca display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+    >
+      {
+        titreMethode ? (
+          <>
+            {titreMethode.avant}
+            {titreMethode.lettres.map((lettre, i) => (
+              <span class="arca-echo" data-echo={i} data-lettre={lettre}>
+                {lettre}
+
+              </span>
+            ))}
+            {titreMethode.apres}
+          </>
+        ) : (
+          methode.titre
+        )
+      }
+    </h2>
+    <p
+      class="mt-5 max-w-3xl leading-relaxed text-ink-soft"
+      set:html={enrichir(methode.intro)}
+    />
+
+    <ol class="mt-14 space-y-14" data-reveal-group>
+      {
+        methode.piliers.map((p) => (
+          <li
+            id={ANCRES_PILIERS[methode.piliers.indexOf(p)]}
+            class="pilier cible-ancre grid gap-5 border-t border-ink/10 pt-8 md:grid-cols-[110px_1fr_11rem] md:items-center md:gap-10"
+            data-reveal
+            data-pilier={methode.piliers.indexOf(p)}
+          >
+            {/*
+              Les quatre initiales composent ARCA à la verticale : elles
+              doivent se lire comme un acronyme, donc être franchement
+              visibles — tout en restant sous le titre du pilier dans la
+              hiérarchie. Le vert profond à 45 % tient les deux.
+
+              À la révélation, cette lettre part de l'initiale du titre
+              (« A » d'Anticiper) et vient prendre sa place : le lien
+              entre le mot et l'acronyme se voit au lieu de se deviner.
+            */}
+            <span class="pilier-lettre display" aria-hidden="true">
+              <span class="pilier-lettre-face">{p.numero}</span>
+            </span>
+            <div>
+              <h3 class="display max-w-xl text-2xl text-navy-deep">
+                <span class="pilier-initiale">{p.titre.charAt(0)}</span>
+                {p.titre.slice(1)}
+              </h3>
+              <p
+                class="mt-4 max-w-2xl leading-relaxed text-ink-soft"
+                set:html={enrichir(p.texte)}
+              />
+            </div>
+
+            {/*
+              Le schéma du pilier, à droite : il comble le vide que
+              laissent des textes de longueurs inégales et redit
+              visuellement ce que le paragraphe vient d'expliquer.
+            */}
+            <PictoPilier
+              pilier={ANCRES_PILIERS[methode.piliers.indexOf(p)] as
+                | "anticiper"
+                | "reguler"
+                | "communiquer"
+                | "agir"}
+              class="pilier-picto"
+            />
+          </li>
+        ))
+      }
+    </ol>
+
+    <p
+      class="mt-14 max-w-3xl border-l-2 border-sage/50 pl-6 leading-relaxed text-ink-soft"
+      set:html={enrichir(methode.note)}
+    />
+  </section>
+
+  <!-- Fondations et pédagogie -->
+  {/*
+    LES DEUX APPUIS DE LA MÉTHODE
+
+    Côte à côte dans une grille étroite, sur un fond gris, avec des
+    titres plus petits que partout ailleurs, ces deux blocs se lisaient
+    comme une annexe d'ARCA. Leur contenu ne l'est pas : l'un dit d'où
+    vient la méthode, l'autre comment elle se travaille.
+
+    Ils reçoivent donc le traitement des sections de plein droit — pleine
+    largeur, filet d'ouverture, titre à la même échelle que celui d'ARCA,
+    et de l'air entre eux. La colonne de lecture reste bornée pour que
+    les lignes ne s'étirent pas.
+  */}
+  <section class="border-t border-ink/10">
+    <div class="mx-auto max-w-6xl space-y-20 px-6 py-20">
+      {
+        sections.map((s) => (
+          <div
+            id={ANCRES_SECTIONS[sections.indexOf(s)]}
+            class="cible-ancre relative"
+            data-reveal-group
+          >
+            {sections.indexOf(s) === 1 && (
+              <VisuelFondu src="/approche/pedagogie.webp" largeur="40%" />
+            )}
+            <span class="bloc-filet relative" aria-hidden="true" data-reveal />
+            <h2
+              class="display relative mt-8 max-w-3xl text-3xl text-navy-deep md:text-4xl"
+              data-reveal
+            >
+              {s.titre}
+            </h2>
+            <div class="relative mt-6 max-w-2xl space-y-4 text-[1.05rem]">
+              {s.paragraphes.map((p) => (
+                <p
+                  class="leading-relaxed text-ink-soft"
+                  data-reveal
+                  set:html={enrichir(p)}
+                />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {/*
+    L'AMBITION — conclusion de la page.
+
+    Elle était posée sur le bleu abysse, c'est-à-dire EXACTEMENT le fond
+    du pied de page : le lecteur croyait la page finie et la prenait pour
+    un élément de pied de page. Elle passe donc sur fond clair, dans le
+    vocabulaire des encarts du site — filet vert épais à gauche, fond
+    vert très pâle — qui la distingue nettement de ce qui la suit.
+  */}
+  <section class="mx-auto max-w-6xl px-6 pb-24">
+    <div
+      id="notre-ambition"
+      class="cible-ancre rounded-2xl border-l-4 border-sage bg-sage-faint/45 px-8 py-12 md:px-12"
+      data-reveal-group
+    >
+      <p class="eyebrow" data-reveal>{conclusion.surtitre}</p>
+      <h2
+        class="display mt-4 max-w-3xl text-3xl text-navy-deep md:text-4xl"
+        data-reveal
+      >
+        {conclusion.titre}
+      </h2>
+      <p
+        class="mt-5 max-w-3xl text-[1.05rem] leading-relaxed text-ink-soft"
+        data-reveal
+        set:html={enrichir(conclusion.texte)}
+      />
+      <div class="mt-9 flex flex-wrap gap-4" data-reveal>
+        <a href={href(cheminLangue(langue, "/formations"))} class="btn btn-primary !px-6">
+          {conclusion.bouton_formations}
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href={href(cheminLangue(langue, "/contact"))} class="btn btn-ghost !px-6">
+          {conclusion.bouton_contact}
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import "../scripts/arca";
+</script>
+
+<style>
+  /*
+    Les quatre piliers reçoivent une hauteur plancher commune : sans
+    elle, « Anticiper » et « Agir » — plus courts — laissaient des blocs
+    deux fois moins hauts que « Réguler », et la colonne de droite
+    paraissait vide par endroits. Le texte reste libre de dépasser.
+  */
+  @media (min-width: 768px) {
+    .pilier {
+      min-height: 12.5rem;
+    }
+  }
+
+  /* Le composant décide de sa visibilité ; la page, de sa place. */
+  @media (min-width: 768px) {
+    .pilier-picto {
+      justify-self: end;
+    }
+  }
+
+  /* Le filet d'ouverture des appuis de la méthode vit désormais dans
+     global.css : la page « À propos » s'en sert aussi, et deux copies
+     auraient fini par diverger. */
+
+  /*
+    Le titre de la méthode accompagne la lecture des quatre piliers.
+
+    Il se fige sous l'en-tête à partir de 768 px : en dessous, il
+    occupe deux lignes et mangerait le tiers de l'écran. Le fond opaque
+    et le filet bas le détachent du texte qui défile dessous.
+  */
+  @media (min-width: 768px) {
+    .titre-arca {
+      position: sticky;
+      /* Exactement la hauteur de l'en-tête collant : le moindre jeu
+         laisserait le texte défiler dans l'interstice. */
+      top: 4.8rem;
+      z-index: 20;
+      /* Le fond doit couvrir toute la largeur de lecture, pas seulement
+         celle du texte. */
+      margin-inline: -0.75rem;
+      max-width: none;
+      padding: 0.85rem 0.75rem 0.75rem;
+      /* Exactement la couleur de la page : la moindre variation dessine
+         un rectangle autour du titre. */
+      background: var(--color-paper);
+      border-bottom: 1px solid
+        color-mix(in oklab, var(--color-ink) 8%, transparent);
+    }
+
+    /*
+      Le grain de la page est un calque fixe posé au-dessus du contenu
+      (z-index 1). Le titre, lui, doit passer devant le texte qui défile
+      dessous, donc au-dessus de ce calque : il en sort et son fond
+      paraît plus lisse que le reste de la page. On lui redonne donc le
+      même bruit, à la même opacité.
+    */
+    .titre-arca::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.055;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.039 0 0 0 0 0.212 0 0 0 0 0.325 0.7 0 0 0 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+  }
+
+  /*
+    Les initiales des quatre piliers. Empilées, elles épellent ARCA :
+    c'est leur seule raison d'être, donc elles doivent se voir. Assez
+    grandes pour être lues comme un acronyme, assez retenues pour ne
+    pas passer devant le titre du pilier.
+  */
+  .pilier-lettre {
+    display: block;
+    font-size: clamp(3.25rem, 6vw, 4.75rem);
+    line-height: 0.9;
+    color: color-mix(in oklab, var(--color-sage-deep) 45%, transparent);
+    /* Le vol part du coin haut-gauche : c'est le point que le calcul
+       FLIP fait coïncider avec l'initiale du titre. */
+    transform-origin: top left;
+    /* Donne sa profondeur à la rotation de la face intérieure. */
+    perspective: 800px;
+  }
+
+  /*
+    La face qui tourne. Elle est séparée du conteneur parce que les deux
+    mouvements n'ont ni la même durée ni la même courbe : le déplacement
+    se pose en douceur, la rotation s'arrête plus tôt et net. Deux
+    animations sur une seule propriété `transform` s'écraseraient.
+    La face arrière reste visible : c'est ce qui donne le miroitement
+    d'une pièce qui tourne.
+  */
+  .pilier-lettre-face {
+    display: inline-block;
+    transform-origin: center center;
+  }
+
+  /*
+    Sur petit écran, l'initiale ne dit plus rien : les quatre lettres ne
+    se voient jamais ensemble — donc elles n'épellent plus ARCA — et
+    posée seule au-dessus du titre, chacune ressemble à une lettrine
+    orpheline qui répète l'initiale du mot juste en dessous. Le titre du
+    pilier suffit. Après la règle de base, sinon elle l'écraserait.
+  */
+  @media (max-width: 767px) {
+    .pilier-lettre {
+      display: none;
+    }
+  }
+
+  /*
+    Masquée seulement si le script prend la main — sinon elle reste
+    visible, sans animation.
+  */
+  :global(html.js-arca) .pilier-lettre {
+    opacity: 0;
+  }
+
+  /* L'éclat d'arrivée : la lettre atteint sa pleine teinte, puis
+     redescend à sa valeur de repos. */
+  .pilier-lettre:global(.pilier-lettre-arrivee) {
+    animation: pilier-eclat 900ms ease-out;
+  }
+
+  @keyframes pilier-eclat {
+    0% {
+      color: var(--color-sage-deep);
+    }
+    18% {
+      color: var(--color-sage-deep);
+    }
+    100% {
+      color: color-mix(in oklab, var(--color-sage-deep) 45%, transparent);
+    }
+  }
+
+  /* L'initiale du titre reste en place : c'est son point de départ. */
+  .pilier-initiale {
+    display: inline-block;
+  }
+
+
+  /*
+    L'écho dans le titre de section : quand un pilier a fini son vol, sa
+    lettre s'illumine ici. Deux couches — la lettre elle-même qui passe
+    au vert et s'auréole, et une étincelle qui glisse en haut à droite,
+    comme un point de lumière dans une goutte d'eau.
+  */
+  .arca-echo {
+    position: relative;
+    display: inline-block;
+  }
+
+  .arca-echo:global(.arca-echo-brille) {
+    animation: arca-echo-lueur 1100ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  /*
+    L'étincelle. `offset-path` la fait courir le long d'un tracé décrit
+    dans un carré de 100 × 100 ; `offset-distance` la déplace de bout en
+    bout. Le carré est mis à l'échelle de la lettre par la boîte
+    parente, donc le tracé suit la glyphe quelle que soit la taille du
+    titre.
+  */
+  @keyframes arca-echo-lueur {
+    0% {
+      color: var(--color-navy-deep);
+      text-shadow: none;
+    }
+    22% {
+      color: var(--color-sage-deep);
+      text-shadow:
+        0 0 0.5em color-mix(in oklab, var(--color-sage) 70%, transparent),
+        0 0 0.12em rgb(255 255 255 / 0.85);
+    }
+    100% {
+      color: var(--color-navy-deep);
+      text-shadow: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arca-echo:global(.arca-echo-brille),
+    .arca-echo:global(.arca-echo-brille) .arca-bille {
+      animation: none;
+    }
+  }
+</style>

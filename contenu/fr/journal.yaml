@@ -1,0 +1,28 @@
+# La page « Le Journal » — entête et libellés de ses filtres.
+# Créée le 29/07/2026 : c'était la seule page du site dont les textes
+# vivaient dans le code — donc ni modifiables par Fabien, ni
+# traduisibles. Les textes ci-dessous sont repris du code à l'identique.
+seo:
+  titre: "Le Journal Pacivis"
+  description: "Articles de fond sur la prévention et la gestion des conflits : méthodes, repères, terrain et points de vue — par Fabien Lacombe."
+
+entete:
+  surtitre: "Le Journal Pacivis"
+  titre: "Comprendre avant d'agir."
+  texte: "Méthodes, repères, retours de terrain et points de vue : des articles de fond pour celles et ceux qui font face au conflit dans leur métier."
+
+filtres:
+  tous: "Tous"
+  filtrer_par_flux: "Filtrer par flux"
+  filtrer_par_label: "Filtrer par label"
+  labels_titre: "Labels"
+  aucun_article_flux: "Aucun article publié pour le moment."
+  aucun_article_encore: "— aucun article pour le moment"
+  aucune_selection: "Aucun article dans cette sélection pour le moment."
+
+article:
+  retour: "Le Journal"
+  sources: "Sources"
+  cta_titre: "Ces repères s'entraînent en formation."
+  cta_formations: "Voir les formations"
+  cta_approche: "Notre approche"

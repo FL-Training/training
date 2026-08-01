@@ -50,8 +50,33 @@ const CLE = "pacivis-parcours";
 /** Au-delà, le fil devient une liste et cesse d'aider. */
 const MAX_ETAPES = 4;
 
+/*
+  LE PARCOURS EST CLOISONNÉ PAR LANGUE.
+
+  Les étapes mémorisées portent des libellés et des adresses d'une
+  langue donnée. Réutilisées après un changement de langue, elles
+  produisaient un fil bilingue : depuis la page PAXI française, basculer
+  en anglais affichait « Home › Formations › PAXI › PAXI » — le maillon
+  français conservé, et la page d'arrivée comptée deux fois.
+
+  Changer de langue, c'est repartir dans une autre version du site : le
+  parcours recommence à son accueil. La langue est celle du document,
+  écrite par le serveur sur <html lang>.
+*/
+const CLE_LANGUE = "pacivis-parcours-langue";
+
+function langueDocument(): string {
+  return document.documentElement.lang || "fr";
+}
+
 function lire(): Etape[] {
   try {
+    const langue = langueDocument();
+    if (sessionStorage.getItem(CLE_LANGUE) !== langue) {
+      sessionStorage.removeItem(CLE);
+      sessionStorage.setItem(CLE_LANGUE, langue);
+      return [];
+    }
     const brut = sessionStorage.getItem(CLE);
     return brut ? (JSON.parse(brut) as Etape[]) : [];
   } catch {
@@ -61,6 +86,7 @@ function lire(): Etape[] {
 
 function ecrire(etapes: Etape[]): void {
   try {
+    sessionStorage.setItem(CLE_LANGUE, langueDocument());
     sessionStorage.setItem(CLE, JSON.stringify(etapes));
   } catch {
     /* navigation privée saturée : le fil se passera de mémoire */
@@ -79,15 +105,36 @@ function hierarchie(): Etape["hierarchie"] {
   }
 }
 
+/**
+ * L'accueil de la langue affichée : son adresse et son nom.
+ *
+ * Ce script tourne dans le navigateur, sans accès au contenu : il
+ * écrivait donc « Accueil » et l'adresse de la racine française, y
+ * compris sur les pages anglaises — où le fil rendu par le serveur
+ * disait « Home ». Dès que le script reprenait la main, le fil devenait
+ * bilingue.
+ *
+ * Le lien du logo porte déjà les deux informations dans la bonne
+ * langue : c'est lui la source, repéré par `data-accueil`.
+ */
+function accueilLangue(): { chemin: string; label: string } {
+  const lien = document.querySelector<HTMLAnchorElement>("header a[data-accueil]");
+  const base = import.meta.env.BASE_URL;
+  return {
+    chemin: lien?.getAttribute("href") || base,
+    label: lien?.getAttribute("aria-label")?.trim() || "Accueil",
+  };
+}
+
 function pageCourante(): Etape {
   const chemin = window.location.pathname;
   const hash = window.location.hash || undefined;
 
   // L'accueil n'a pas de fil d'Ariane, donc pas de nom court : son
   // titre de référencement ferait une étape à rallonge.
-  const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
-  if (chemin.replace(/\/+$/, "") === base) {
-    return { chemin, label: "Accueil", hash };
+  const accueil = accueilLangue();
+  if (chemin.replace(/\/+$/, "") === accueil.chemin.replace(/\/+$/, "")) {
+    return { chemin, label: accueil.label, hash };
   }
 
   const meta = document.querySelector<HTMLMetaElement>(
@@ -156,10 +203,10 @@ function afficher(): void {
   // L'accueil ouvre toujours le fil — c'est la racine du site, qu'on
   // l'ait traversée ou non. Sauf s'il EST la page précédente : il
   // arriverait alors deux fois.
-  const racine = import.meta.env.BASE_URL;
+  const accueil = accueilLangue();
   const chemin: Etape[] = [];
-  if (precedente.chemin.replace(/\/+$/, "") !== racine.replace(/\/+$/, "")) {
-    chemin.push({ chemin: racine, label: "Accueil" });
+  if (precedente.chemin.replace(/\/+$/, "") !== accueil.chemin.replace(/\/+$/, "")) {
+    chemin.push({ chemin: accueil.chemin, label: accueil.label });
   }
 
   /*

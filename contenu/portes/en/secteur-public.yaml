@@ -1,0 +1,54 @@
+# "Public sector" door — English working translation (29/07/2026), to
+# be reviewed by Fabien. Same constraints as the French original:
+# CONTINUOUS READING (no cards, no tabs), three sections in this exact
+# order, two cross-cutting side notes, and a call to action reduced to
+# its button. `chemin` carries the arbitrated English address.
+nom: "Public sector"
+chemin: "public-sector"
+ordre: 2
+statut: "complet"
+picto: "landmark"
+
+seo:
+  titre: "Training for the public sector"
+  description: "Preparing public sector officers, supervisors and teams to act in the face of tension, conflict and crisis situations."
+
+entete:
+  surtitre: "Public sector"
+  titre: "Preparing officers, supervisors and teams to act in the face of tension, conflict and crisis situations"
+  texte: "Public sector professionals must ensure the continuity and quality of the service, welcome and support publics with many different expectations, cooperate across professions and decide within sometimes highly constrained frameworks. When pressure rises, relational tension, incivility, conflict or degraded situations can affect safety, the quality of the action and the collective's capacity to fulfil its mission."
+
+visuel:
+  src: "/formations/secteur-public/visuel/src.webp"
+  alt: "The reception desk of a public service, users at the counter and others waiting in the waiting area."
+signature: "oscillation"
+
+intro: "Pacivis Academy designs training adapted to the realities of administrations, public institutions and local services. Courses are built from the situations actually encountered and the responsibilities held, in order to develop capacities that can be mobilised directly."
+
+sections:
+  - titre: "Preventing and regulating tension and conflict"
+    paragraphes:
+      - "The training prepares professionals to spot the signs of tension earlier, prevent escalation, face incivility and aggression, manage open conflict, or restore the conditions for cooperation when the relationship becomes blocked. It concerns the relationship with users as much as tension within teams or between departments."
+
+  - titre: "Strengthening leadership in degraded situations"
+    paragraphes:
+      - "When the activity deteriorates without crossing the threshold of a crisis, supervisors must keep providing bearings, arbitrating, deciding and regulating pressure, while maintaining cooperation and the continuity of the service. Pacivis Academy supports them in developing leadership suited to these situations: communication under tension, stress regulation, decision-making and the preservation of the collective capacity to act."
+
+  - titre: "Strengthening the collective response in crisis situations"
+    paragraphes:
+      - "When a crisis threshold is crossed, the quality of the response depends on the actors' capacity to perceive how the situation is evolving, share information, coordinate their roles, decide and act collectively under strong constraint. Pacivis Academy works on these human factors before, during and after the event, notably through scenario work and the observation and debriefing of exercises. Its contribution complements the technical and organisational arrangements of crisis management."
+
+encarts:
+  - titre: "A background rooted in the field"
+    paragraphes:
+      - "This approach draws on Fabien Lacombe's ten years of experience in the French National Police, notably in sensitive areas of the Paris region, as well as on his background in supervision, management and training."
+    lien:
+      label: "Learn more about our approach"
+      chemin: "/approach"
+
+  - titre: "Training built with your organisation"
+    paragraphes:
+      - "Each intervention is designed or adapted within the framework of the specifications. Its content and format can be co-constructed with the commissioning organisation to take into account the context, the missions, the level of exposure and the constraints of the professionals concerned. It can combine targeted theoretical input, the analysis of real situations, scenario work and debriefings, in order to strengthen capacities that genuinely transfer into the work."
+
+cta:
+  bouton: "Discuss your needs"

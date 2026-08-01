@@ -1,0 +1,58 @@
+# ============================================================
+# PAGE « NOTRE APPROCHE »
+#
+# Texte VALIDÉ par Fabien — livrable « Rubrique Notre approche »,
+# VERSION 7 « consolidée après commentaires ». Les versions 1 à 6 du
+# document sont des états de travail : ne pas y revenir.
+#
+# Seuls le titre H1, le surtitre et les libellés de boutons sont des
+# éléments d'affichage composés à partir de ses termes — à valider.
+# ============================================================
+
+seo:
+  titre: "Notre approche"
+  description: "La méthode ARCA — anticiper, réguler, communiquer, agir : préserver une capacité d'action quand la pression ou le conflit s'installe."
+
+entete:
+  surtitre: "Notre approche"
+  titre: "Une approche incarnée, structurée et directement applicable"
+  texte: "Lorsque la pression, la tension ou la crise placent les personnes et les équipes en dehors de leurs conditions ordinaires de stabilité, leur capacité à percevoir, communiquer, décider et agir est mise à l'épreuve. Pacivis Academy travaille sur ces mécanismes et sur les moyens de préserver une capacité d'action adaptée."
+
+intro:
+  - "La gestion des conflits constitue l'une de ses spécialités fortes, au sein d'un champ plus large qui comprend aussi la stabilité opérationnelle, le leadership sous pression, la coopération et la continuité de l'action en situation dégradée ou critique."
+
+methode:
+  surtitre: "La méthode"
+  titre: "ARCA : la méthode Pacivis Academy"
+  intro: "La méthode ARCA structure cette approche autour de quatre piliers : anticiper, réguler, communiquer et agir. Ils peuvent être travaillés ensemble ou de façon ciblée, selon les besoins, les situations et les responsabilités des professionnels concernés."
+  piliers:
+    - numero: "A"
+      titre: "Anticiper"
+      texte: "Anticiper, c'est observer l'environnement et les comportements pour repérer suffisamment tôt les signes d'une évolution. Il ne s'agit pas de tout prévoir, mais d'identifier les facteurs qui augmentent le risque de dégradation ou peuvent faire changer la situation de nature."
+    - numero: "R"
+      titre: "Réguler"
+      texte: "Réguler, c'est préserver ou retrouver une stabilité suffisante lorsque la pression augmente. Ce pilier mobilise la régulation physiologique et cognitive, mais aussi l'intelligence émotionnelle : reconnaître ce qui se passe en soi, comprendre ce que l'émotion signale et éviter qu'elle ne conduise seule la réponse. L'enjeu est de conserver de la lucidité, une posture cohérente et une capacité réelle de décision."
+    - numero: "C"
+      titre: "Communiquer"
+      texte: "Communiquer, c'est écouter, formuler une intention claire et poser un cadre adapté à la situation. Ce pilier travaille les trois dimensions de la communication : verbale, paraverbale et non verbale. Il ne s'agit pas seulement de transmettre un message, mais d'observer ses effets et d'ajuster sa communication en conséquence."
+    - numero: "A"
+      titre: "Agir"
+      texte: "Agir, enfin, c'est choisir et mettre en œuvre une réponse adaptée à la nature, à l'évolution et au niveau de criticité de la situation. Selon le contexte, l'action peut viser à préserver la continuité d'activité ou à répondre à une situation de danger. Elle reste graduée, proportionnée et inscrite dans le cadre légal, réglementaire et professionnel applicable."
+  note: "ARCA n'est pas une procédure rigide. Ses quatre piliers interagissent et s'ajustent à mesure que la situation évolue. La méthode fournit un cadre commun, sans imposer de mobiliser toutes ses dimensions avec la même intensité dans chaque formation."
+
+sections:
+  - titre: "Des fondations solides, intégrées dans une même démarche"
+    paragraphes:
+      - "La méthode ARCA s'appuie sur des outils éprouvés, issus notamment de l'analyse transactionnelle, de la Communication Non Violente, de la négociation d'influence et des techniques d'optimisation du potentiel. Elle est également nourrie par une culture opérationnelle forgée dans des environnements où l'évaluation du risque, la décision sous contrainte et la proportionnalité de l'action ont des conséquences concrètes."
+      - "Pacivis Academy ne juxtapose pas ces différents apports et ne les reprend pas comme des méthodes closes. Elle les intègre dans une démarche fondée sur l'expérience, l'analyse de ses propres réactions et l'ajustement aux effets réellement produits. Leur utilisation dépend du contexte, des objectifs poursuivis et des possibilités concrètes des participants."
+  - titre: "Une pédagogie qui relie compréhension et entraînement"
+    paragraphes:
+      - "La méthode ARCA se travaille par des apports théoriques ciblés, des ateliers expérientiels, des mises en situation progressives et des débriefings. Cette pédagogie permet aux participants de comprendre les mécanismes en jeu, d'observer leurs propres réactions et de mesurer l'écart entre leur intention et les effets produits."
+      - "Les formations transmettent également des outils concrets et des axes d'entraînement pour poursuivre leur appropriation au-delà de la formation et les transférer dans les situations professionnelles rencontrées."
+
+conclusion:
+  surtitre: "Notre ambition"
+  titre: "Reconnaître plus tôt ce qui se dégrade."
+  texte: "Pacivis Academy ne promet pas de supprimer les tensions ni de maîtriser toutes les crises. Son ambition est d'aider les personnes et les équipes à reconnaître plus tôt ce qui se dégrade, à préserver leurs capacités et à construire une réponse plus lucide lorsque la pression met à l'épreuve la relation, la coopération ou la continuité de l'action."
+  bouton_formations: "Voir les formations"
+  bouton_contact: "Prendre contact"

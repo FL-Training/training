@@ -41,7 +41,13 @@
   --color-abysse: oklch(26% 0.045 246);
   /* --pa-green-accent #3C786A — accent limité : validation, focus,
      progression (4.66:1 en texte sur papier ✔ AA) */
-  --color-sage-deep: oklch(52.79% 0.0669 176.5);
+  /*
+    Assombri de 52.79 % à 48 % le 30/07 : sur les fonds sage-faint et
+    paper, le couple précédent tombait à 4.04:1 et 4.38:1 — sous le
+    minimum WCAG AA de 4.5:1 pour du texte courant. Un texte que les
+    personnes malvoyantes ne distinguent pas du fond n'est pas un texte.
+  */
+  --color-sage-deep: oklch(48% 0.0669 176.5);
   /* --pa-grey-muted #8E9EA4 — décoratif uniquement (2.5:1) : traits,
      séparateurs, jamais du texte */
   --color-mist: oklch(68.85% 0.0202 222.3);
@@ -54,7 +60,8 @@
   /* bleu nuit éclairci — texte de second rang (6.58:1 sur papier) */
   --color-ink-soft: oklch(45.4% 0.0499 241.9);
   /* gris bleuté assombri — légendes, petits textes (4.9:1 sur papier) */
-  --color-ink-faint: oklch(52.25% 0.0268 228.2);
+  /* Assombri de 52.25 % à 47 % : 3.95:1 sur paper-deep, sous le seuil AA. */
+  --color-ink-faint: oklch(47% 0.0268 228.2);
 
   /* Typographie */
   /* Marcellus : capitale lapidaire romaine, en écho au logo. Un seul
@@ -127,9 +134,26 @@
     color: var(--color-paper);
   }
 
+  /*
+    Contour de focus à DEUX couches.
+
+    WCAG 1.4.11 demande 3:1 entre l'indicateur de focus et la surface
+    autour. Mesuré : sage-deep donne 5.72:1 sur le papier mais 2.00:1 sur
+    la barre navy — le focus y était donc hors norme (2.45:1 même avant
+    l'assombrissement du jeton). Aucune couleur unique ne satisfait des
+    fonds aussi opposés.
+
+    D'où l'anneau composite : papier 0→2px, sage-deep 2→4px, papier
+    4→6px. Sur fond clair c'est la couche sage-deep qui porte (5.72:1) ;
+    sur navy c'est l'anneau papier extérieur (12.18:1). L'outline est
+    conservé — le halo seul disparaîtrait en mode contraste forcé.
+
+    Le box-shadow ne prend pas de place dans le flux : rien ne bouge.
+  */
   :focus-visible {
     outline: 2px solid var(--color-sage-deep);
-    outline-offset: 3px;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--color-paper);
     border-radius: 2px;
   }
 

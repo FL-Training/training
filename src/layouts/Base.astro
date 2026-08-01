@@ -26,8 +26,18 @@ import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { href } from "../lib/url";
-import { commun } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue } from "../lib/routes";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { commun } = contenuLangue(langue);
 import { grapheSeo, urlAbsolue } from "../lib/seo";
+import { LANGUE_PAR_DEFAUT, localeLangue } from "../lib/langues";
+import { jumellesLangue } from "../lib/jumelles";
+import { texteInterface } from "../lib/interface";
 import type { Fil, TypePage } from "../lib/seo";
 
 interface Props {
@@ -57,7 +67,31 @@ const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = urlAbsolue(Astro.site!, `${base}${image}`);
 
+/*
+  Les `hreflang` : même résolution que le sélecteur de langue du bandeau
+  (lib/jumelles.ts), pour qu'ils ne puissent pas diverger.
+
+  Filtre sur `exacte` : le sélecteur a le droit de replier sur l'accueil
+  d'une langue quand la page n'y existe pas — c'est un service rendu au
+  visiteur. Une balise `hreflang` ne l'a pas : annoncer une traduction
+  qui n'existe pas est une fausse déclaration faite au moteur, et notre
+  audit de référencement la refuserait au contrôle de réciprocité.
+*/
+const jumelles = await (async () => {
+  const paires = (
+    await jumellesLangue(langue, Astro.url.pathname, import.meta.env.BASE_URL)
+  ).filter((j) => j.exacte);
+  if (paires.length < 2) return [];
+  const adresse = (code: string) =>
+    urlAbsolue(Astro.site!, href(paires.find((j) => j.code === code)!.chemin));
+  return [
+    ...paires.map((j) => ({ hreflang: j.code, href: adresse(j.code) })),
+    { hreflang: "x-default", href: adresse(LANGUE_PAR_DEFAUT) },
+  ];
+})();
+
 const jsonLd = grapheSeo({
+  langue,
   site: Astro.site!,
   base: import.meta.env.BASE_URL,
   pathname: Astro.url.pathname,
@@ -80,7 +114,7 @@ const jsonLd = grapheSeo({
   s'applique dès le premier octet — donc aucun panneau n'a le temps de
   s'entrouvrir, y compris quand la page est rechargée entièrement.
 */}
-<html lang="fr" class="nav-figee">
+<html lang={langue} class="nav-figee">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -157,7 +191,7 @@ const jsonLd = grapheSeo({
     <meta property="og:title" content={`${title} — ${marque}`} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale" content={localeLangue(langue).replace("-", "_")} />
     <meta property="og:image" content={imageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -405,13 +439,14 @@ const jsonLd = grapheSeo({
         );
       })();
     </script>
+    {jumelles.map((j) => <link rel="alternate" hreflang={j.hreflang} href={j.href} />)}
   </head>
   <body class="grain flex min-h-screen flex-col">
     <a
       href="#contenu"
       class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-lg focus:bg-navy focus:px-4 focus:py-2 focus:text-paper"
     >
-      Aller au contenu
+      {texteInterface(langue, "allerAuContenu")}
     </a>
     <Header />
     <main id="contenu" class="flex-1">

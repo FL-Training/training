@@ -3,33 +3,46 @@ import { defineConfig } from "astro/config";
 import node from "@astrojs/node";
 import react from "@astrojs/react";
 import sitemap from "@astrojs/sitemap";
-import keystatic from "@keystatic/astro";
 import tailwindcss from "@tailwindcss/vite";
 import yaml from "@rollup/plugin-yaml";
 
 import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
 
 /*
-  Hébergement : GitHub Pages, site de projet servi sous /training/.
-  `site` + `base` alimentent les URLs canoniques, Open Graph, JSON-LD,
-  le sitemap et robots.txt ; les liens internes passent tous par
-  src/lib/url.ts, qui préfixe la base automatiquement.
+  DEUX HÉBERGEMENTS, UN SEUL FICHIER.
 
-  Le jour où un domaine propre sera attaché : passer `site` au nouveau
-  domaine et `base` à "/". Rien d'autre à toucher.
+  Le site part vers Dokploy, sur un serveur à nous. GitHub Pages, où il
+  vit encore, est mis en sommeil le temps de la bascule : il continue de
+  servir le dernier site publié, mais ne se met plus à jour (voir
+  .github/workflows/deploy.yml).
 
-  La migration vers un hébergement autonome (Dokploy) est préparée mais
-  reportée : la reprendre demandera de rétablir l'adaptateur — voir
-  ci-dessous.
+  Ce que `DEPLOY_TARGET=dokploy` change, et pourquoi :
+
+    - la BASE passe à la racine. Sous GitHub Pages le site est un projet
+      parmi d'autres, servi sous /training/ ; sur un serveur à nous il
+      est seul et vit à la racine.
+    - la SORTIE devient un serveur, avec l'adaptateur node. C'est le
+      choix du runtime Dokploy (Dockerfile) ; l'éditeur, lui, n'exige
+      plus rien du serveur — Sveltia est une page statique servie sous
+      /admin/, voir public/admin/ et doc/sveltia-requis-hebergement.md.
+    - l'ORIGINE vient de PUBLIC_SITE_URL. Elle alimente les URLs
+      canoniques, le sitemap, Open Graph et JSON-LD. Tant qu'elle
+      désigne une adresse IP, le site demande à n'être pas indexé (voir
+      src/pages/robots.txt.ts) : une IP dans les résultats de recherche
+      deviendrait un doublon et des liens morts le jour du domaine.
+
+  Le jour où un nom de domaine sera attaché : renseigner PUBLIC_SITE_URL
+  et SITE_INDEXABLE=true. Rien d'autre à toucher.
 */
 
 /*
-  Keystatic ne tourne qu'en développement.
+  LA BASE EN DÉVELOPPEMENT : la racine, comme sur Dokploy.
 
-  Son interface d'administration a besoin de routes serveur, donc d'un
-  adaptateur. GitHub Pages ne sert que des fichiers statiques : inclure
-  l'intégration ici ferait échouer le build de production. En local,
-  `npm run dev` donne accès à /keystatic en mode fichier.
+  Le développement local reproduit ainsi l'hébergement de destination —
+  mêmes adresses, mêmes chemins — et l'atelier d'édition s'ouvre sur
+  http://localhost:4321/admin/index.html. Les liens du site passent tous
+  par `href()` et `import.meta.env.BASE_URL` : ils suivent la base sans
+  rien changer, et le build GitHub Pages reste servi sous /training.
 */
 const enDeveloppement = process.argv.includes("dev");
 const cibleDokploy = process.env.DEPLOY_TARGET === "dokploy";
@@ -70,7 +83,6 @@ export default defineConfig({
           page.replace(/\/+$/, "").endsWith(chemin),
         ),
     }),
-    ...(enDeveloppement || cibleDokploy ? [keystatic()] : []),
   ],
   vite: {
     plugins: [tailwindcss(), yaml()],

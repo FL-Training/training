@@ -1,0 +1,69 @@
+# Home page — English working translation (29/07/2026), to be reviewed
+# by Fabien. The French original mixes texts VALIDATED by Fabien and
+# texts composed for the home page: this translation carries the same
+# status and must follow any revision of the original.
+seo:
+  titre: Training in conflict prevention and management
+  description: >-
+    Training in the prevention and management of conflict, tension and crisis
+    in professional settings: corporate, public sector, training providers,
+    individuals.
+hero:
+  surtitre: Professional training · Fabien Lacombe
+  titre: >-
+    Training professionals to [act] in the face of tension, conflict and
+    crisis.
+  texte: >-
+    Pacivis Academy is an independent professional training organisation that
+    supports professionals and organisations when **tension, conflict or
+    crisis** degrade the ordinary conditions of work, communication and
+    decision-making.
+  bouton_principal: Explore the training
+  bouton_secondaire: Our approach
+publics:
+  surtitre: Your situation
+  titre: Training built from your real situations.
+  texte: >-
+    Pacivis Academy works with organisations as well as with professionals
+    engaging in the process themselves. Choose the entry that matches your
+    situation.
+  liste:
+    - label: Corporate
+      picto: building-2
+    - label: Public sector
+      picto: landmark
+    - label: Training providers
+      picto: graduation-cap
+    - label: Individuals
+      picto: user-round
+  bouton: See the training
+paxi:
+  surtitre: PAXI training
+  titre: PAXI — Preventing and managing unruly passenger behaviour
+  texte: >-
+    The PAXI course prepares pilots, cabin crew and ground staff to develop
+    situational vigilance, manage conflict through communication, coordinate
+    action and act appropriately.
+  bouton: Discover the PAXI course
+journal:
+  surtitre: The Pacivis Journal
+  titre: Understand before acting.
+  texte: >-
+    Methods, markers, field feedback and points of view: in-depth articles for
+    those who face conflict in their work.
+  bouton_tous: All articles
+methode:
+  surtitre: The method
+  titre: '[ARCA]: the Pacivis Academy method'
+  intro: >-
+    The ARCA method structures this approach around four pillars: anticipate,
+    regulate, communicate and act. They can be worked on together or
+    selectively, depending on the needs, situations and responsibilities of
+    the professionals involved.
+  bouton: The method in detail
+appel_final:
+  titre: Let's talk about your needs.
+  texte: >-
+    Every context is different: training is built from your real situations,
+    your constraints and your objectives.
+  bouton: Get in touch

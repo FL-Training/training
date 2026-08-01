@@ -15,7 +15,31 @@
  * entrées plus deux boutons d'action.
  */
 import { href } from "../lib/url";
-import { commun } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { cheminLangue, lienContenu } from "../lib/routes";
+import { jumellesLangue } from "../lib/jumelles";
+import { texteInterface } from "../lib/interface";
+import { LANGUES, LANGUE_PAR_DEFAUT } from "../lib/langues";
+
+// La langue se lit dans l'adresse : ce composant sert toutes les
+// langues publiées, le contenu suit.
+const langue = langueActive(Astro.url.pathname);
+const { commun } = contenuLangue(langue);
+
+/*
+  Le sélecteur de langue : n'existe qu'à partir de deux langues publiées.
+  Chaque langue mène à la page jumelle — portes et articles compris,
+  appariés par nom de fichier — et se replie sur l'accueil de la langue
+  quand la page n'y existe pas. La même résolution sert les `hreflang`
+  dans Base.astro : voir lib/jumelles.ts pour pourquoi elle est unique.
+*/
+const langsPubliees = LANGUES.filter((l) => l.publiee);
+const autresLangues = (
+  await jumellesLangue(langue, Astro.url.pathname, import.meta.env.BASE_URL)
+)
+  .filter((j) => j.code !== langue)
+  .map((j) => ({ code: j.code, nom: j.nom, href: href(j.chemin) }));
 import Picto from "./Picto.astro";
 
 /**
@@ -56,7 +80,18 @@ function isCurrent(path: string): boolean {
   <div
     class="mx-auto flex max-w-6xl items-center justify-between gap-5 px-6 py-4"
   >
-    <a href={href("/")} class="group flex items-center gap-3" aria-label="Accueil">
+    {/*
+      Le nom accessible du logo vient du contenu de la langue active :
+      c'est le seul texte que le lecteur d'écran annonce ici, l'image
+      portant un `alt` vide. Écrit en dur, il restait « Accueil » sur les
+      pages anglaises.
+    */}
+    <a
+      href={href(cheminLangue(langue, "/"))}
+      class="group flex items-center gap-3"
+      aria-label={commun.fil.accueil}
+      data-accueil
+    >
       <img
         src={href("/logo-96.png")}
         alt=""
@@ -69,12 +104,36 @@ function isCurrent(path: string): boolean {
 
     <nav
       class="hidden items-center gap-3 lg:flex xl:gap-4"
-      aria-label="Navigation principale"
+      aria-label={texteInterface(langue, "navigationPrincipale")}
     >
       {
-        commun.navigation.map((item) =>
-          item.accent ? (
-            <a href={href(item.chemin)} class="btn btn-primary !px-4 !py-2.5 text-sm">
+        commun.navigation.map((item, i) => {
+          /*
+            Le sélecteur de langue s'accole à la DERNIÈRE entrée du menu.
+
+            Repère structurel, et non stylistique : il était rendu dans la
+            branche `item.accent`, si bien que décocher « mettre l'entrée
+            en évidence » dans l'atelier retirait tout moyen de changer de
+            langue au bandeau, l'anglais restant publié. Un choix de
+            présentation ne doit pas pouvoir supprimer une fonction.
+
+            Le rendu voulu est inchangé tant que l'entrée accentuée reste
+            la dernière du menu — « Espace apprenant | FR » d'une seule
+            forme (demande d'Olivier, 30/07).
+          */
+          const accole =
+            i === commun.navigation.length - 1 && autresLangues.length > 0;
+          const chemin = lienContenu(langue, item.chemin);
+          const courant = isCurrent(chemin);
+
+          const entree = item.accent ? (
+            <a
+              href={href(chemin)}
+              class:list={[
+                "btn btn-primary !px-4 !py-2.5 text-sm",
+                accole && "!rounded-r-none",
+              ]}
+            >
               {item.label}
             </a>
           ) : item.sous_menu.length > 0 ? (
@@ -86,12 +145,12 @@ function isCurrent(path: string): boolean {
             */
             <div class="groupe-nav relative">
               <a
-                href={href(item.chemin)}
+                href={href(chemin)}
                 class="nav-link !text-[0.92rem]"
-                aria-current={isCurrent(item.chemin) ? "page" : undefined}
+                aria-current={courant ? "page" : undefined}
               >
                 {item.label}
-                {isCurrent(item.chemin) && (
+                {courant && (
                   <span
                     class="nav-souligne"
                     transition:name="nav-actif"
@@ -106,8 +165,8 @@ function isCurrent(path: string): boolean {
                       <a
                         href={
                           r.ancre
-                            ? `${href(item.chemin)}#${r.ancre}`
-                            : href(r.chemin!)
+                            ? `${href(chemin)}#${r.ancre}`
+                            : href(lienContenu(langue, r.chemin!))
                         }
                         class="sous-menu-lien"
                       >
@@ -136,12 +195,15 @@ function isCurrent(path: string): boolean {
             </div>
           ) : (
             <a
-              href={href(item.chemin)}
-              class="nav-link !text-[0.92rem]"
-              aria-current={isCurrent(item.chemin) ? "page" : undefined}
+              href={href(chemin)}
+              class:list={[
+                "nav-link !text-[0.92rem]",
+                accole && "!rounded-r-none",
+              ]}
+              aria-current={courant ? "page" : undefined}
             >
               {item.label}
-              {isCurrent(item.chemin) && (
+              {courant && (
                 <span
                   class="nav-souligne"
                   transition:name="nav-actif"
@@ -149,10 +211,83 @@ function isCurrent(path: string): boolean {
                 />
               )}
             </a>
-          ),
-        )
+          );
+
+          if (!accole) return entree;
+
+          return (
+            <div class="flex items-stretch">
+              {entree}
+              {/*
+                Le segment des langues. Sémantique : un bouton de
+                divulgation (`aria-expanded`), pas un menu ARIA —
+                `aria-haspopup="true"` annonçait un menu alors que le
+                panneau est un groupe de liens, et aucun état n'était
+                exposé. Le script en fin de fichier tient `aria-expanded`
+                à jour et permet l'ouverture au clic : sur un écran
+                tactile large, il n'y a pas de survol pour la déclencher.
+              */}
+              <span class="groupe-nav groupe-langues relative flex">
+                <button
+                  type="button"
+                  class="flex items-center gap-1 rounded-r-full border-l border-paper/25 bg-navy-deep pr-4 pl-3 text-[0.78rem] font-semibold tracking-[0.14em] text-paper uppercase transition-colors hover:bg-navy"
+                  aria-expanded="false"
+                  aria-controls="panneau-langues"
+                  aria-label={texteInterface(langue, "langueActuelle", langue)}
+                >
+                  {langue}
+                  <svg
+                    aria-hidden="true"
+                    class="h-2 w-2 text-paper/70"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <div
+                  id="panneau-langues"
+                  class="sous-menu sous-menu-fin"
+                  role="group"
+                  aria-label={texteInterface(langue, "langues")}
+                >
+                  <ul class="sous-menu-liste">
+                    {langsPubliees.map((l) =>
+                      l.code === langue ? (
+                        <li>
+                          <span
+                            class="sous-menu-lien font-semibold text-navy-deep"
+                            aria-current="true"
+                          >
+                            {l.nom}
+                          </span>
+                        </li>
+                      ) : (
+                        <li>
+                          <a
+                            href={autresLangues.find((a) => a.code === l.code)!.href}
+                            hreflang={l.code}
+                            lang={l.code}
+                            class="sous-menu-lien"
+                          >
+                            {l.nom}
+                          </a>
+                        </li>
+                      ),
+                    )}
+                  </ul>
+                </div>
+              </span>
+            </div>
+          );
+        })
       }
     </nav>
+
 
     <details class="relative lg:hidden">
       <summary
@@ -186,38 +321,68 @@ function isCurrent(path: string): boolean {
             stroke-linecap="round"></path>
         </svg>
       </summary>
-      <nav class="menu-panneau" aria-label="Navigation mobile">
+      <nav class="menu-panneau" aria-label={texteInterface(langue, "navigationMobile")}>
         <div class="menu-contenu">
           {
             commun.navigation.map((item, i) =>
               item.accent ? (
-                <a href={href(item.chemin)} class="menu-accent" style={`--i: ${i}`}>
+                <a href={href(lienContenu(langue, item.chemin))} class="menu-accent" style={`--i: ${i}`}>
                   {item.label}
                 </a>
               ) : (
                 <div class="menu-groupe" style={`--i: ${i}`}>
+                  <div class="menu-ligne">
                   <a
-                    href={href(item.chemin)}
+                    href={href(lienContenu(langue, item.chemin))}
                     class="menu-entree"
-                    aria-current={isCurrent(item.chemin) ? "page" : undefined}
+                    aria-current={isCurrent(lienContenu(langue, item.chemin)) ? "page" : undefined}
                   >
                     {item.label}
                   </a>
                   {/*
-                    Sur mobile, pas de survol : les raccourcis sont
-                    listés sous leur entrée, en retrait. Le panneau
-                    reste une seule liste que l'on parcourt d'un coup,
-                    sans niveau à ouvrir.
+                    Les raccourcis sont REPLIÉS par défaut (30/07).
+
+                    Déployés, les sept entrées et leurs douze raccourcis
+                    faisaient 1022 px de panneau : sur un téléphone en
+                    paysage, 69 % du menu tombait hors écran et les
+                    dernières entrées devenaient inatteignables sans
+                    savoir qu'il fallait défiler. Repliés, les sept
+                    entrées tiennent d'un coup d'œil, et chacune s'ouvre
+                    d'un bouton. Le lien de l'entrée reste un lien : le
+                    bouton ne s'interpose pas entre le visiteur et la
+                    page.
                   */}
                   {item.sous_menu.length > 0 && (
-                    <ul class="menu-raccourcis">
+                    <button
+                      type="button"
+                      class="menu-deplier"
+                      aria-expanded="false"
+                      aria-label={texteInterface(langue, "afficherRaccourcis", item.label)}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        class="menu-chevron h-3.5 w-3.5"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="m6 9 6 6 6-6" />
+                      </svg>
+                    </button>
+                  )}
+                  </div>
+                  {item.sous_menu.length > 0 && (
+                    <ul class="menu-raccourcis" hidden>
                       {item.sous_menu.map((r) => (
                         <li>
                           <a
                             href={
                               r.ancre
-                                ? `${href(item.chemin)}#${r.ancre}`
-                                : href(r.chemin!)
+                                ? `${href(lienContenu(langue, item.chemin))}#${r.ancre}`
+                                : href(lienContenu(langue, r.chemin!))
                             }
                             class="menu-raccourci"
                           >
@@ -247,6 +412,27 @@ function isCurrent(path: string): boolean {
               ),
             )
           }
+          {autresLangues.length > 0 && (
+            <div class="menu-langues" aria-label={texteInterface(langue, "langues")}>
+              {langsPubliees.map((l) =>
+                l.code === langue ? (
+                  <span class="menu-langue menu-langue-courante" aria-current="true" lang={l.code}>
+                    {l.code}
+                  </span>
+                ) : (
+                  <a
+                    href={autresLangues.find((a) => a.code === l.code)!.href}
+                    hreflang={l.code}
+                    lang={l.code}
+                    aria-label={l.nom}
+                    class="menu-langue"
+                  >
+                    {l.code}
+                  </a>
+                ),
+              )}
+            </div>
+          )}
         </div>
       </nav>
     </details>
@@ -310,6 +496,31 @@ function isCurrent(path: string): boolean {
   }
 
   /*
+    Ouverture au clic, en plus du survol : une tablette en paysage reçoit
+    le bandeau de bureau sans jamais émettre de survol. La classe est
+    posée par le script, qui recale aussi `aria-expanded`.
+  */
+  .groupe-nav.langues-ouvert .sous-menu {
+    opacity: 1;
+    visibility: visible;
+    transition-delay: 0s;
+  }
+
+  /*
+    La fermeture explicite l'emporte sur le survol et le focus.
+
+    Sans elle, refermer au clavier laissait le panneau à l'écran : le
+    bouton garde le focus — l'utilisateur ne doit pas perdre sa place —
+    et `:focus-within` le rouvrait aussitôt. Le script lève la classe dès
+    que le pointeur ou le focus quitte le groupe.
+  */
+  .groupe-nav.langues-close:hover .sous-menu,
+  .groupe-nav.langues-close:focus-within .sous-menu {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /*
     Pendant et juste après une navigation, le survol ne compte pas.
 
     Voir le commentaire dans Base.astro : le curseur n'a pas bougé, mais
@@ -321,6 +532,18 @@ function isCurrent(path: string): boolean {
     opacity: 0;
     visibility: hidden;
     transition: none;
+  }
+
+  /*
+    Le panneau des langues pend du bout droit du bandeau : ancré à
+    droite de son segment — jamais hors fenêtre — et ponté vers le filet
+    par sa propre mesure (le segment est plus haut qu'un lien de menu,
+    le pont générique tombait trop bas).
+  */
+  .sous-menu-fin {
+    right: 0;
+    left: auto;
+    padding-top: var(--pont-langues, 12px);
   }
 
   .sous-menu-liste {
@@ -414,7 +637,24 @@ function isCurrent(path: string): boolean {
     max-height: calc(100dvh - var(--hauteur-entete, 4.75rem));
     overflow-y: auto;
     overscroll-behavior: contain;
-    background: var(--color-paper);
+    /*
+      L'ombre qui dit qu'il reste du contenu.
+
+      Sur un écran court — un téléphone en paysage — le panneau déborde
+      même replié, et rien ne l'indiquait : les dernières entrées
+      semblaient ne pas exister. Les deux dégradés « scroll » se
+      révèlent au bord concerné et disparaissent en butée, sans une
+      ligne de script (technique éprouvée : les couches `local` masquent
+      les couches `scroll` quand on est en haut ou en bas).
+    */
+    background:
+      linear-gradient(var(--color-paper) 30%, transparent) top / 100% 2rem no-repeat local,
+      linear-gradient(transparent, var(--color-paper) 70%) bottom / 100% 2rem no-repeat local,
+      radial-gradient(farthest-side at 50% 0, color-mix(in oklab, var(--color-ink) 22%, transparent), transparent)
+        top / 100% 0.6rem no-repeat scroll,
+      radial-gradient(farthest-side at 50% 100%, color-mix(in oklab, var(--color-ink) 22%, transparent), transparent)
+        bottom / 100% 0.6rem no-repeat scroll,
+      var(--color-paper);
     border-bottom: 1px solid color-mix(in oklab, var(--color-ink) 10%, transparent);
     box-shadow: 0 18px 32px -26px color-mix(in oklab, var(--color-ink) 60%, transparent);
     animation: menu-derouler 220ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -431,6 +671,104 @@ function isCurrent(path: string): boolean {
     display: flex;
     flex-direction: column;
     padding: 0.5rem 1.25rem 1.5rem;
+  }
+
+  /*
+    Une entrée du panneau : son lien à gauche, son bouton de dépliage à
+    droite. Deux cibles distinctes de 48 px, jamais superposées.
+  */
+  .menu-ligne {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .menu-ligne .menu-entree {
+    flex: 1;
+  }
+
+  .menu-deplier {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 3rem;
+    min-height: 3rem;
+    color: var(--color-ink-faint);
+    cursor: pointer;
+    transition: color 160ms ease;
+  }
+
+  .menu-deplier:hover {
+    color: var(--color-navy-deep);
+  }
+
+  .menu-chevron {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu-deplier[aria-expanded="true"] .menu-chevron {
+    transform: rotate(180deg);
+  }
+
+  .menu-raccourcis[hidden] {
+    display: none;
+  }
+
+  /*
+    Écran court (téléphone en paysage, fenêtre réduite) : le panneau se
+    resserre pour montrer davantage d'entrées d'un coup. Les cibles
+    tactiles restent au-dessus du minimum recommandé.
+  */
+  @media (max-height: 520px) {
+    .menu-contenu {
+      padding-block: 0.25rem 0.75rem;
+    }
+
+    .menu-entree {
+      min-height: 2.5rem;
+      font-size: 1rem;
+    }
+
+    .menu-deplier {
+      min-height: 2.5rem;
+    }
+
+    .menu-accent {
+      margin-block: 0.5rem;
+    }
+
+    .menu-langues {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  }
+
+  .menu-langues {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid color-mix(in oklab, var(--color-ink) 8%, transparent);
+  }
+
+  .menu-langue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    color: var(--color-ink-faint);
+    text-transform: uppercase;
+  }
+
+  .menu-langue-courante {
+    font-weight: 700;
+    color: var(--color-navy-deep);
   }
 
   .menu-groupe + .menu-groupe {
@@ -553,7 +891,59 @@ function isCurrent(path: string): boolean {
     if (!lien) return;
     const pont = entete.getBoundingClientRect().bottom - lien.getBoundingClientRect().bottom;
     entete.style.setProperty("--pont-sous-menu", `${Math.max(0, Math.round(pont))}px`);
+    /*
+      Repéré par sa classe, pas par un attribut ARIA : cette mesure aligne
+      le liseré du panneau sur le filet du bandeau, et une mise en page ne
+      doit pas dépendre d'un choix de sémantique. Le sélecteur précédent,
+      `button[aria-haspopup="true"]`, est devenu muet le jour où cette
+      sémantique fautive a été retirée — l'alignement serait tombé sans
+      que rien ne le signale.
+    */
+    const boutonLangue = document.querySelector<HTMLElement>(".groupe-langues button");
+    if (boutonLangue) {
+      /*
+        Le liseré vert RECOUVRE le filet du bandeau, il ne se pose pas
+        dessous.
+
+        `getBoundingClientRect().bottom` compte la bordure basse du
+        bandeau : viser ce bord posait le vert juste APRÈS le gris —
+        mesuré au pixel, filet gris de 76 à 77, liseré vert de 77 à 79.
+        Deux traits parallèles à un pixel d'écart, ce qui se voit.
+
+        On retire donc l'épaisseur du filet : le vert démarre là où le
+        gris commence et le remplace sur toute la largeur du panneau. Le
+        panneau redevient la continuation du bandeau, sans couture.
+      */
+      const filet = parseFloat(getComputedStyle(entete).borderBottomWidth) || 0;
+      const pontLangues =
+        entete.getBoundingClientRect().bottom -
+        filet -
+        boutonLangue.getBoundingClientRect().bottom;
+      entete.style.setProperty("--pont-langues", `${Math.max(0, Math.round(pontLangues))}px`);
+    }
   }
+
+  /*
+    Dépliage d'une entrée du panneau mobile.
+
+    Le bouton bascule sa liste de raccourcis. Rien n'est déplié au
+    chargement : le panneau montre d'abord ses sept entrées, ce qui
+    tient sur l'écran le plus court. Délégué sur le document — le
+    panneau est reconstruit à chaque navigation.
+  */
+  document.addEventListener("click", (evenement) => {
+    const bouton = (evenement.target as HTMLElement | null)?.closest?.(
+      ".menu-deplier",
+    ) as HTMLButtonElement | null;
+    if (!bouton) return;
+    evenement.preventDefault();
+    const groupe = bouton.closest(".menu-groupe");
+    const liste = groupe?.querySelector<HTMLElement>(".menu-raccourcis");
+    if (!liste) return;
+    const ouvert = bouton.getAttribute("aria-expanded") === "true";
+    bouton.setAttribute("aria-expanded", String(!ouvert));
+    liste.hidden = ouvert;
+  });
 
   /*
     Fermeture du panneau mobile.
@@ -581,8 +971,123 @@ function isCurrent(path: string): boolean {
     if (e.key === "Escape") fermer();
   });
 
+  /*
+    L'ÉTAT DU SÉLECTEUR DE LANGUE.
+
+    Le panneau s'ouvre en CSS, au survol et à la mise au clavier. Le
+    bouton doit donc dire un état qu'il ne décide pas : `aria-expanded`
+    est recalé sur l'ouverture RÉELLE, à chaque événement qui la change.
+    Sans cela il annonçait « replié » en permanence — et il annonçait
+    même un menu ARIA (`aria-haspopup`) là où le panneau est un groupe de
+    liens.
+
+    Le clic est ajouté par-dessus : sur un écran tactile large — une
+    tablette en paysage voit le bandeau de bureau — il n'y a pas de
+    survol, et le panneau était inatteignable autrement qu'au clavier.
+  */
+  function calerLangues(): void {
+    const groupe = document.querySelector<HTMLElement>(".groupe-langues");
+    const bouton = groupe?.querySelector<HTMLButtonElement>("button");
+    if (!groupe || !bouton) return;
+
+    const dire = (ouvert: boolean) =>
+      bouton.setAttribute("aria-expanded", String(ouvert));
+    const ouvert = () =>
+      groupe.classList.contains("langues-ouvert") ||
+      groupe.matches(":hover") ||
+      groupe.contains(document.activeElement);
+
+    /*
+      Un seul jeu de gestionnaires par bouton.
+
+      Cette fonction tourne au premier chargement ET sur le
+      `astro:page-load` que le routeur émet aussitôt : sans ce drapeau,
+      deux écouteurs de clic se posaient sur le même bouton, le premier
+      ouvrait le panneau et le second le refermait dans la foulée. Le
+      défaut était invisible à la souris — le bouton garde le focus après
+      un clic, et `:focus-within` rouvrait le panneau — mais un appui au
+      doigt, sur une tablette où le survol n'existe pas et où Safari ne
+      donne pas le focus à un bouton, ne l'ouvrait jamais.
+
+      Le bandeau est reconstruit à chaque navigation : le drapeau
+      disparaît avec l'ancien bouton, et le nouveau se réarme.
+    */
+    dire(ouvert());
+    if (bouton.dataset.languesCalees) return;
+    bouton.dataset.languesCalees = "1";
+
+    /*
+      FERMER doit fermer POUR DE BON.
+
+      Le panneau s'ouvre aussi par `:focus-within`. Or refermer au clavier
+      laisse le focus sur le bouton — c'est voulu, l'utilisateur ne doit
+      pas perdre sa place — si bien que le panneau restait affiché quand
+      `aria-expanded` annonçait « replié ». Même chose au second clic à la
+      souris. L'état annoncé et l'écran se contredisaient.
+
+      D'où `langues-close` : une fermeture EXPLICITE, que le CSS honore
+      par-dessus le survol et le focus. Elle se lève dès que le pointeur
+      ou le focus quitte le groupe — le comportement ordinaire reprend à
+      la visite suivante, sans qu'il faille cliquer pour le débloquer.
+    */
+    const fermer = () => {
+      groupe.classList.remove("langues-ouvert");
+      groupe.classList.add("langues-close");
+      dire(false);
+    };
+    const rouvrirPossible = () => groupe.classList.remove("langues-close");
+
+    /*
+      Le clic bascule l'ouverture EXPLICITE, pas ce qui est à l'écran.
+
+      À la souris, cliquer suppose d'avoir survolé : le panneau est déjà
+      ouvert au moment du clic. Juger sur l'état visuel faisait donc
+      refermer au premier clic — le sélecteur devenait inutilisable à la
+      souris tout en restant correct au doigt.
+    */
+    bouton.addEventListener("click", () => {
+      if (groupe.classList.contains("langues-ouvert")) {
+        fermer();
+        return;
+      }
+      rouvrirPossible();
+      groupe.classList.add("langues-ouvert");
+      dire(true);
+    });
+
+    for (const evenement of ["pointerenter", "focusin"]) {
+      groupe.addEventListener(evenement, () => {
+        requestAnimationFrame(() => dire(ouvert()));
+      });
+    }
+    for (const evenement of ["pointerleave", "focusout"]) {
+      groupe.addEventListener(evenement, () => {
+        // Le focus part avant d'arriver : lire à la frame suivante.
+        requestAnimationFrame(() => {
+          if (groupe.matches(":hover") || groupe.contains(document.activeElement)) {
+            dire(ouvert());
+            return;
+          }
+          // Sorti pour de bon : la fermeture explicite a fait son office.
+          groupe.classList.remove("langues-ouvert");
+          rouvrirPossible();
+          dire(false);
+        });
+      });
+    }
+
+    // Un choix de langue navigue ; l'échappement referme sans naviguer.
+    groupe.addEventListener("keydown", (e) => {
+      if ((e as KeyboardEvent).key !== "Escape") return;
+      fermer();
+      bouton.focus();
+    });
+  }
+
   calerSousMenus();
+  calerLangues();
   document.addEventListener("astro:page-load", calerSousMenus);
+  document.addEventListener("astro:page-load", calerLangues);
   window.addEventListener("resize", calerSousMenus);
   // Les polices arrivent après le premier rendu et changent la hauteur
   // du lien : sans cette reprise, la mesure resterait celle de la police

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      L'ATELIER D'ÉDITION — Sveltia CMS.
+
+      Sveltia est une application autonome chargée depuis un CDN :
+      cette page et config.yml (GÉNÉRÉ — npm run cms:config) sont tout
+      ce qu'il faut pour la servir.
+
+      En local : http://localhost:4321/admin/index.html (Chrome ou
+      Edge), bouton « Work with Local Repository » — les fichiers du
+      projet sont modifiés directement, rien n'est commité.
+
+      En ligne : connexion GitHub, via le client OAuth décrit dans
+      doc/sveltia-requis-hebergement.md.
+    -->
+    <title>Pacivis Academy — atelier d'édition</title>
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <!--
+      Version ÉPINGLÉE : sans elle, chaque ouverture chargerait la
+      dernière publication du CDN, et une mise à jour incompatible
+      casserait l'atelier sans qu'aucun changement n'apparaisse ici.
+      Monter de version = modifier cette ligne, tester, committer.
+    -->
+    <script src="https://unpkg.com/@sveltia/cms@0.175.1/dist/sveltia-cms.js" type="module"></script>
+  </body>
+</html>

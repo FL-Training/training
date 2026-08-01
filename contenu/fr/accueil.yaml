@@ -1,0 +1,66 @@
+seo:
+  titre: Formation prévention et gestion des conflits
+  description: >-
+    Formations à la prévention et à la gestion des conflits, des tensions et
+    des situations de crise en contexte professionnel : entreprise, secteur
+    public, organismes de formation, en individuel.
+hero:
+  surtitre: Formation professionnelle · Fabien Lacombe
+  titre: >-
+    Former les professionnels à [agir] face aux tensions, aux conflits et aux
+    crises.
+  texte: >-
+    Pacivis Academy est une structure indépendante de formation professionnelle
+    qui accompagne les professionnels et les organisations lorsque **la tension,
+    le conflit ou la crise** dégradent les conditions ordinaires de travail, de
+    communication et de décision.
+  bouton_principal: Découvrir les formations
+  bouton_secondaire: Notre approche
+publics:
+  surtitre: Votre situation
+  titre: Des interventions construites à partir de vos situations réelles.
+  texte: >-
+    Pacivis Academy intervient auprès des organisations comme des professionnels
+    engageant eux-mêmes leur démarche. Choisissez l'entrée qui correspond à
+    votre situation.
+  liste:
+    - label: Entreprise
+      picto: building-2
+    - label: Secteur public
+      picto: landmark
+    - label: Organisme de formation
+      picto: graduation-cap
+    - label: En individuel
+      picto: user-round
+  bouton: Voir les formations
+paxi:
+  surtitre: Formation PAXI
+  titre: PAXI — Prévenir et gérer les comportements de passagers indisciplinés
+  texte: >-
+    La formation PAXI prépare les pilotes, les personnels navigants commerciaux
+    et les personnels au sol à développer leur vigilance situationnelle, gérer
+    le conflit par la communication, coordonner l'action et agir de manière
+    adaptée.
+  bouton: Découvrir la formation PAXI
+journal:
+  surtitre: Le Journal Pacivis
+  titre: Comprendre avant d'agir.
+  texte: >-
+    Méthodes, repères, retours de terrain et points de vue : des articles de
+    fond pour celles et ceux qui font face au conflit dans leur métier.
+  bouton_tous: Tous les articles
+methode:
+  surtitre: La méthode
+  titre: '[ARCA] : la méthode Pacivis Academy'
+  intro: >-
+    La méthode ARCA structure cette approche autour de quatre piliers :
+    anticiper, réguler, communiquer et agir. Ils peuvent être travaillés
+    ensemble ou de façon ciblée, selon les besoins, les situations et les
+    responsabilités des professionnels concernés.
+  bouton: La méthode en détail
+appel_final:
+  titre: Parlons de vos besoins.
+  texte: >-
+    Chaque contexte est différent : les formations sont construites à partir de
+    vos situations réelles, de vos contraintes et de vos objectifs.
+  bouton: Prendre contact

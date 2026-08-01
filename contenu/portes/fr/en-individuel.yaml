@@ -1,0 +1,70 @@
+# ============================================================
+# PORTE « EN INDIVIDUEL »
+#
+# Texte VALIDÉ par Fabien — livrable « Rubrique Formations — En
+# individuel — contenu transitoire ». Ce document est la référence
+# pour toute la période qui précède l'ouverture de l'accompagnement
+# individuel.
+#
+# Trois interdits explicites du livrable, à ne pas contourner :
+#   - ne pas reformuler, condenser ni compléter les textes validés ;
+#   - ne rien tirer de la version complète de l'offre, qui reste en
+#     attente ;
+#   - les deux cartes restent FERMÉES : ni bouton, ni lien, ni page
+#     détaillée. Elles sont donc écrites sans `paragraphes`, ce qui
+#     les rend statiques dans PagePorte.
+#
+# La structure permet d'activer une carte plus tard sans reprendre la
+# rubrique : il suffira d'ajouter ses `paragraphes` et son `bouton`.
+#
+# Les deux pastilles portent le MÊME libellé, « En préparation », sur
+# décision de Fabien (26/07). Le livrable distinguait « Prochainement »
+# pour les parcours en ligne : les deux offres sont pourtant dans le
+# même état — annoncées, pas ouvertes —, et deux mots différents
+# laissaient croire à deux échéances différentes. Aucune date n'étant
+# donnée nulle part, le terme le plus prudent l'emporte.
+#
+# L'encart de pied de page, lui, est CONSERVÉ sur décision de Fabien
+# (26/07). Le livrable transitoire ne le prévoit pas, mais son contrôle
+# ne l'interdit pas non plus : l'exigence porte sur les cartes, qui ne
+# doivent comporter ni bouton ni lien — c'est respecté. Il n'annonce ni
+# date, ni tarif, ni modalité.
+# ============================================================
+nom: "En individuel"
+ordre: 4
+statut: "stub"
+picto: "user-round"
+
+seo:
+  titre: "En individuel"
+  description: "Des formats pour les professionnels qui veulent développer leurs capacités d'action face aux tensions et aux contextes à fort enjeu."
+
+entete:
+  surtitre: "En individuel"
+  titre: "En individuel"
+  texte: "Pacivis Academy prépare des formats destinés aux professionnels qui souhaitent développer leurs capacités d'action face aux tensions, aux situations difficiles et aux contextes à fort enjeu."
+
+# Visuel de la porte sur le carrefour « Formations ».
+# ⚠️ Image de travail générée pour la maquette — à remplacer par
+# une photographie choisie avec Fabien avant mise en ligne.
+visuel:
+  src: "/formations/en-individuel/visuel/src.webp"
+  alt: "Une personne suit seule un parcours de formation en ligne, carnet de notes ouvert à côté de son ordinateur."
+# Le tracé de marque, à l'échelle de la page.
+signature: "progression"
+
+cartes:
+  - titre: "Se former en ligne"
+    sous_titre: "Parcours de formation à votre rythme"
+    statut_carte: "En préparation"
+    resume: "Des parcours de formation en ligne à suivre à votre rythme seront prochainement proposés autour des conflits, des facteurs humains, de la performance et de la stabilité opérationnelle."
+
+  - titre: "Accompagnement individuel"
+    sous_titre: "Coaching — conflits professionnels, situations à fort enjeu et performance"
+    statut_carte: "En préparation"
+    resume: "Pacivis Academy prépare une offre de coaching individuel destinée aux professionnels confrontés à un conflit ou à une situation professionnelle à fort enjeu, ainsi qu'à ceux qui souhaitent développer leur stabilité, leur lucidité et leur capacité d'action. Des informations complémentaires seront publiées lorsque cet accompagnement sera disponible."
+
+cta:
+  titre: "Rester informé de l'ouverture"
+  texte: "Cette offre est en préparation. Un message suffit pour poser votre question ou être prévenu de son ouverture."
+  bouton: "Nous écrire"

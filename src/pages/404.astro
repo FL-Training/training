@@ -1,26 +1,131 @@
 ---
+/**
+ * PAGE INTROUVABLE — dans la langue de l'adresse demandée.
+ *
+ * Deux hébergements, deux façons de connaître cette langue :
+ *
+ *   - Sur Dokploy (`output: server`), la page est rendue à la demande :
+ *     `Astro.url.pathname` porte l'adresse réellement tapée, et tout —
+ *     bandeau, pied de page, texte — sort dans la bonne langue.
+ *
+ *   - Sur GitHub Pages, le serveur ne rend qu'un `404.html` unique pour
+ *     toutes les adresses inconnues. Au build, `Astro.url.pathname` vaut
+ *     « /404 » : aucune langue n'y est lisible. La page embarque donc une
+ *     version par langue publiée, et un script en tête de document lit le
+ *     préfixe de l'adresse pour désigner celle à montrer.
+ *
+ * Le script est INLINE et placé avant le corps : la classe s'applique dès
+ * le premier octet, le texte de la langue par défaut n'a donc pas le
+ * temps d'apparaître. Même motif que `nav-figee` dans Base.astro.
+ *
+ * Attention en modifiant ce script : il pose l'attribut par
+ * `setAttribute`, jamais par `dataset`. La conversion camelCase de
+ * `dataset` ne place un tiret que devant une MAJUSCULE — `langue404`
+ * s'écrirait donc « data-langue404 », que le sélecteur CSS
+ * « [data-langue-404] » ne trouve jamais. Le défaut est muet : aucune
+ * erreur, la page reste simplement dans la langue par défaut.
+ *
+ * Ce que ce repli NE corrige PAS sur l'hébergement statique : le bandeau
+ * et le pied de page restent dans la langue par défaut, faute d'avoir pu
+ * les rendre côté serveur. Le contenu de la page et le lien de retour,
+ * eux, suivent l'adresse demandée.
+ */
 import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
 import { href } from "../lib/url";
-import { commun } from "../lib/contenu";
+import { contenuLangue } from "../lib/contenu";
+import { langueActive } from "../lib/langue-active";
+import { LANGUES, LANGUE_PAR_DEFAUT } from "../lib/langues";
+import { cheminLangue } from "../lib/routes";
 import { enrichir } from "../lib/texte";
 
-const page = commun.page_introuvable;
+const langue = langueActive(Astro.url.pathname);
+const page = contenuLangue(langue).commun.page_introuvable;
+
+/* Une version par langue publiée : celle du rendu serveur est visible,
+   les autres attendent que le script en désigne une. */
+const codes = LANGUES.filter((l) => l.publiee).map((l) => l.code);
+const versions = codes.map((code) => ({
+  code,
+  page: contenuLangue(code).commun.page_introuvable,
+  retour: href(cheminLangue(code, "/")),
+}));
 ---
 
 <Base title={page.titre} description={page.texte} noindex>
+  {/*
+    Choisir la version AVANT que le corps ne s'affiche. Sans cela, une
+    adresse anglaise inconnue montrait la page française et renvoyait à
+    l'accueil français.
+  */}
+  <script
+    is:inline
+    define:vars={{ codes, base: import.meta.env.BASE_URL, defaut: LANGUE_PAR_DEFAUT }}
+  >
+    (() => {
+      const socle = base.replace(/\/+$/, "");
+      const p = location.pathname;
+      const chemin = p.startsWith(socle) ? p.slice(socle.length) : p;
+      const premier = chemin.split("/").filter(Boolean)[0] ?? "";
+      const langue = codes.includes(premier) ? premier : defaut;
+      document.documentElement.setAttribute("data-langue-404", langue);
+      document.documentElement.lang = langue;
+    })();
+  </script>
+
+  {/*
+    Les paires langue-racine ↔ version. Générées ici parce qu'elles
+    dépendent de la liste des langues publiées : ajouter une langue ajoute
+    sa règle, sans rien à modifier à la main.
+  */}
+  <style is:inline set:html={
+    `.version-404[data-version="${langue}"]{display:block}` +
+    codes
+      .map(
+        (c) =>
+          `html[data-langue-404="${c}"] .version-404{display:none}` +
+          `html[data-langue-404="${c}"] .version-404[data-version="${c}"]{display:block}`,
+      )
+      .join("")
+  }></style>
+
   <section class="mx-auto max-w-6xl px-6 py-28 text-center">
-    <p class="eyebrow">{page.surtitre}</p>
-    <h1 class="display mx-auto mt-4 max-w-xl text-4xl text-navy-deep md:text-5xl">
-      {page.titre}
-    </h1>
-    <p
-      class="mx-auto mt-5 max-w-md text-ink-soft"
-      set:html={enrichir(page.texte)}
-    />
-    <DeescalationLine class="mx-auto mt-10 h-12 max-w-2xl" />
-    <a href={href("/")} class="btn btn-primary mt-10">
-      {page.bouton}
-    </a>
+    {
+      versions.map((v) => (
+        <div class="version-404" data-version={v.code} lang={v.code}>
+          <p class="eyebrow">{v.page.surtitre}</p>
+          <h1 class="display mx-auto mt-4 max-w-xl text-4xl text-navy-deep md:text-5xl">
+            {v.page.titre}
+          </h1>
+          <p
+            class="mx-auto mt-5 max-w-md text-ink-soft"
+            set:html={enrichir(v.page.texte)}
+          />
+          <DeescalationLine class="mx-auto mt-10 h-12 max-w-2xl" />
+          <a href={v.retour} class="btn btn-primary mt-10">
+            {v.page.bouton}
+          </a>
+        </div>
+      ))
+    }
   </section>
 </Base>
+
+<style define:vars={{ langueRendue: langue }}>
+  /*
+    Une seule version visible à la fois.
+
+    `display: none` plutôt qu'un masquage visuel : les versions écartées
+    ne doivent être ni lues par un lecteur d'écran, ni atteignables au
+    clavier par leur bouton de retour.
+
+    La règle générique `html[data-langue-404="X"] .version-404[data-version="X"]`
+    ne s'écrit pas en CSS — un sélecteur ne compare pas deux attributs.
+    D'où l'attribut posé sur la racine et l'appariement fait en ligne
+    ci-dessous, une déclaration par langue publiée. Sans JavaScript,
+    c'est la version rendue par le serveur qui reste affichée.
+  */
+  .version-404 {
+    display: none;
+  }
+</style>

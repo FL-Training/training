@@ -1,0 +1,33 @@
+# "Log in" page (learner space) — English working translation
+# (29/07/2026), to be reviewed by Fabien. Same constraints as the French
+# original: the space is NOT open, the page refers to CONTACT, the
+# community dimension is a perspective, no feature promises.
+lance: false
+url_skool: ""
+
+seo:
+  titre: "Learner space"
+  description: "The Pacivis Academy learner space, in preparation: following training paths, accessing resources and sharing field experience."
+
+entete:
+  surtitre: "Learner space"
+  titre: "A space in preparation"
+  texte: "The Pacivis Academy learner space is not open yet.\n\nIt is designed as a space of continuity, supporting training paths beyond the session itself: finding useful information, accessing the resources shared during training, following ongoing courses and, in time, making it easier to discuss the situations encountered.\n\nThis space may concern learners as well as the companies, public bodies and training providers supported by Pacivis Academy."
+
+contenu:
+  titre: "What it will offer"
+  liste:
+    - titre: "Follow your training path"
+      texte: "Find the courses you have started, the planned steps and the information useful to the smooth running of your path."
+    - titre: "Access resources"
+      texte: "Bring together the materials, documents and complementary content shared during training."
+    - titre: "Share field experience"
+      texte: "In time, the learner space may also become a place of exchange around real situations: tension, conflict, communication difficulties, resolutions found, lessons learned in the field.\n\nThe aim will be to sustain a community of practice, within an appropriate setting, allowing participants to share useful experience, question their situations and extend learning beyond the training itself."
+    - titre: "Stay in touch with Pacivis Academy"
+      texte: "Have a clear point of access to practical information and easier exchanges around training activities."
+
+statut:
+  titre: "Until it opens"
+  texte: "The learner space is being prepared.\n\nFor any question about a course, an ongoing path, support needs or a project to build, you can contact Pacivis Academy directly."
+  bouton_contact: "Contact Pacivis Academy"
+  bouton_acces: "Enter the learner space"

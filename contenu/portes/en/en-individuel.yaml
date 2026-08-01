@@ -1,0 +1,41 @@
+# "Individuals" door — English working translation (29/07/2026), to be
+# reviewed by Fabien. Same constraints as the French transitional
+# deliverable: the two cards stay CLOSED (no paragraphs, no button, no
+# link), both badges carry the same "In preparation" wording, and the
+# footer note promises no date, price or modality. `chemin` carries the
+# arbitrated English address.
+nom: "Individuals"
+chemin: "individuals"
+ordre: 4
+statut: "stub"
+picto: "user-round"
+
+seo:
+  titre: "Individuals"
+  description: "Formats for professionals who want to develop their capacity to act in the face of tension and high-stakes contexts."
+
+entete:
+  surtitre: "Individuals"
+  titre: "Individuals"
+  texte: "Pacivis Academy is preparing formats for professionals who want to develop their capacity to act in the face of tension, difficult situations and high-stakes contexts."
+
+visuel:
+  src: "/formations/en-individuel/visuel/src.webp"
+  alt: "A person follows an online training course alone, notebook open next to their computer."
+signature: "progression"
+
+cartes:
+  - titre: "Learning online"
+    sous_titre: "Training paths at your own pace"
+    statut_carte: "In preparation"
+    resume: "Online training paths to follow at your own pace will soon be offered around conflict, human factors, performance and operational stability."
+
+  - titre: "Individual support"
+    sous_titre: "Coaching — professional conflict, high-stakes situations and performance"
+    statut_carte: "In preparation"
+    resume: "Pacivis Academy is preparing an individual coaching offer for professionals facing a conflict or a high-stakes professional situation, as well as for those who want to develop their stability, their lucidity and their capacity to act. Further information will be published when this support becomes available."
+
+cta:
+  titre: "Stay informed of the opening"
+  texte: "This offer is in preparation. A single message is enough to ask your question or be notified when it opens."
+  bouton: "Write to us"

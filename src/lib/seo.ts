@@ -6,7 +6,8 @@
  * automatically. Only facts visible on the site are asserted — no invented
  * prices, reviews, dates or certifications.
  */
-import { commun } from "./contenu";
+import { contenuLangue } from "./contenu";
+import { LANGUE_PAR_DEFAUT, localeLangue } from "./langues";
 
 export type TypePage =
   | "WebPage"
@@ -29,6 +30,8 @@ interface OptionsGraphe {
   imageUrl: string;
   fil?: Fil[];
   noeudsSupplementaires?: Record<string, unknown>[];
+  /** La langue de la page ; celle par défaut si absente. */
+  langue?: string;
 }
 
 export function racineSite(site: URL, base: string): string {
@@ -40,6 +43,12 @@ export function urlAbsolue(site: URL, chemin: string): string {
 }
 
 export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
+  // La langue de la page : ses métadonnées structurées doivent dire la
+  // même chose que son HTML — relevé de revue croisée du 29/07, où les
+  // pages /en/ auraient publié un JSON-LD français.
+  const langue = options.langue ?? LANGUE_PAR_DEFAUT;
+  const commun = contenuLangue(langue).commun;
+  const locale = localeLangue(langue);
   const {
     site,
     base,
@@ -53,6 +62,11 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
   } = options;
 
   const racine = racineSite(site, base);
+  /* Les nœuds d'identité (#organization, #fabien-lacombe) restent ancrés
+     à la racine du site : une seule entité, quelle que soit la langue.
+     Le fil d'Ariane, lui, doit conduire à l'accueil de SA langue. */
+  const racineLangue =
+    langue === LANGUE_PAR_DEFAUT ? racine : `${racine}${langue}/`;
   const urlPage = urlAbsolue(site, pathname);
   const idOrganisation = `${racine}#organization`;
   const idPersonne = `${racine}#fabien-lacombe`;
@@ -77,7 +91,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
     "@type": "Person",
     "@id": idPersonne,
     name: "Fabien Lacombe",
-    jobTitle: "Formateur en prévention et gestion des conflits",
+    jobTitle: commun.marque.fonction,
     image: urlAbsolue(site, `${base.replace(/\/*$/, "")}/fabien.webp`),
     worksFor: { "@id": idOrganisation },
     sameAs: [commun.liens.linkedin],
@@ -89,7 +103,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
     url: racine,
     name: commun.marque.nom,
     publisher: { "@id": idOrganisation },
-    inLanguage: "fr-FR",
+    inLanguage: locale,
   };
 
   const page: Record<string, unknown> = {
@@ -101,7 +115,7 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
     isPartOf: { "@id": idSite },
     about: { "@id": idOrganisation },
     primaryImageOfPage: { "@type": "ImageObject", url: imageUrl },
-    inLanguage: "fr-FR",
+    inLanguage: locale,
   };
   if (typePage === "AboutPage") {
     page.mainEntity = { "@id": idPersonne };
@@ -122,10 +136,16 @@ export function grapheSeo(options: OptionsGraphe): Record<string, unknown> {
       "@id": idFil,
       itemListElement: [
         {
+          /*
+            Le premier maillon dans la langue de la page, et pointant vers
+            SA racine. Écrit en dur, il publiait « Accueil » et l'adresse
+            française sur chaque page anglaise : des données structurées
+            bilingues sous un document qui se déclare `lang="en"`.
+          */
           "@type": "ListItem",
           position: 1,
-          name: "Accueil",
-          item: racine,
+          name: commun.fil.accueil,
+          item: racineLangue,
         },
         ...fil.map((etape, i) => ({
           "@type": "ListItem",

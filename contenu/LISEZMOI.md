@@ -9,7 +9,7 @@ de publication, géré par Olivier.)
 
 ## La méthode recommandée : l'interface d'édition
 
-Va sur **`/keystatic`** (l'adresse du site suivie de `/keystatic`) et
+Va sur **`/admin/`** (l'adresse du site suivie de `/admin/` — en local : `/admin/index.html`) et
 connecte-toi avec ton compte GitHub. Tu y trouveras chaque page du site
 sous forme de **formulaire** : chaque texte a son champ, les articles du
 Journal ont un vrai éditeur (gras, titres, listes…), et le bouton
@@ -31,26 +31,32 @@ public **reste sur la version précédente** — aucun risque.
 
 ## Quel fichier pour quel texte ?
 
+Depuis la préparation du site multilingue, chaque langue a son
+dossier : le français est dans **`fr/`** (et l'anglais, en préparation,
+dans `en/`).
+
 | Fichier | Contient |
 |---|---|
-| `accueil.yaml` | Toute la page d'accueil |
-| `formations-page.yaml` | La page « Formations » (le sommaire des 4 portes) |
-| `portes/` (dossier) | **Une page par porte** : Entreprise, Secteur public, Organisme de formation, En individuel (voir plus bas) |
-| `paxi.yaml` | La page PAXI |
-| `approche.yaml` | La page « Notre approche » |
-| `a-propos.yaml` | La page « À propos » (ton parcours) |
-| `journal/` (dossier) | Un fichier par article du Journal |
-| `contact.yaml` | La page « Contact » et le formulaire |
-| `espace-apprenant.yaml` | La page « Espace apprenant » |
-| `commun.yaml` | Le menu, le pied de page, le slogan |
-| `formations/` (dossier) | Anciennes fiches — **plus publiées** depuis la V2, conservées au cas où |
+| `fr/accueil.yaml` | Toute la page d'accueil |
+| `fr/formations-page.yaml` | La page « Formations » (le sommaire des 4 portes) |
+| `portes/fr/` (dossier) | **Une page par porte** : Entreprise, Secteur public, Organisme de formation, En individuel (voir plus bas) |
+| `fr/paxi.yaml` | La page PAXI |
+| `fr/approche.yaml` | La page « Notre approche » |
+| `fr/a-propos.yaml` | La page « À propos » (ton parcours) |
+| `journal/fr/` (dossier) | Un fichier par article du Journal |
+| `fr/contact.yaml` | La page « Contact » et le formulaire |
+| `fr/espace-apprenant.yaml` | La page « Espace apprenant » |
+| `fr/commun.yaml` | Le menu, le pied de page, le slogan |
+| `formations/fr/` (dossier) | Anciennes fiches — **plus publiées** depuis la V2, conservées au cas où |
 
 ## Les règles d'écriture
 
 - Écris ton texte **entre les guillemets** : `titre: "Mon nouveau titre"`
 - Si ton texte contient un guillemet `"`, remplace-le par `'`
 - **Ne supprime pas** de lignes commençant par un nom suivi de `:`
-- Les lignes commençant par `#` sont des commentaires (ignorés)
+- Les lignes commençant par `#` sont des commentaires (ignorés). Ils
+  disparaissent au premier enregistrement depuis l'interface d'édition —
+  leur contenu est archivé dans `PROVENANCE.md`
 
 ### Mises en forme spéciales
 
@@ -66,7 +72,7 @@ s'affichent tels quels.
 
 ## Modifier une page « Formations »
 
-Chaque fichier du dossier `portes/` est une des quatre entrées de la
+Chaque fichier du dossier `portes/fr/` est une des quatre entrées de la
 rubrique Formations. La page est composée de **cartes dépliables** :
 une carte fermée montre son `titre` et son `resume`, et s'ouvre au clic
 sur le reste (`paragraphes`, `resultat`, `publics`). Une seule carte
@@ -89,7 +95,7 @@ Deux images par carte, aux rôles distincts :
   trait suffit : sa couleur est appliquée par le site, pas par le
   fichier.
 
-Les anciennes fiches du dossier `formations/` ne sont plus publiées :
+Les anciennes fiches du dossier `formations/fr/` ne sont plus publiées :
 leurs adresses redirigent vers la page Formations, et PAXI reprend
 « Sûreté aérienne ». Les fichiers sont conservés — rien n'est perdu.
 

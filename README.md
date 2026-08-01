@@ -40,27 +40,31 @@ reste sur sa version précédente. Mise en forme dans les textes :
 
 ## Déploiement
 
-Chaque push sur `main` déclenche `.github/workflows/deploy.yml` :
-déploiement des fonctions Convex en production, puis build Astro,
-puis publication sur GitHub Pages.
+Le déploiement cible Dokploy utilise deux canaux indépendants :
 
-Mise en service initiale (une seule fois) :
-1. `Settings → Pages → Build and deployment → Source : GitHub Actions`.
-2. Secret `CONVEX_DEPLOY_KEY` + variable `PUBLIC_CONVEX_URL` dans
-   `Settings → Secrets and variables → Actions` (détail dans
-   [`convex/README.md`](convex/README.md)).
+- `main` publie l'image OCI `ghcr.io/fl-training/training:dev` pour
+  `https://dev.app.pacivisacademy.com` ;
+- `production` publie l'image OCI `ghcr.io/fl-training/training:prod` pour
+  `https://pacivisacademy.com`.
 
-Le site est servi sous `https://fl-training.github.io/training/`. Le jour où
-un domaine personnalisé sera attaché, changer **les deux valeurs** dans
-`astro.config.mjs` : `site` (nouveau domaine — canoniques, Open Graph,
-JSON-LD, sitemap et robots.txt en dérivent) et `base` en `"/"`. Les liens
-internes passent tous par `src/lib/url.ts`, rien d'autre à toucher.
-En attendant le domaine, soumettre `sitemap-index.xml` via Google Search
-Console (le robots.txt d'un site de projet GitHub Pages n'est pas lu par
-les robots, qui ne consultent que la racine du domaine).
+Une modification est donc validée en intégration avant d'être promue par une
+pull request explicite de `main` vers `production`. Chaque image contient le
+contenu exact de son commit et ne dépend pas d'un montage Git mutable sur le
+VPS. La réconciliation de la plateforme peut ainsi continuer sans remplacer
+la version de production approuvée.
+
+Le workflow historique GitHub Pages reste disponible uniquement en
+déclenchement manuel pendant la bascule. Il n'est plus le chemin de
+publication nominal.
+
+L'atelier Sveltia se trouve sous `/admin/`. Sa branche suit le canal de
+déploiement et son endpoint OAuth est injecté au build ; voir
+[`doc/sveltia-requis-hebergement.md`](doc/sveltia-requis-hebergement.md).
 
 ## Backend Convex
 
-Voir [`convex/README.md`](convex/README.md). Tant que `PUBLIC_CONVEX_URL`
-n'est pas défini, le formulaire de contact affiche un repli LinkedIn — le
-site fonctionne intégralement sans backend.
+Voir [`convex/README.md`](convex/README.md). Tant que le backend Pacivis n'est
+pas qualifié, les images Dokploy sont volontairement construites sans
+`PUBLIC_CONVEX_URL` : le formulaire de contact affiche son repli LinkedIn et
+aucune URL morte n'est livrée. L'activation de Convex nécessite ensuite une
+nouvelle image testée avec l'URL réelle de l'environnement.
