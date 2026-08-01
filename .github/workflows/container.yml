@@ -15,6 +15,7 @@ on:
       - "public/**"
       - "src/**"
       - "contenu/**"
+      - "convex/**"
   push:
     branches:
       - main
@@ -65,7 +66,7 @@ jobs:
           tags: pacivis-training:ci
           build-args: |
             PUBLIC_SITE_URL=https://dev.app.pacivisacademy.com
-            PUBLIC_CONVEX_URL=
+            PUBLIC_CONVEX_URL=https://site-convex-dev.app.pacivisacademy.com
             PUBLIC_BUILD_ID=${{ github.sha }}
             SVELTIA_BRANCH=main
             SVELTIA_CLIENT_OAUTH=https://oauth.app.pacivisacademy.com
@@ -148,9 +149,11 @@ jobs:
           set -euo pipefail
           if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             echo "site_url=https://dev.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
+            echo "convex_url=https://site-convex-dev.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
             echo "sveltia_branch=main" >> "${GITHUB_OUTPUT}"
           else
             echo "site_url=https://pacivisacademy.com" >> "${GITHUB_OUTPUT}"
+            echo "convex_url=https://site-convex.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
             echo "sveltia_branch=production" >> "${GITHUB_OUTPUT}"
           fi
 
@@ -164,7 +167,7 @@ jobs:
           labels: ${{ steps.metadata.outputs.labels }}
           build-args: |
             PUBLIC_SITE_URL=${{ steps.channel.outputs.site_url }}
-            PUBLIC_CONVEX_URL=
+            PUBLIC_CONVEX_URL=${{ steps.channel.outputs.convex_url }}
             PUBLIC_BUILD_ID=${{ github.sha }}
             SVELTIA_BRANCH=${{ steps.channel.outputs.sveltia_branch }}
             SVELTIA_CLIENT_OAUTH=https://oauth.app.pacivisacademy.com
