@@ -50,16 +50,23 @@ navigateur ne peut pas le porter lui-même.
      Docker communautaires existent, ce qui colle mieux à une politique
      « tout sur le VPS » ;
    - le service Netlify historique, par compatibilité.
-3. **L'adresse du client** : renseigner la constante `CLIENT_OAUTH` en
-   tête de `outils/generer-config-sveltia.mjs`, puis `npm run
-   cms:config`. Ne jamais toucher le YAML directement — il est régénéré,
-   et la CI refuse un écart. ⚠️ Tant que cette constante est vide, la
-   connexion GitHub de l'atelier ne peut pas aboutir en ligne : c'est le
-   dernier verrou avant l'ouverture à Fabien.
+3. **L'adresse du client** : l'infrastructure transmet au build
+   `SVELTIA_CLIENT_OAUTH=https://<client-oauth>` et `SVELTIA_BRANCH`
+   (`main` pour l'intégration, `production` pour la production). Le
+   Dockerfile régénère `config.yml` avant les contrôles et le build. Ne
+   jamais toucher le YAML directement — la CI refuse un écart avec la
+   configuration par défaut. ⚠️ Tant que l'endpoint OAuth est vide, la
+   connexion GitHub de l'atelier ne peut pas aboutir en ligne.
 
-Le dépôt cible est déjà déclaré : `FL-Training/training`, branche
-`main`. Fabien devra disposer d'un compte GitHub avec accès en écriture
-au dépôt — décision toujours ouverte côté projet.
+Le dépôt cible est déjà déclaré : `FL-Training/training`. L'image de
+développement écrit sur `main`; l'image de production écrit sur
+`production`. Fabien devra disposer d'un compte GitHub avec accès en écriture
+au dépôt.
+
+La promotion suit donc un flux explicite `main` vers `production` par
+pull request. Le déploiement d'intégration ne modifie jamais le site
+public et la réconciliation générale du VPS ne change pas la référence
+OCI approuvée de production.
 
 En local, rien de tout cela : « Work with Local Repository »
 (Chrome/Edge) édite les fichiers du projet sans authentification et sans
@@ -86,12 +93,12 @@ dépôt. Le conteneur reste jetable.
 ## 4. Le maillon manquant : de l'enregistrement à la page publiée
 
 Inchangé depuis l'évaluation Keystatic, et toujours **le point le plus
-important**. En mode GitHub, Sveltia commite sur `main` ; le conteneur,
-lui, porte le contenu figé à son build. Sans redéploiement déclenché par
-un changement de `contenu/**` :
+important**. En mode GitHub, Sveltia commite sur la branche de son
+environnement ; le conteneur, lui, porte le contenu figé à son build.
+Sans redéploiement déclenché par un changement de `contenu/**` :
 
 ```
-Fabien enregistre  →  commit sur main  →  … et le site ne bouge pas.
+Fabien enregistre  →  commit sur la branche de l'environnement  →  … et le site ne bouge pas.
 ```
 
 À construire côté Dokploy : webhook de redéploiement appelé sur
@@ -129,8 +136,13 @@ reconstruit l'image. Deux exigences sur ce circuit :
 | 4 | Ouvrir `/admin/` dans un navigateur | « Sign In with GitHub », puis le tableau de bord |
 | 5 | Ouvrir « Pages du site » → Accueil | les champs s'affichent remplis |
 | 6 | Ouvrir une porte, champ « Photographie » | une vignette, pas un emplacement vide |
-| 7 | Modifier un texte, enregistrer | un commit de Fabien apparaît sur `main` |
+| 7 | Modifier un texte, enregistrer | un commit de Fabien apparaît sur `main` en intégration |
 | 8 | Attendre le redéploiement | **la page publique montre le nouveau texte** |
+
+Pour la production, ouvrir puis fusionner une pull request de `main`
+vers `production`. Le paquet OCI `prod` n'est publié qu'après les mêmes
+contrôles et la production reste sur sa dernière image saine si le build
+échoue.
 
 Le contrôle 8 est celui qui compte : les sept premiers peuvent passer
 alors que la chaîne est rompue au dernier maillon.

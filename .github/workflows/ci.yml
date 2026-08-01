@@ -39,18 +39,20 @@ jobs:
       - name: Cohérence éditeur ↔ schémas
         run: npm run test:cms
 
+      # PUBLIC_CONVEX_URL is intentionally absent: the build must succeed
+      # without it (forms fall back to LinkedIn), and this also validates
+      # every /contenu file against the zod schemas. The build must run
+      # before the contract tests because the 404-page contracts inspect
+      # the generated dist/ artifact.
+      - name: Build Astro site
+        run: npm run build
+
       # Les contrats de contenu, un par un : les tolérances (aucune
       # saisie de l'éditeur ne bloque la publication), les gardes (le
       # vide interdit reste interdit), les langues et leur arborescence,
-      # la structure de la config Sveltia, et href().
+      # la structure de la config Sveltia, href() et l'artefact 404.
       - name: Tests unitaires des contrats
         run: npm run test:unitaires
-
-      # PUBLIC_CONVEX_URL is intentionally absent: the build must succeed
-      # without it (forms fall back to LinkedIn), and this also validates
-      # every /contenu file against the zod schemas.
-      - name: Build Astro site
-        run: npm run build
 
       # A scoped style dropped during a client-side page swap is
       # invisible when reloading and only shows up while navigating, so

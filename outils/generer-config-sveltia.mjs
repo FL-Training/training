@@ -29,6 +29,7 @@ import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import yaml from "js-yaml";
+import { resoudreEnvironnementSveltia } from "./config-sveltia-environnement.mjs";
 
 const RACINE = new URL("..", import.meta.url).pathname;
 const CIBLE = join(RACINE, "public/admin/config.yml");
@@ -59,22 +60,12 @@ const { CODES_LANGUES, LANGUE_PAR_DEFAUT } = await charger("src/lib/langues.ts")
 // --- Textes récurrents -----------------------------------------------------
 
 /*
-  LE CLIENT OAUTH — la seule valeur qui vient de l'infrastructure.
-
-  En ligne, « Sign In with GitHub » a besoin d'un petit service qui
-  garde le secret de l'application OAuth (voir
-  doc/sveltia-requis-hebergement.md, point 2). Tant que cette adresse
-  est vide, la configuration n'en déclare pas : Sveltia se rabattrait
-  sinon sur le service de Netlify, qui ne connaît pas notre
-  application — la connexion échouerait en silence. Le mode local
-  (« Work with Local Repository ») fonctionne dans tous les cas.
-
-  Le jour où l'agent VPS déploie le client : renseigner l'adresse ici,
-  puis `npm run cms:config`. Une constante plutôt qu'une variable
-  d'environnement : le YAML committé doit être reproductible à
-  l'identique par la CI (`test:cms --verifier`).
+  Ces deux valeurs sont le contrat entre le site et l'infrastructure.
+  Les valeurs par défaut gardent le fichier committé reproductible ;
+  les images dev/prod génèrent leur propre config pendant le build.
 */
-const CLIENT_OAUTH = ""; // ex. "https://auth.pacivis-academy.fr"
+const { branche: BRANCHE_SVELTIA, clientOAuth: CLIENT_OAUTH } =
+  resoudreEnvironnementSveltia();
 
 const CONSIGNE_IMAGE =
   "Format WebP ou JPEG, environ 1000 px de large, moins de 250 Ko. " +
@@ -787,7 +778,7 @@ const config = {
   backend: {
     name: "github",
     repo: "FL-Training/training",
-    branch: "main",
+    branch: BRANCHE_SVELTIA,
     ...(CLIENT_OAUTH ? { base_url: CLIENT_OAUTH } : {}),
     // En local (localhost, Chrome/Edge), Sveltia propose aussi « Work
     // with Local Repository » : il écrit les fichiers du projet sans se
