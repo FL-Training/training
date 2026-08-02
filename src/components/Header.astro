@@ -66,9 +66,29 @@ function decouperArca(
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const current = Astro.url.pathname.replace(base, "").replace(/\/+$/, "") || "/";
 
-function isCurrent(path: string): boolean {
-  if (path === "/") return current === "/";
-  return current === path || current.startsWith(`${path}/`);
+/*
+  L'entrée du menu désigne-t-elle la page affichée ?
+
+  `current` est dénudé de son slash final ; le chemin comparé doit l'être
+  aussi. Il ne l'était pas, et l'accueil d'une langue préfixée s'écrit
+  justement « /en/ » : la comparaison « /en » contre « /en/ » échouait.
+  Sur la page d'accueil anglaise, l'entrée « Home » perdait donc son
+  repère de page courante — et, moins visible mais plus grave, son
+  `aria-current="page"` : un lecteur d'écran n'annonçait plus où l'on se
+  trouvait. Le français, dont l'accueil est « / », n'était pas touché,
+  d'où un défaut qui n'apparaissait qu'une fois l'anglais publié.
+*/
+function isCurrent(cheminContenu: string): boolean {
+  const cible = lienContenu(langue, cheminContenu);
+  const nu = cible !== "/" ? cible.replace(/\/+$/, "") || "/" : "/";
+  /*
+    L'accueil ne se marque QUE sur lui-même. Le comparer par préfixe le
+    dirait courant sur toutes les pages de sa langue — « /en » ouvre
+    « /en/training », « /en/blog »… Le français y échappait par accident,
+    son accueil étant « / », que la première clause traitait à part.
+  */
+  if (cheminContenu === "/") return current === nu;
+  return current === nu || current.startsWith(`${nu}/`);
 }
 ---
 
@@ -124,7 +144,7 @@ function isCurrent(path: string): boolean {
           const accole =
             i === commun.navigation.length - 1 && autresLangues.length > 0;
           const chemin = lienContenu(langue, item.chemin);
-          const courant = isCurrent(chemin);
+          const courant = isCurrent(item.chemin);
 
           const entree = item.accent ? (
             <a
@@ -335,7 +355,7 @@ function isCurrent(path: string): boolean {
                   <a
                     href={href(lienContenu(langue, item.chemin))}
                     class="menu-entree"
-                    aria-current={isCurrent(lienContenu(langue, item.chemin)) ? "page" : undefined}
+                    aria-current={isCurrent(item.chemin) ? "page" : undefined}
                   >
                     {item.label}
                   </a>
