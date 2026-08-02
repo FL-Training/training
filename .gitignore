@@ -20,5 +20,11 @@ convex/_generated/
 .vscode/
 .DS_Store
 
+# Outillage local de l'assistant. Seul `launch.json` est visé : il ne
+# décrit qu'un confort de démarrage sur la machine où l'on travaille.
+# Le reste de .claude/ n'est pas ignoré — des réglages ou des consignes
+# de projet y auraient leur place et mériteraient d'être partagés.
+.claude/launch.json
+
 # logs
 npm-debug.log*
