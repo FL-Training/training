@@ -7,6 +7,7 @@ import {
   parseAdminKey,
   readSecretFile,
   reconcile,
+  safeDiagnosticExcerpt,
   validateRuntime,
   verifyBakedContract,
   waitForBackend,
@@ -61,6 +62,29 @@ test("failure evidence is deterministic and excludes raw diagnostics", () => {
   assert.equal(JSON.stringify(evidence).includes("token"), false);
 });
 
+test("safe diagnostic excerpt preserves errors while redacting credentials", () => {
+  const instanceSecret = "instance-secret-value";
+  const adminKey = "admin-key-value";
+  const excerpt = safeDiagnosticExcerpt(
+    {
+      stdout: `deployment rejected for ${instanceSecret}`,
+      stderr: `Authorization: Bearer ${adminKey}\nAPI_KEY=another-sensitive-value`,
+    },
+    [instanceSecret, adminKey],
+  );
+  assert.match(excerpt, /deployment rejected/);
+  assert.equal(excerpt.includes(instanceSecret), false);
+  assert.equal(excerpt.includes(adminKey), false);
+  assert.equal(excerpt.includes("another-sensitive-value"), false);
+  assert.match(excerpt, /\[REDACTED\]/);
+});
+
+test("safe diagnostic excerpt is bounded", () => {
+  const excerpt = safeDiagnosticExcerpt({ stdout: "x".repeat(16_384), stderr: "" });
+  assert.ok(Buffer.byteLength(excerpt, "utf8") <= 4 * 1024 + 32);
+  assert.match(excerpt, /\[TRUNCATED\]$/);
+});
+
 test("backend readiness retries within its bound", async () => {
   let calls = 0;
   const attempt = await waitForBackend("http://backend", {
@@ -104,7 +128,41 @@ test("reconciliation generates an ephemeral key then deploys functions", async (
   });
   assert.equal(result.status, "reconciled");
   assert.equal(calls.length, 2);
+  assert.equal(calls[0].options.cwd, "/convex");
   assert.equal(calls[0].options.env.INSTANCE_SECRET, "instance-secret");
+  assert.equal(calls[1].options.cwd, "/opt/application");
   assert.equal(calls[1].options.env.CONVEX_SELF_HOSTED_ADMIN_KEY, "k".repeat(40));
   assert.deepEqual(calls[1].args.slice(0, 3), ["deploy", "--typecheck", "enable"]);
+});
+
+test("reconciliation reports a useful deploy error without leaking secrets", async () => {
+  const instanceSecret = "instance-secret-value";
+  const adminKey = "k".repeat(40);
+  const files = new Map([
+    ["/opt/application/.lacneu-source-ref", `${SOURCE_REF}\n`],
+    ["/opt/application/.lacneu-convex-cli-version", "1.42.1\n"],
+    ["/run/secrets/site-convex-secret", `${instanceSecret}\n`],
+  ]);
+  await assert.rejects(
+    reconcile(RUNTIME, {
+      reader: async (path) => files.get(path),
+      waiter: async () => 1,
+      runner: async (command) =>
+        command.endsWith("generate_admin_key.sh")
+          ? { code: 0, signal: null, stdout: `${adminKey}\n`, stderr: "" }
+          : {
+              code: 1,
+              signal: null,
+              stdout: "",
+              stderr: `Convex rejected ${instanceSecret}; Authorization: Bearer ${adminKey}`,
+            },
+    }),
+    (error) => {
+      assert.match(error.message, /Convex function deployment failed/);
+      assert.match(error.message, /Convex rejected/);
+      assert.equal(error.message.includes(instanceSecret), false);
+      assert.equal(error.message.includes(adminKey), false);
+      return true;
+    },
+  );
 });
