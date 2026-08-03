@@ -78,6 +78,10 @@ jobs:
               ! command -v npx
               test -x /convex/generate_admin_key.sh
               test -f /opt/application/convex/schema.ts
+              test -d /opt/application/convex/_generated
+              test -w /opt/application/convex/_generated
+              test "$(stat -c %u /opt/application/convex/_generated)" = 10001
+              test "$(stat -c %g /opt/application/convex/_generated)" = 10001
             '
 
       - name: Scan deployer image
