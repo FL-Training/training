@@ -95,10 +95,16 @@ jobs:
             --input-type=module -e '
               import { access, rm } from "node:fs/promises";
               import { constants } from "node:fs";
+              import { createRequire } from "node:module";
               import { prepareWorkspace } from "/usr/local/libexec/lacneu/convex-app-deployer.mjs";
               const workspace = await prepareWorkspace();
               await access(`${workspace}/convex/schema.ts`, constants.R_OK);
               await access(`${workspace}/convex/_generated`, constants.W_OK);
+              const resolver = createRequire(`${workspace}/package.json`);
+              const convexServer = resolver.resolve("convex/server");
+              if (!convexServer.startsWith("/opt/application/node_modules/convex/")) {
+                throw new Error(`unexpected Convex dependency path: ${convexServer}`);
+              }
               await rm(workspace, { recursive: true, force: true });
             '
 

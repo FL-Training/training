@@ -118,6 +118,7 @@ test("workspace preparation copies only mutable deployment inputs", async () => 
       return "/temporary/lacneu-convex-workspace-safe";
     },
     cp: async (...args) => calls.push(["cp", ...args]),
+    symlink: async (...args) => calls.push(["symlink", ...args]),
     rm: async (...args) => calls.push(["rm", ...args]),
   });
   assert.equal(workspace, "/temporary/lacneu-convex-workspace-safe");
@@ -133,6 +134,12 @@ test("workspace preparation copies only mutable deployment inputs", async () => 
     "/source/package.json",
     "/temporary/lacneu-convex-workspace-safe/package.json",
   ]);
+  assert.deepEqual(calls[3], [
+    "symlink",
+    "/source/node_modules",
+    "/temporary/lacneu-convex-workspace-safe/node_modules",
+    "dir",
+  ]);
 });
 
 test("workspace preparation removes partial data when a copy fails", async () => {
@@ -143,6 +150,7 @@ test("workspace preparation removes partial data when a copy fails", async () =>
       cp: async () => {
         throw new Error("copy failed");
       },
+      symlink: async () => {},
       rm: async (...args) => cleaned.push(args),
     }),
     /copy failed/,
