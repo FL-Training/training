@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 
 const MAX_SECRET_BYTES = 128 * 1024;
 const MAX_PROCESS_OUTPUT_BYTES = 256 * 1024;
+const MAX_DIAGNOSTIC_EXCERPT_BYTES = 4 * 1024;
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 export class ReconciliationError extends Error {}
@@ -165,7 +166,43 @@ export function failureEvidence(result) {
   };
 }
 
-function failureMessage(label, result) {
+function redactLiteral(value, secret) {
+  if (!secret) {
+    return value;
+  }
+  return value.split(secret).join("[REDACTED]");
+}
+
+function truncateUtf8(value, maximumBytes) {
+  const encoded = Buffer.from(value, "utf8");
+  if (encoded.length <= maximumBytes) {
+    return value;
+  }
+  return `${encoded.subarray(0, maximumBytes).toString("utf8")}...[TRUNCATED]`;
+}
+
+export function safeDiagnosticExcerpt(result, secretValues = []) {
+  let diagnostic = `${result.stderr ?? ""}\n${result.stdout ?? ""}`
+    .replace(/\u001B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ");
+  for (const secret of [...secretValues].sort((left, right) => right.length - left.length)) {
+    diagnostic = redactLiteral(diagnostic, secret);
+  }
+  diagnostic = diagnostic
+    .replace(
+      /(authorization\s*[:=]\s*)(?:bearer\s+)?[^\s,;]+/gi,
+      "$1[REDACTED]",
+    )
+    .replace(
+      /((?:api[_ -]?key|token|secret|password|admin[_ -]?key)\s*[:=]\s*)[^\s,;]+/gi,
+      "$1[REDACTED]",
+    )
+    .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[REDACTED]")
+    .trim();
+  return truncateUtf8(diagnostic, MAX_DIAGNOSTIC_EXCERPT_BYTES);
+}
+
+function failureMessage(label, result, secretValues = []) {
   const evidence = failureEvidence(result);
   const fields = [
     `exit=${evidence.exitCode ?? "unknown"}`,
@@ -173,6 +210,10 @@ function failureMessage(label, result) {
   ];
   if (evidence.signal) {
     fields.push(`signal=${evidence.signal}`);
+  }
+  const excerpt = safeDiagnosticExcerpt(result, secretValues);
+  if (excerpt) {
+    fields.push(`diagnostic_excerpt=${JSON.stringify(excerpt)}`);
   }
   return `${label} (${fields.join(", ")})`;
 }
@@ -235,7 +276,7 @@ export async function reconcile(environment = process.env, dependencies = {}) {
   });
   if (keyResult.code !== 0) {
     throw new ReconciliationError(
-      failureMessage("Convex admin key generation failed", keyResult),
+      failureMessage("Convex admin key generation failed", keyResult, [instanceSecret]),
     );
   }
   const adminKey = parseAdminKey(keyResult.stdout);
@@ -261,7 +302,7 @@ export async function reconcile(environment = process.env, dependencies = {}) {
   );
   if (deploy.code !== 0) {
     throw new ReconciliationError(
-      failureMessage("Convex function deployment failed", deploy),
+      failureMessage("Convex function deployment failed", deploy, [instanceSecret, adminKey]),
     );
   }
   return {
