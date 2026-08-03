@@ -25,6 +25,7 @@ concurrency:
 
 env:
   CONVEX_CLI_VERSION: "1.42.1"
+  TYPESCRIPT_VERSION: "6.0.3"
 
 jobs:
   validate:
@@ -61,6 +62,7 @@ jobs:
           build-args: |
             APPLICATION_SOURCE_REF=${{ github.sha }}
             CONVEX_CLI_VERSION=${{ env.CONVEX_CLI_VERSION }}
+            TYPESCRIPT_VERSION=${{ env.TYPESCRIPT_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -73,7 +75,9 @@ jobs:
               test "$(id -u)" = 10001
               test "$(cat /opt/application/.lacneu-source-ref)" = "'"${GITHUB_SHA}"'"
               test "$(cat /opt/application/.lacneu-convex-cli-version)" = "'"${CONVEX_CLI_VERSION}"'"
+              test "$(cat /opt/application/.lacneu-typescript-version)" = "'"${TYPESCRIPT_VERSION}"'"
               test "$(/opt/application/node_modules/.bin/convex --version)" = "'"${CONVEX_CLI_VERSION}"'"
+              test "$(/opt/application/node_modules/.bin/tsc --version)" = "Version '"${TYPESCRIPT_VERSION}"'"
               ! command -v npm
               ! command -v npx
               test -x /convex/generate_admin_key.sh
@@ -105,6 +109,11 @@ jobs:
               if (!convexServer.startsWith("/opt/application/node_modules/convex/")) {
                 throw new Error(`unexpected Convex dependency path: ${convexServer}`);
               }
+              const typescript = resolver.resolve("typescript/package.json");
+              if (!typescript.startsWith("/opt/application/node_modules/typescript/")) {
+                throw new Error(`unexpected TypeScript dependency path: ${typescript}`);
+              }
+              await access("/opt/application/node_modules/.bin/tsc", constants.X_OK);
               await rm(workspace, { recursive: true, force: true });
             '
 
@@ -161,6 +170,7 @@ jobs:
           build-args: |
             APPLICATION_SOURCE_REF=${{ github.sha }}
             CONVEX_CLI_VERSION=${{ env.CONVEX_CLI_VERSION }}
+            TYPESCRIPT_VERSION=${{ env.TYPESCRIPT_VERSION }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: mode=max
