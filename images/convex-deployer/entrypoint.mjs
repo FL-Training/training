@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const MAX_SECRET_BYTES = 128 * 1024;
@@ -258,6 +259,26 @@ export async function verifyBakedContract(runtime, reader = readFile) {
   }
 }
 
+export async function prepareWorkspace(
+  sourceRoot = "/opt/application",
+  temporaryRoot = "/tmp",
+  filesystem = { cp, mkdtemp, rm },
+) {
+  const workspace = await filesystem.mkdtemp(
+    join(temporaryRoot, "lacneu-convex-workspace-"),
+  );
+  try {
+    await filesystem.cp(join(sourceRoot, "convex"), join(workspace, "convex"), {
+      recursive: true,
+    });
+    await filesystem.cp(join(sourceRoot, "package.json"), join(workspace, "package.json"));
+    return workspace;
+  } catch (error) {
+    await filesystem.rm(workspace, { recursive: true, force: true });
+    throw error;
+  }
+}
+
 export async function reconcile(environment = process.env, dependencies = {}) {
   const runtime = validateRuntime(environment);
   const reader = dependencies.reader ?? readFile;
@@ -280,30 +301,38 @@ export async function reconcile(environment = process.env, dependencies = {}) {
     );
   }
   const adminKey = parseAdminKey(keyResult.stdout);
-  const deploy = await runner(
-    "/opt/application/node_modules/.bin/convex",
-    [
-      "deploy",
-      "--typecheck",
-      "enable",
-      "--message",
-      `Lacneu reconcile ${runtime.sourceRef}`,
-    ],
-    {
-      cwd: "/opt/application",
-      env: {
-        ...process.env,
-        CONVEX_SELF_HOSTED_URL: runtime.backendUrl,
-        CONVEX_SELF_HOSTED_ADMIN_KEY: adminKey,
-        NO_COLOR: "1",
+  const workspaceFactory = dependencies.workspaceFactory ?? prepareWorkspace;
+  const workspaceCleaner = dependencies.workspaceCleaner ?? ((path) =>
+    rm(path, { recursive: true, force: true }));
+  const workspace = await workspaceFactory();
+  try {
+    const deploy = await runner(
+      "/opt/application/node_modules/.bin/convex",
+      [
+        "deploy",
+        "--typecheck",
+        "enable",
+        "--message",
+        `Lacneu reconcile ${runtime.sourceRef}`,
+      ],
+      {
+        cwd: workspace,
+        env: {
+          ...process.env,
+          CONVEX_SELF_HOSTED_URL: runtime.backendUrl,
+          CONVEX_SELF_HOSTED_ADMIN_KEY: adminKey,
+          NO_COLOR: "1",
+        },
+        timeoutMs: 10 * 60_000,
       },
-      timeoutMs: 10 * 60_000,
-    },
-  );
-  if (deploy.code !== 0) {
-    throw new ReconciliationError(
-      failureMessage("Convex function deployment failed", deploy, [instanceSecret, adminKey]),
     );
+    if (deploy.code !== 0) {
+      throw new ReconciliationError(
+        failureMessage("Convex function deployment failed", deploy, [instanceSecret, adminKey]),
+      );
+    }
+  } finally {
+    await workspaceCleaner(workspace);
   }
   return {
     schema_version: 1,
