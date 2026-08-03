@@ -5,6 +5,7 @@ import {
   ReconciliationError,
   failureEvidence,
   parseAdminKey,
+  prepareWorkspace,
   readSecretFile,
   reconcile,
   safeDiagnosticExcerpt,
@@ -109,8 +110,51 @@ test("baked provenance must match both source and CLI", async () => {
   );
 });
 
+test("workspace preparation copies only mutable deployment inputs", async () => {
+  const calls = [];
+  const workspace = await prepareWorkspace("/source", "/temporary", {
+    mkdtemp: async (prefix) => {
+      calls.push(["mkdtemp", prefix]);
+      return "/temporary/lacneu-convex-workspace-safe";
+    },
+    cp: async (...args) => calls.push(["cp", ...args]),
+    rm: async (...args) => calls.push(["rm", ...args]),
+  });
+  assert.equal(workspace, "/temporary/lacneu-convex-workspace-safe");
+  assert.equal(calls[0][1], "/temporary/lacneu-convex-workspace-");
+  assert.deepEqual(calls[1], [
+    "cp",
+    "/source/convex",
+    "/temporary/lacneu-convex-workspace-safe/convex",
+    { recursive: true },
+  ]);
+  assert.deepEqual(calls[2], [
+    "cp",
+    "/source/package.json",
+    "/temporary/lacneu-convex-workspace-safe/package.json",
+  ]);
+});
+
+test("workspace preparation removes partial data when a copy fails", async () => {
+  const cleaned = [];
+  await assert.rejects(
+    prepareWorkspace("/source", "/temporary", {
+      mkdtemp: async () => "/temporary/lacneu-convex-workspace-partial",
+      cp: async () => {
+        throw new Error("copy failed");
+      },
+      rm: async (...args) => cleaned.push(args),
+    }),
+    /copy failed/,
+  );
+  assert.deepEqual(cleaned, [
+    ["/temporary/lacneu-convex-workspace-partial", { recursive: true, force: true }],
+  ]);
+});
+
 test("reconciliation generates an ephemeral key then deploys functions", async () => {
   const calls = [];
+  const cleaned = [];
   const files = new Map([
     ["/opt/application/.lacneu-source-ref", `${SOURCE_REF}\n`],
     ["/opt/application/.lacneu-convex-cli-version", "1.42.1\n"],
@@ -119,6 +163,8 @@ test("reconciliation generates an ephemeral key then deploys functions", async (
   const result = await reconcile(RUNTIME, {
     reader: async (path) => files.get(path),
     waiter: async () => 1,
+    workspaceFactory: async () => "/tmp/workspace",
+    workspaceCleaner: async (path) => cleaned.push(path),
     runner: async (command, args, options) => {
       calls.push({ command, args, options });
       return command.endsWith("generate_admin_key.sh")
@@ -130,9 +176,10 @@ test("reconciliation generates an ephemeral key then deploys functions", async (
   assert.equal(calls.length, 2);
   assert.equal(calls[0].options.cwd, "/convex");
   assert.equal(calls[0].options.env.INSTANCE_SECRET, "instance-secret");
-  assert.equal(calls[1].options.cwd, "/opt/application");
+  assert.equal(calls[1].options.cwd, "/tmp/workspace");
   assert.equal(calls[1].options.env.CONVEX_SELF_HOSTED_ADMIN_KEY, "k".repeat(40));
   assert.deepEqual(calls[1].args.slice(0, 3), ["deploy", "--typecheck", "enable"]);
+  assert.deepEqual(cleaned, ["/tmp/workspace"]);
 });
 
 test("reconciliation reports a useful deploy error without leaking secrets", async () => {
@@ -147,6 +194,8 @@ test("reconciliation reports a useful deploy error without leaking secrets", asy
     reconcile(RUNTIME, {
       reader: async (path) => files.get(path),
       waiter: async () => 1,
+      workspaceFactory: async () => "/tmp/workspace-failed",
+      workspaceCleaner: async () => {},
       runner: async (command) =>
         command.endsWith("generate_admin_key.sh")
           ? { code: 0, signal: null, stdout: `${adminKey}\n`, stderr: "" }
