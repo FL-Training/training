@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, symlink } from "node:fs/promises";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
@@ -262,7 +262,7 @@ export async function verifyBakedContract(runtime, reader = readFile) {
 export async function prepareWorkspace(
   sourceRoot = "/opt/application",
   temporaryRoot = "/tmp",
-  filesystem = { cp, mkdtemp, rm },
+  filesystem = { cp, mkdtemp, rm, symlink },
 ) {
   const workspace = await filesystem.mkdtemp(
     join(temporaryRoot, "lacneu-convex-workspace-"),
@@ -272,6 +272,11 @@ export async function prepareWorkspace(
       recursive: true,
     });
     await filesystem.cp(join(sourceRoot, "package.json"), join(workspace, "package.json"));
+    await filesystem.symlink(
+      join(sourceRoot, "node_modules"),
+      join(workspace, "node_modules"),
+      "dir",
+    );
     return workspace;
   } catch (error) {
     await filesystem.rm(workspace, { recursive: true, force: true });
