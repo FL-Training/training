@@ -23,6 +23,7 @@ COPY --chown=10001:10001 images/convex-deployer/entrypoint.mjs /usr/local/libexe
 # no Node actions, so a package manager is unnecessary at runtime.
 RUN printf '%s\n' "${APPLICATION_SOURCE_REF}" > .lacneu-source-ref \
     && printf '%s\n' "${CONVEX_CLI_VERSION}" > .lacneu-convex-cli-version \
+    && install -d -o 10001 -g 10001 -m 0755 /opt/application/convex/_generated \
     && chmod -R a+rX,go-w /opt/application \
     && chmod 0555 /usr/local/libexec/lacneu/convex-app-deployer.mjs \
       /convex/generate_admin_key.sh /convex/read_credentials.sh /convex/generate_key \
