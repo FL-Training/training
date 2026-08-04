@@ -4,18 +4,21 @@ FROM ${BASE_IMAGE}
 
 ARG APPLICATION_SOURCE_REF
 ARG CONVEX_CLI_VERSION=1.42.1
+ARG TYPESCRIPT_VERSION=6.0.3
 
 LABEL org.opencontainers.image.source="https://github.com/FL-Training/training"
 LABEL org.opencontainers.image.description="Immutable Pacivis site Convex function reconciler"
 LABEL org.opencontainers.image.revision="${APPLICATION_SOURCE_REF}"
 LABEL com.lacneu.convex-cli.version="${CONVEX_CLI_VERSION}"
+LABEL com.lacneu.typescript.version="${TYPESCRIPT_VERSION}"
 LABEL com.lacneu.reconciler.source="lacneu/platform-automation@d3fce32"
 
 WORKDIR /opt/application
 
 COPY --chown=10001:10001 images/convex-deployer/package.json images/convex-deployer/package-lock.json ./
 RUN npm ci --ignore-scripts \
-    && test "$(node_modules/.bin/convex --version)" = "${CONVEX_CLI_VERSION}"
+    && test "$(node_modules/.bin/convex --version)" = "${CONVEX_CLI_VERSION}" \
+    && test "$(node_modules/.bin/tsc --version)" = "Version ${TYPESCRIPT_VERSION}"
 COPY --chown=10001:10001 convex ./convex
 COPY --chown=10001:10001 images/convex-deployer/entrypoint.mjs /usr/local/libexec/lacneu/convex-app-deployer.mjs
 
@@ -23,6 +26,8 @@ COPY --chown=10001:10001 images/convex-deployer/entrypoint.mjs /usr/local/libexe
 # no Node actions, so a package manager is unnecessary at runtime.
 RUN printf '%s\n' "${APPLICATION_SOURCE_REF}" > .lacneu-source-ref \
     && printf '%s\n' "${CONVEX_CLI_VERSION}" > .lacneu-convex-cli-version \
+    && printf '%s\n' "${TYPESCRIPT_VERSION}" > .lacneu-typescript-version \
+    && install -d -o 10001 -g 10001 -m 0755 /opt/application/convex/_generated \
     && chmod -R a+rX,go-w /opt/application \
     && chmod 0555 /usr/local/libexec/lacneu/convex-app-deployer.mjs \
       /convex/generate_admin_key.sh /convex/read_credentials.sh /convex/generate_key \

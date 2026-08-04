@@ -1,10 +1,12 @@
 import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, symlink } from "node:fs/promises";
+import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 const MAX_SECRET_BYTES = 128 * 1024;
 const MAX_PROCESS_OUTPUT_BYTES = 256 * 1024;
+const MAX_DIAGNOSTIC_EXCERPT_BYTES = 4 * 1024;
 const DEFAULT_TIMEOUT_MS = 120_000;
 
 export class ReconciliationError extends Error {}
@@ -165,7 +167,43 @@ export function failureEvidence(result) {
   };
 }
 
-function failureMessage(label, result) {
+function redactLiteral(value, secret) {
+  if (!secret) {
+    return value;
+  }
+  return value.split(secret).join("[REDACTED]");
+}
+
+function truncateUtf8(value, maximumBytes) {
+  const encoded = Buffer.from(value, "utf8");
+  if (encoded.length <= maximumBytes) {
+    return value;
+  }
+  return `${encoded.subarray(0, maximumBytes).toString("utf8")}...[TRUNCATED]`;
+}
+
+export function safeDiagnosticExcerpt(result, secretValues = []) {
+  let diagnostic = `${result.stderr ?? ""}\n${result.stdout ?? ""}`
+    .replace(/\u001B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])/g, "")
+    .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, " ");
+  for (const secret of [...secretValues].sort((left, right) => right.length - left.length)) {
+    diagnostic = redactLiteral(diagnostic, secret);
+  }
+  diagnostic = diagnostic
+    .replace(
+      /(authorization\s*[:=]\s*)(?:bearer\s+)?[^\s,;]+/gi,
+      "$1[REDACTED]",
+    )
+    .replace(
+      /((?:api[_ -]?key|token|secret|password|admin[_ -]?key)\s*[:=]\s*)[^\s,;]+/gi,
+      "$1[REDACTED]",
+    )
+    .replace(/\beyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b/g, "[REDACTED]")
+    .trim();
+  return truncateUtf8(diagnostic, MAX_DIAGNOSTIC_EXCERPT_BYTES);
+}
+
+function failureMessage(label, result, secretValues = []) {
   const evidence = failureEvidence(result);
   const fields = [
     `exit=${evidence.exitCode ?? "unknown"}`,
@@ -173,6 +211,10 @@ function failureMessage(label, result) {
   ];
   if (evidence.signal) {
     fields.push(`signal=${evidence.signal}`);
+  }
+  const excerpt = safeDiagnosticExcerpt(result, secretValues);
+  if (excerpt) {
+    fields.push(`diagnostic_excerpt=${JSON.stringify(excerpt)}`);
   }
   return `${label} (${fields.join(", ")})`;
 }
@@ -217,6 +259,31 @@ export async function verifyBakedContract(runtime, reader = readFile) {
   }
 }
 
+export async function prepareWorkspace(
+  sourceRoot = "/opt/application",
+  temporaryRoot = "/tmp",
+  filesystem = { cp, mkdtemp, rm, symlink },
+) {
+  const workspace = await filesystem.mkdtemp(
+    join(temporaryRoot, "lacneu-convex-workspace-"),
+  );
+  try {
+    await filesystem.cp(join(sourceRoot, "convex"), join(workspace, "convex"), {
+      recursive: true,
+    });
+    await filesystem.cp(join(sourceRoot, "package.json"), join(workspace, "package.json"));
+    await filesystem.symlink(
+      join(sourceRoot, "node_modules"),
+      join(workspace, "node_modules"),
+      "dir",
+    );
+    return workspace;
+  } catch (error) {
+    await filesystem.rm(workspace, { recursive: true, force: true });
+    throw error;
+  }
+}
+
 export async function reconcile(environment = process.env, dependencies = {}) {
   const runtime = validateRuntime(environment);
   const reader = dependencies.reader ?? readFile;
@@ -235,34 +302,42 @@ export async function reconcile(environment = process.env, dependencies = {}) {
   });
   if (keyResult.code !== 0) {
     throw new ReconciliationError(
-      failureMessage("Convex admin key generation failed", keyResult),
+      failureMessage("Convex admin key generation failed", keyResult, [instanceSecret]),
     );
   }
   const adminKey = parseAdminKey(keyResult.stdout);
-  const deploy = await runner(
-    "/opt/application/node_modules/.bin/convex",
-    [
-      "deploy",
-      "--typecheck",
-      "enable",
-      "--message",
-      `Lacneu reconcile ${runtime.sourceRef}`,
-    ],
-    {
-      cwd: "/opt/application",
-      env: {
-        ...process.env,
-        CONVEX_SELF_HOSTED_URL: runtime.backendUrl,
-        CONVEX_SELF_HOSTED_ADMIN_KEY: adminKey,
-        NO_COLOR: "1",
+  const workspaceFactory = dependencies.workspaceFactory ?? prepareWorkspace;
+  const workspaceCleaner = dependencies.workspaceCleaner ?? ((path) =>
+    rm(path, { recursive: true, force: true }));
+  const workspace = await workspaceFactory();
+  try {
+    const deploy = await runner(
+      "/opt/application/node_modules/.bin/convex",
+      [
+        "deploy",
+        "--typecheck",
+        "enable",
+        "--message",
+        `Lacneu reconcile ${runtime.sourceRef}`,
+      ],
+      {
+        cwd: workspace,
+        env: {
+          ...process.env,
+          CONVEX_SELF_HOSTED_URL: runtime.backendUrl,
+          CONVEX_SELF_HOSTED_ADMIN_KEY: adminKey,
+          NO_COLOR: "1",
+        },
+        timeoutMs: 10 * 60_000,
       },
-      timeoutMs: 10 * 60_000,
-    },
-  );
-  if (deploy.code !== 0) {
-    throw new ReconciliationError(
-      failureMessage("Convex function deployment failed", deploy),
     );
+    if (deploy.code !== 0) {
+      throw new ReconciliationError(
+        failureMessage("Convex function deployment failed", deploy, [instanceSecret, adminKey]),
+      );
+    }
+  } finally {
+    await workspaceCleaner(workspace);
   }
   return {
     schema_version: 1,
