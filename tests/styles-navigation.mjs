@@ -26,10 +26,31 @@
  */
 import { chromium } from "playwright-core";
 import { spawn } from "node:child_process";
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
 
 const PORT = 4488;
 const BASE = process.argv[2] ?? `http://localhost:${PORT}`;
-const RACINE = `${BASE}/training`;
+
+/*
+  La base d'hébergement, LUE SUR LE BUILD.
+
+  Elle valait « /training » en dur ici, du temps de GitHub Pages. Le jour
+  où le site est passé à la racine d'un domaine à nous, le test a cherché
+  une adresse qui n'existait plus et s'est arrêté sur « le serveur n'a
+  pas démarré » — un message qui désigne le serveur alors que la faute
+  était dans l'adresse demandée. Les deux audits déduisent déjà la base
+  de la canonique de l'accueil ; ce test fait désormais de même, et
+  survivra au prochain changement d'hébergement.
+*/
+const DIST = ["dist/client", "dist"]
+  .map((d) => join(process.cwd(), d))
+  .find((d) => existsSync(join(d, "index.html")));
+const SOCLE =
+  readFileSync(join(DIST, "index.html"), "utf8")
+    .match(/<link rel="canonical" href="https?:\/\/[^/]+([^"]*)"/)?.[1]
+    ?.replace(/\/+$/, "") ?? "";
+const RACINE = `${BASE}${SOCLE}`;
 
 /**
  * Sert le build et attend qu'il réponde. Le test est ainsi autonome :

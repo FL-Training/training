@@ -9,49 +9,39 @@ import yaml from "@rollup/plugin-yaml";
 import { CHEMINS_REDIRIGES } from "./src/lib/redirections.mjs";
 
 /*
-  DEUX HÉBERGEMENTS, UN SEUL FICHIER.
+  UN SEUL HÉBERGEMENT : le serveur de Pacivis.
 
-  Le site part vers Dokploy, sur un serveur à nous. GitHub Pages, où il
-  vit encore, est mis en sommeil le temps de la bascule : il continue de
-  servir le dernier site publié, mais ne se met plus à jour (voir
-  .github/workflows/deploy.yml).
+  GitHub Pages a servi le site le temps de la mise au point. Il est
+  retiré le 30/07/2026, Dokploy étant en service — le workflow de
+  publication est supprimé et le site vit désormais à la racine d'un
+  domaine à nous.
 
-  Ce que `DEPLOY_TARGET=dokploy` change, et pourquoi :
+  Ce qui subsiste de la bascule : `DEPLOY_TARGET=dokploy` fait passer la
+  SORTIE en mode serveur, avec l'adaptateur node. C'est le choix du
+  runtime (voir Dockerfile) et lui seul ; l'éditeur, lui, n'exige rien du
+  serveur — Sveltia est une page statique servie sous /admin/, voir
+  public/admin/ et doc/sveltia-requis-hebergement.md.
 
-    - la BASE passe à la racine. Sous GitHub Pages le site est un projet
-      parmi d'autres, servi sous /training/ ; sur un serveur à nous il
-      est seul et vit à la racine.
-    - la SORTIE devient un serveur, avec l'adaptateur node. C'est le
-      choix du runtime Dokploy (Dockerfile) ; l'éditeur, lui, n'exige
-      plus rien du serveur — Sveltia est une page statique servie sous
-      /admin/, voir public/admin/ et doc/sveltia-requis-hebergement.md.
-    - l'ORIGINE vient de PUBLIC_SITE_URL. Elle alimente les URLs
-      canoniques, le sitemap, Open Graph et JSON-LD. Tant qu'elle
-      désigne une adresse IP, le site demande à n'être pas indexé (voir
-      src/pages/robots.txt.ts) : une IP dans les résultats de recherche
-      deviendrait un doublon et des liens morts le jour du domaine.
+  L'ORIGINE vient de PUBLIC_SITE_URL, et alimente les URLs canoniques,
+  le sitemap, Open Graph et JSON-LD. La valeur par défaut ci-dessous ne
+  sert qu'aux constructions locales — tests, audits, intégration
+  continue ; le déploiement, lui, passe la sienne. Tant qu'elle désigne
+  une adresse IP, le site demande à n'être pas indexé (voir
+  src/pages/robots.txt.ts).
 
-  Le jour où un nom de domaine sera attaché : renseigner PUBLIC_SITE_URL
-  et SITE_INDEXABLE=true. Rien d'autre à toucher.
+  LA BASE EST LA RACINE, partout et sans condition. Elle valait
+  « /training » sous GitHub Pages, où le site n'était qu'un projet parmi
+  d'autres. Les liens passent tous par `href()` et
+  `import.meta.env.BASE_URL` : ils suivent la base sans rien changer, et
+  ce que l'on voit en développement est ce que le serveur sert.
 */
-
-/*
-  LA BASE EN DÉVELOPPEMENT : la racine, comme sur Dokploy.
-
-  Le développement local reproduit ainsi l'hébergement de destination —
-  mêmes adresses, mêmes chemins — et l'atelier d'édition s'ouvre sur
-  http://localhost:4321/admin/index.html. Les liens du site passent tous
-  par `href()` et `import.meta.env.BASE_URL` : ils suivent la base sans
-  rien changer, et le build GitHub Pages reste servi sous /training.
-*/
-const enDeveloppement = process.argv.includes("dev");
 const cibleDokploy = process.env.DEPLOY_TARGET === "dokploy";
 const originePublique =
-  process.env.PUBLIC_SITE_URL ?? "https://fl-training.github.io";
+  process.env.PUBLIC_SITE_URL ?? "https://pacivisacademy.com";
 
 export default defineConfig({
   site: originePublique,
-  base: enDeveloppement || cibleDokploy ? "/" : "/training",
+  base: "/",
   output: cibleDokploy ? "server" : "static",
   adapter: cibleDokploy ? node({ mode: "standalone" }) : undefined,
   trailingSlash: "ignore",

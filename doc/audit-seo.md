@@ -56,8 +56,10 @@ raccourcir, sans obligation.
 
 ## Base d'hébergement
 
-L'outil déduit la base (`/training` en publication GitHub Pages, `/` sur
-Dokploy) depuis la canonique de la racine, puis compare les chemins **hors
-base**. Sans cela, chaque comparaison de chemin serait fausse sur un
-hébergement et juste sur l'autre — c'était le premier faux positif massif
-de cet outil.
+L'outil déduit la base d'hébergement depuis la canonique de la racine,
+puis compare les chemins **hors base**. Elle est vide depuis que le site
+vit à la racine de son domaine ; elle valait `/training` sous GitHub
+Pages, et sans cette déduction chaque comparaison de chemin était fausse
+sur un hébergement et juste sur l'autre — le premier faux positif massif
+de cet outil. Le mécanisme est conservé : il coûte trois lignes et met
+l'outil à l'abri du prochain déménagement.

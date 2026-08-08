@@ -12,13 +12,13 @@ contexte professionnel.
 | [Tailwind CSS 4](https://tailwindcss.com) | Design system (plugin Vite) |
 | [React](https://react.dev) + [TanStack Query](https://tanstack.com/query) | Îlots interactifs (formulaire de contact) |
 | [Convex](https://convex.dev) | Backend : messages de contact, futur partage de médias |
-| GitHub Pages | Hébergement statique (workflow `deploy.yml`) |
+| Dokploy (VPS Pacivis) | Hébergement — image OCI construite par `container.yml` |
 
 ## Développement
 
 ```bash
 npm install
-npm run dev        # http://localhost:4321/training/
+npm run dev        # http://localhost:4321/
 npm run build      # sortie statique dans dist/
 npm run preview    # prévisualisation du build
 ```
@@ -53,9 +53,11 @@ contenu exact de son commit et ne dépend pas d'un montage Git mutable sur le
 VPS. La réconciliation de la plateforme peut ainsi continuer sans remplacer
 la version de production approuvée.
 
-Le workflow historique GitHub Pages reste disponible uniquement en
-déclenchement manuel pendant la bascule. Il n'est plus le chemin de
-publication nominal.
+GitHub Pages a servi le site le temps de la mise au point ; la
+publication a été retirée le 30/07/2026, Dokploy étant en service. Le
+site vit désormais à la racine d'un domaine à nous : il n'y a plus de
+base d'hébergement à traverser, et ce que l'on voit en développement est
+ce que le serveur sert.
 
 L'atelier Sveltia se trouve sous `/admin/`. Sa branche suit le canal de
 déploiement et son endpoint OAuth est injecté au build ; voir
