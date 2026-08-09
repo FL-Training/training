@@ -13,6 +13,7 @@ backend:
   name: github
   repo: FL-Training/training
   branch: main
+  skip_ci: true
 media_folder: public
 public_folder: /
 i18n:

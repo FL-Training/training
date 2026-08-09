@@ -21,6 +21,9 @@ on:
       - main
     tags:
       - "v*"
+  repository_dispatch:
+    types:
+      - sveltia-cms-publish
   workflow_dispatch:
 
 permissions:
@@ -81,9 +84,11 @@ jobs:
         run: npm test
 
       - name: Set up Docker Buildx
+        if: github.event_name != 'repository_dispatch'
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
 
       - name: Build runtime image
+        if: github.event_name != 'repository_dispatch'
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: .
@@ -101,6 +106,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Verify runtime contract
+        if: github.event_name != 'repository_dispatch'
         shell: bash
         run: |
           set -euo pipefail
@@ -128,6 +134,7 @@ jobs:
           docker exec "${container_id}" /usr/local/bin/pacivis-healthcheck
 
       - name: Scan runtime image
+        if: github.event_name != 'repository_dispatch'
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: image
@@ -147,6 +154,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
@@ -165,29 +175,105 @@ jobs:
           images: ghcr.io/fl-training/training
           flavor: latest=false
           tags: |
-            type=raw,value=dev,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=dev,enable=${{ github.event_name != 'repository_dispatch' && !startsWith(github.ref, 'refs/tags/') }}
+            type=raw,value=production-content,enable=${{ github.event_name == 'repository_dispatch' }}
             type=ref,event=tag
-            type=sha,format=long
+            type=sha,format=long,enable=${{ github.event_name != 'repository_dispatch' }}
+            type=sha,format=long,prefix=content-,enable=${{ github.event_name == 'repository_dispatch' }}
+
+      - name: Resolve build context
+        id: context
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" != "repository_dispatch" ]; then
+            base_tag=""
+            if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+              base_tag="${GITHUB_REF_NAME}"
+            fi
+            cat >> "${GITHUB_OUTPUT}" <<EOF
+          path=.
+          base_revision=${GITHUB_SHA}
+          base_tag=${base_tag}
+          EOF
+            exit 0
+          fi
+
+          base_tag="$(git tag --list 'v[0-9]*.[0-9]*.[0-9]*' --sort=-version:refname | head -n 1)"
+          if [ -z "${base_tag}" ]; then
+            echo "No signed production tag is available for the content release." >&2
+            exit 1
+          fi
+          if [ "$(git cat-file -t "${base_tag}")" != "tag" ]; then
+            echo "The content release base must be an annotated tag." >&2
+            exit 1
+          fi
+          git -c gpg.ssh.allowedSignersFile=.github/release-allowed-signers \
+            verify-tag "${base_tag}"
+          base_revision="$(git rev-parse "${base_tag}^{commit}")"
+          if ! git merge-base --is-ancestor "${base_revision}" origin/main; then
+            echo "The content release base is not part of main." >&2
+            exit 1
+          fi
+
+          target="${RUNNER_TEMP}/pacivis-content-release"
+          mkdir -p "${target}"
+          git archive "${base_revision}" | tar -x -C "${target}"
+          rsync -a --delete "${GITHUB_WORKSPACE}/contenu/" "${target}/contenu/"
+
+          empty_media="${RUNNER_TEMP}/pacivis-empty-media"
+          mkdir -p "${empty_media}"
+          for media_dir in public/formations public/cartes public/journal/vignettes; do
+            mkdir -p "${target}/${media_dir}"
+            if [ -d "${GITHUB_WORKSPACE}/${media_dir}" ]; then
+              rsync -a --delete "${GITHUB_WORKSPACE}/${media_dir}/" "${target}/${media_dir}/"
+            else
+              rsync -a --delete "${empty_media}/" "${target}/${media_dir}/"
+            fi
+          done
+
+          cat >> "${GITHUB_OUTPUT}" <<EOF
+          path=${target}
+          base_revision=${base_revision}
+          base_tag=${base_tag}
+          EOF
 
       - name: Resolve deployment channel
         id: channel
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${GITHUB_REF}" = "refs/heads/main" ]; then
-            echo "site_url=https://dev.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
-            echo "convex_url=https://site-convex-dev.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
-            echo "sveltia_branch=main" >> "${GITHUB_OUTPUT}"
+          if [ "${GITHUB_EVENT_NAME}" = "repository_dispatch" ]; then
+            cat >> "${GITHUB_OUTPUT}" <<EOF
+          deployment_channel=production-content
+          site_url=https://pacivisacademy.com
+          convex_url=https://site-convex.app.pacivisacademy.com
+          sveltia_branch=main
+          build_id=${{ steps.context.outputs.base_revision }}
+          EOF
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            cat >> "${GITHUB_OUTPUT}" <<EOF
+          deployment_channel=production-release
+          site_url=https://pacivisacademy.com
+          convex_url=https://site-convex.app.pacivisacademy.com
+          sveltia_branch=main
+          build_id=${GITHUB_SHA}
+          EOF
           else
-            echo "site_url=https://pacivisacademy.com" >> "${GITHUB_OUTPUT}"
-            echo "convex_url=https://site-convex.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
-            echo "sveltia_branch=main" >> "${GITHUB_OUTPUT}"
+            cat >> "${GITHUB_OUTPUT}" <<EOF
+          deployment_channel=development
+          site_url=https://dev.app.pacivisacademy.com
+          convex_url=https://site-convex-dev.app.pacivisacademy.com
+          sveltia_branch=main
+          build_id=${GITHUB_SHA}
+          EOF
           fi
 
       - name: Build and publish
+        id: build
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
-          context: .
+          context: ${{ steps.context.outputs.path }}
           platforms: linux/amd64
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
@@ -195,10 +281,70 @@ jobs:
           build-args: |
             PUBLIC_SITE_URL=${{ steps.channel.outputs.site_url }}
             PUBLIC_CONVEX_URL=${{ steps.channel.outputs.convex_url }}
-            PUBLIC_BUILD_ID=${{ github.sha }}
+            PUBLIC_BUILD_ID=${{ steps.channel.outputs.build_id }}
             SVELTIA_BRANCH=${{ steps.channel.outputs.sveltia_branch }}
             SVELTIA_CLIENT_OAUTH=https://oauth.app.pacivisacademy.com
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: mode=max
           sbom: true
+
+      - name: Scan content release image
+        if: github.event_name == 'repository_dispatch'
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          scan-type: image
+          image-ref: ghcr.io/fl-training/training@${{ steps.build.outputs.digest }}
+          vuln-type: os,library
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: 1
+
+      - name: Create desired-state token
+        id: desired-state-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.PACIVIS_DEPLOY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.PACIVIS_DEPLOY_APP_PRIVATE_KEY }}
+          owner: FL-Training
+          repositories: infrastructure-config
+          permission-actions: read
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Notify desired-state repository
+        env:
+          GH_TOKEN: ${{ steps.desired-state-token.outputs.token }}
+          DEPLOYMENT_CHANNEL: ${{ steps.channel.outputs.deployment_channel }}
+          BASE_REVISION: ${{ steps.context.outputs.base_revision }}
+          BASE_TAG: ${{ steps.context.outputs.base_tag }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+          SOURCE_REVISION: ${{ github.sha }}
+          SOURCE_REF: ${{ github.ref }}
+          SOURCE_WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          jq -n \
+            --arg event_type "pacivis-site-artifact-published" \
+            --arg channel "${DEPLOYMENT_CHANNEL}" \
+            --arg base_revision "${BASE_REVISION}" \
+            --arg base_tag "${BASE_TAG}" \
+            --arg image "ghcr.io/fl-training/training" \
+            --arg digest "${IMAGE_DIGEST}" \
+            --arg revision "${SOURCE_REVISION}" \
+            --arg source_ref "${SOURCE_REF}" \
+            --arg workflow_url "${SOURCE_WORKFLOW_URL}" \
+            '{
+              event_type: $event_type,
+              client_payload: {
+                channel: $channel,
+                base_revision: $base_revision,
+                base_tag: $base_tag,
+                image: $image,
+                digest: $digest,
+                revision: $revision,
+                source_ref: $source_ref,
+                workflow_url: $workflow_url
+              }
+            }' | gh api --method POST repos/FL-Training/infrastructure-config/dispatches --input -
