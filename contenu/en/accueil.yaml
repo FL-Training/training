@@ -1,80 +1,41 @@
-# Home page — English working translation of the 30/07/2026 deliverable
-# (« À publier — Pacivis Academy — Page d'accueil », version 2), to be
-# reviewed by Fabien. The French original is VALIDATED: this translation
-# carries the same status and must follow any revision of it.
-#
-# The order of the blocks, the buttons and the four visual entries to the
-# Training section are fixed by the deliverable and must not be changed.
 seo:
   titre: Training in conflict prevention and management
-  description: >-
-    Preventing and managing tension, incivility and conflict in professional
-    settings: corporate, public sector, training providers, individuals.
+  description: 'Preventing and managing tension, incivility and conflict in professional settings: corporate, public sector, training providers, individuals.'
 hero:
   surtitre: Professional training · Fabien Lacombe
-  titre: >-
-    Training professionals to [act] in the face of tension, conflict and
-    crisis
-  texte: >-
-    Pacivis Academy is an independent training and support organisation
-    working with organisations, teams, managers and exposed professionals when
-    **tension, conflict or crisis** degrade the ordinary conditions of work,
-    communication and decision-making.
-  mots_cles: >-
-    Workplace conflict · Incivility · Difficult behaviour · Managing team
-    conflict · Leadership under pressure
+  titre: Training professionals to [act] in the face of tension, conflict and crisis
+  texte: Pacivis Academy is an independent training and support organisation working with organisations, teams, managers and exposed professionals when **tension, conflict or crisis** degrade the ordinary conditions of work, communication and decision-making.
+  mots_cles: Workplace conflict · Incivility · Difficult behaviour · Managing team conflict · Leadership under pressure
   bouton_principal: Find the right course
+  bouton_secondaire: ''
 besoins:
   titre: Pacivis Academy can help you if…
-  chapo: >-
-    You need to prepare professionals to face tension, incivility, conflict or
-    difficult behaviour, without losing the framework, the quality of the
-    relationship or the capacity to act.
+  chapo: You need to prepare professionals to face tension, incivility, conflict or difficult behaviour, without losing the framework, the quality of the relationship or the capacity to act.
   situations:
     - picto: shield-alert
       intitule: Aggression from the public
-      texte: >-
-        your teams are regularly exposed to aggression from customers, users,
-        passengers or difficult publics;
+      texte: your teams are regularly exposed to aggression from customers, users, passengers or difficult publics;
     - picto: unlink
       intitule: Internal tension
-      texte: >-
-        internal tension is slowing cooperation, wearing teams down or
-        undermining the authority of managers;
+      texte: internal tension is slowing cooperation, wearing teams down or undermining the authority of managers;
     - picto: compass
       intitule: Managers under pressure
-      texte: >-
-        your managers have to regulate tension, support the resolution of team
-        conflict or exercise their leadership in contexts where pressure
-        weakens the usual bearings;
+      texte: your managers have to regulate tension, support the resolution of team conflict or exercise their leadership in contexts where pressure weakens the usual bearings;
     - picto: radar
       intitule: High-risk contexts
-      texte: >-
-        your employees have to keep communicating, deciding and acting in
-        high-risk professional contexts;
+      texte: your employees have to keep communicating, deciding and acting in high-risk professional contexts;
     - picto: graduation-cap
       intitule: Audiences to train
-      texte: >-
-        you train audiences who will have to act in tense or unstable relational
-        situations;
+      texte: you train audiences who will have to act in tense or unstable relational situations;
     - picto: anchor
       intitule: Posture and steadiness
-      texte: >-
-        you want to strengthen the posture, the stability and the bearings for
-        action of exposed professionals.
-  conclusion: >-
-    In these situations, training does not aim only at a better understanding
-    of what is at play. It prepares people to recognise the useful signals
-    earlier, to adjust their response and to maintain clear professional
-    action when the relationship or the context tightens.
+      texte: you want to strengthen the posture, the stability and the bearings for action of exposed professionals.
+  conclusion: In these situations, training does not aim only at a better understanding of what is at play. It prepares people to recognise the useful signals earlier, to adjust their response and to maintain clear professional action when the relationship or the context tightens.
   bouton: Find the right course
 publics:
   surtitre: Your situation
   titre: Training suited to your professional context
-  texte: >-
-    Corporate, training provider, public sector or an individual step: Pacivis
-    Academy courses help specify the context, the audience concerned and the
-    level of support required.
+  texte: 'Corporate, training provider, public sector or an individual step: Pacivis Academy courses help specify the context, the audience concerned and the level of support required.'
   liste:
     - label: Corporate
       picto: building-2
@@ -85,41 +46,26 @@ publics:
     - label: Individuals
       picto: user-round
   bouton: See the training
-methode:
-  surtitre: Our approach
-  titre: A pedagogy designed to transform practice
-  intro: >-
-    Pacivis courses combine targeted theoretical input, scenario work,
-    behavioural analysis and work on posture. This pedagogy rests on the
-    [ARCA] method — Anticipate, Regulate, Communicate, Act — to turn what is
-    worked on into bearings that can be used directly in singular professional
-    environments.
-
-
-    The aim is not only to convey content, but to enable professionals to read
-    what is at play more accurately, to adjust their response and to gain
-    steadiness in action.
-  bouton: Discover our approach
 paxi:
   surtitre: Recognised expertise
   titre: A strong footing in aviation and exposed environments
-  texte: >-
-    Pacivis Academy was built in part on in-depth work in the aviation field,
-    around difficult behaviour, relational tension, security, the passenger
-    relationship and situations where the quality of the response bears on
-    safety, on the framework and on the continuity of action.
+  texte: |-
+    Pacivis Academy was built in part on in-depth work in the aviation field, around difficult behaviour, relational tension, security, the passenger relationship and situations where the quality of the response bears on safety, on the framework and on the continuity of action.
 
-
-    That footing feeds the PAXI course, intended for professionals facing
-    these realities in airport and aviation environments.
+    That footing feeds the PAXI course, intended for professionals facing these realities in airport and aviation environments.
   bouton: Discover PAXI
+methode:
+  surtitre: Our approach
+  titre: A pedagogy designed to transform practice
+  intro: |-
+    Pacivis courses combine targeted theoretical input, scenario work, behavioural analysis and work on posture. This pedagogy rests on the [ARCA] method — Anticipate, Regulate, Communicate, Act — to turn what is worked on into bearings that can be used directly in singular professional environments.
+
+    The aim is not only to convey content, but to enable professionals to read what is at play more accurately, to adjust their response and to gain steadiness in action.
+  bouton: Discover our approach
 appel_final:
   titre: A training or support need?
-  texte: >-
-    The simplest way is to talk through your context, the situations
-    encountered, the audiences concerned and the results expected.
+  texte: |-
+    The simplest way is to talk through your context, the situations encountered, the audiences concerned and the results expected.
 
-
-    Pacivis Academy can help you specify the need, identify the right format
-    and build a response consistent with your professional constraints.
+    Pacivis Academy can help you specify the need, identify the right format and build a response consistent with your professional constraints.
   bouton: Talk to Pacivis Academy
