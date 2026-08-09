@@ -11,10 +11,14 @@ entete:
   texte: "Methods, markers, field feedback and points of view: in-depth articles for those who face conflict in their work."
 
 filtres:
+  aucun_label: "No tag matches."
+  chercher: "Filter tags…"
+  groupe_methode: "The method"
+  groupe_champ: "Fields of practice"
   tous: "All"
   filtrer_par_flux: "Filter by section"
   filtrer_par_label: "Filter by topic"
-  labels_titre: "Topics"
+  labels_titre: "Tags"
   aucun_article_flux: "No article published yet."
   aucun_article_encore: "— no article yet"
   aucune_selection: "No article in this selection yet."

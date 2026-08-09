@@ -68,6 +68,14 @@ collections:
                 label: Texte
                 widget: text
                 i18n: true
+              - name: mots_cles
+                label: Ligne de repères
+                widget: string
+                i18n: true
+                hint: >-
+                  Les thèmes séparés par « · » — par exemple « Conflits professionnels · Incivilités
+                  · Comportements difficiles ». Laisser vide pour ne pas l'afficher.
+                required: false
               - name: bouton_principal
                 label: Bouton principal
                 widget: string
@@ -76,6 +84,53 @@ collections:
                 label: Bouton secondaire
                 widget: string
                 i18n: true
+                hint: Facultatif. Laisser vide pour n'afficher qu'un seul bouton.
+                required: false
+          - name: besoins
+            label: Bloc « À quels besoins Pacivis répond »
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre
+                widget: string
+                i18n: true
+              - name: chapo
+                label: Phrase d'introduction
+                widget: text
+                i18n: true
+              - name: situations
+                label: Les situations
+                widget: list
+                i18n: true
+                min: 1
+                fields:
+                  - name: picto
+                    label: Pictogramme
+                    widget: string
+                    i18n: duplicate
+                    hint: Nom du picto (voir la liste dans LISEZMOI.md)
+                  - name: intitule
+                    label: Intitulé court
+                    widget: string
+                    i18n: true
+                    hint: "Trois ou quatre mots : c'est ce que l'œil lit en premier."
+                  - name: texte
+                    label: La situation
+                    widget: text
+                    i18n: true
+                hint: "Deux niveaux de lecture : l'intitulé pour repérer, la phrase pour se reconnaître."
+                summary: "{{fields.intitule}}"
+              - name: conclusion
+                label: Phrase de conclusion
+                widget: text
+                i18n: true
+                hint: Ce que la formation apporte face à ces situations.
+              - name: bouton
+                label: Bouton vers la rubrique Formations
+                widget: string
+                i18n: true
+            hint: "Texte validé par Fabien : à ne pas reformuler sans reprendre le document d'origine."
           - name: publics
             label: Bloc « Votre situation »
             widget: object
@@ -139,28 +194,6 @@ collections:
                 i18n: true
               - name: bouton
                 label: Bouton
-                widget: string
-                i18n: true
-          - name: journal
-            label: Bloc Journal
-            widget: object
-            i18n: true
-            fields:
-              - name: surtitre
-                label: Surtitre
-                widget: string
-                i18n: true
-              - name: titre
-                label: Titre
-                widget: string
-                i18n: true
-              - name: texte
-                label: Chapô
-                widget: text
-                i18n: true
-                hint: Repris du haut de la page « Le Journal ».
-              - name: bouton_tous
-                label: Bouton « Tous les articles »
                 widget: string
                 i18n: true
           - name: methode
@@ -937,7 +970,23 @@ collections:
                 widget: string
                 i18n: true
               - name: labels_titre
-                label: Titre de la rangée des labels
+                label: Bouton du panneau des labels
+                widget: string
+                i18n: true
+              - name: chercher
+                label: Invite du champ de recherche de label
+                widget: string
+                i18n: true
+              - name: groupe_methode
+                label: Titre du groupe « méthode »
+                widget: string
+                i18n: true
+              - name: groupe_champ
+                label: Titre du groupe « champs d'intervention »
+                widget: string
+                i18n: true
+              - name: aucun_label
+                label: Mention affichée quand la recherche ne trouve aucun label
                 widget: string
                 i18n: true
               - name: aucun_article_flux

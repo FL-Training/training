@@ -124,8 +124,54 @@ const accueilSchema = z.object({
     surtitre: texteRequis,
     titre: texteRequis,
     texte: texteRequis,
+    /*
+      La ligne de repères du livrable : « Conflits professionnels ·
+      Incivilités · Comportements difficiles… ». Du TEXTE, jamais une
+      image — un mot gravé dans une illustration n'est ni lu par un
+      lecteur d'écran, ni traduit, ni agrandi au zoom (WCAG 1.4.5).
+      Facultative : une langue peut ne pas la porter.
+    */
+    mots_cles: texteFacultatif,
     bouton_principal: texteRequis,
-    bouton_secondaire: texteRequis,
+    /*
+      Le livrable du 30/07/2026 ne prévoit plus qu'un bouton au haut de
+      page : « Identifier la formation adaptée ». Le second menait à
+      « Notre approche », que le bloc 4 annonce désormais avec son propre
+      bouton — le garder ferait doublon. Facultatif plutôt que retiré :
+      une autre langue, ou un retour en arrière, peut le vouloir.
+    */
+    bouton_secondaire: texteFacultatif,
+  }),
+  /*
+    « À quels besoins Pacivis Academy répond » — bloc du livrable du
+    30/07/2026. Le visiteur doit s'y reconnaître : un chapô, les
+    situations une à une, puis ce que la formation en fait.
+  */
+  besoins: z.object({
+    titre: texteRequis,
+    chapo: texteRequis,
+    /*
+      Chaque situation se lit à DEUX niveaux : un intitulé court que
+      l'œil attrape en passant, la phrase du livrable pour qui s'y
+      reconnaît. Six phrases nues d'une vingtaine de mots obligeaient à
+      tout lire avant de savoir de quoi elles parlaient — c'est ce que
+      Fabien et Olivier ont trouvé lourd le 30/07/2026.
+
+      Les intitulés reprennent les mots de Fabien, ils n'en ajoutent
+      pas. Le pictogramme est un repère, jamais une illustration : il
+      est décoratif au sens de l'accessibilité, l'intitulé porte le sens.
+    */
+    situations: z
+      .array(
+        z.object({
+          picto: texteRequis,
+          intitule: texteRequis,
+          texte: texteRequis,
+        }),
+      )
+      .min(1),
+    conclusion: texteRequis,
+    bouton: texteRequis,
   }),
   publics: entete.extend({
     // Nom et pictogramme seulement : l'accueil nomme les secteurs, il
@@ -141,14 +187,11 @@ const accueilSchema = z.object({
     texte: texteRequis,
     bouton: texteRequis,
   }),
-  journal: z.object({
-    surtitre: texteRequis,
-    titre: texteRequis,
-    // Le chapô de la rubrique, repris sur l'accueil : sans lui, le bloc
-    // n'annonçait que son titre et ne disait pas ce qu'on y trouve.
-    texte: texteRequis,
-    bouton_tous: texteRequis,
-  }),
+  /*
+    Plus de bloc « Journal » ici : retiré de l'accueil le 30/07/2026,
+    le livrable ne le prévoyant plus. Le menu et le pied de page y
+    mènent toujours. Son texte est archivé dans contenu/PROVENANCE.md.
+  */
   methode: z.object({
     surtitre: texteRequis,
     titre: texteRequis,
@@ -243,6 +286,15 @@ const journalPageSchema = z.object({
   seo,
   entete,
   filtres: z.object({
+    /*
+      Le panneau des thèmes. La taxonomie peut monter à plusieurs
+      dizaines d'entrées : elles ne se lisent plus en rangée, mais dans
+      un panneau qu'on ouvre et où l'on cherche.
+    */
+    chercher: texteRequis,
+    groupe_methode: texteRequis,
+    groupe_champ: texteRequis,
+    aucun_label: texteRequis,
     tous: texteRequis,
     filtrer_par_flux: texteRequis,
     filtrer_par_label: texteRequis,

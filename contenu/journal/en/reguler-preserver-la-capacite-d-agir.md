@@ -1,0 +1,29 @@
+---
+titre: "Regulating: preserving the capacity to act as pressure rises"
+chemin: "preserving-the-capacity-to-act"
+resume: "Under pressure, attention narrows and the available responses seem fewer. Regulating means preserving enough stability — alone and as a team — to stay in touch with what is actually happening."
+flux: "methodes-et-reperes"
+date: 2026-07-30
+labels:
+  - "reguler"
+  - "stabilite-operationnelle"
+auteur: "Fabien Lacombe"
+vignette:
+  src: "/journal/vignettes/reguler-preserver-la-capacite-d-agir/vignette/src.webp"
+  alt: "A team around a meeting table, in a moment of work under contained tension."
+sources: []
+---
+
+It happens that we carry on acting when our capacity to perceive the situation has already changed. As pressure rises, attention narrows, certain pieces of information fill the whole field and the possible responses seem fewer. This phenomenon runs across the two levels Pacivis Academy is concerned with: the individual and the team. Each has its own mechanisms, but both can lose part of their capacity to perceive, to interpret and to decide. Regulating then means preserving or recovering enough stability to stay in touch with the complexity of the real and to keep a capacity for suitable action. That stability supports operational continuity: it makes it possible first to maintain the activity as the situation deteriorates, while keeping the capacity to adapt the response.
+
+In the workings of a team, dysregulation can settle in slowly. Deviations accumulate, workarounds become habitual and the activity holds at the cost of growing effort, until fragility becomes almost ordinary. In an interpersonal conflict, the tipping point can seem sudden. It is often preceded by a combination of factors that gradually altered the situation and reduced the room for adjustment. The visible rupture therefore does not always tell the real timeline of the deterioration. Regulating requires distinguishing these trajectories without confusing the appearance of the conflict with the forming of the conditions that made it possible.
+
+In the individual, pressure produces perceptible physiological, cognitive and emotional changes. Attention can enter a kind of tunnel: it favours whatever seems threatening, urgent or decisive and leaves other elements outside the field. In the spirit of the Regulate pillar of ARCA, what matters is to recognise what is happening within oneself, to understand what the emotion is signalling and to prevent it from driving the response on its own. This work draws on emotional intelligence: recognising what the emotion signals, regulating its effects on attention and decision, and remaining available to what is at play in the other person. This regulation aims neither at an ideal state nor at permanent mastery. It seeks to maintain enough lucidity, coherence and availability to recover a measure of freedom in choosing the response, within a defined framework.
+
+A team does not simply juxtapose individual reactions. Perceptions there confront, reinforce or correct one another. Pressure affects the quality of exchanges. It can impoverish shared understanding, or even prevent it from forming. The collective may also fix on a dominant interpretation and set aside whatever contradicts it. Regulation then plays out in its capacity to keep visible the differences in reading, the tensions and the effects produced by its own functioning. It allows disagreement to remain workable and the team not to confuse too quickly cohesion, uniformity of viewpoints and real stability. When a person or a team recovers enough stability, it changes the conditions of the exchange and can become, for the other, an external point of reference. Through an effect of mirroring and co-regulation, it does not regulate the other in their place; it supports the return of their own capacities for regulation. The reverse also holds: unregulated tension can reinforce itself by resonance.
+
+Regulation depends on points of support: bearings that make it possible to hold an orientation when the situation becomes unstable. In conflict, however, their function can invert. An actor may engage in confrontation to test a limit, to meet resistance or to regain a hold on an uncertain situation. If the protagonists persist in acting against one another from that same point, the support becomes a fixation and the mutual resistance feeds the escalation. The regulating function of a point of support lies in its capacity to serve as a pivot, allowing a shift of perspective, a return of movement and the reopening of possibilities for adjustment.
+
+Regulation is not limited to the moment before action. Every intervention changes the situation, the perceptions and the possibilities available. Its effects may differ from the intention that guided it, and may appear in a person as much as in a team. Attention to these effects makes it possible to reassess the direction taken without waiting for a fresh rupture to make the adjustment more costly. Regulation then becomes a continuous practice of vigilance and adjustment, accompanying the situation for as long as its balances keep shifting.
+
+Regulating ultimately aims to preserve the conditions of an action that is sufficiently lucid and free. For the individual, it means not letting the contraction of attention or the intensity of emotion determine the response alone. For the team, it means maintaining an understanding that can be shared despite tensions and divergences. The individual and collective levels thus connect distinct mechanisms without conflating them. They prepare the two following pillars of ARCA, Communicate and Act, with the same requirement: to seek the rightness of the action in view of the situation, of its effects and of the framework within which it takes place.

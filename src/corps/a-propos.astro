@@ -258,36 +258,23 @@ const { seo, entete, intro, fondateur, engagement } = aPropos;
     }
   }
 
+  /*
+    L'image du tableau, cadrée net.
+
+    Elle portait un fondu circulaire : l'image, sombre, était éclaircie
+    puis dissoute par un masque elliptique pour ne pas trancher sur le
+    papier. Fabien préfère la photographie telle qu'elle est — le
+    30/07/2026, elle reprend donc ses valeurs et ses limites.
+
+    Ce qui remplace le fondu : un cadre franc, coins arrondis comme les
+    cartes du site, et l'ombre douce de la charte. L'image ne s'excuse
+    plus d'être là, elle est posée.
+  */
   .visuel-tableau {
     width: 100%;
     height: auto;
-    /*
-      L'image est sombre, le papier est clair : toute limite du masque
-      se voit. On agit sur les deux termes de ce contraste.
-
-      D'abord l'image, éclaircie et adoucie pour se rapprocher du
-      papier — une photographie de pénombre posée telle quelle tranchera
-      toujours, quel que soit le fondu.
-
-      Ensuite le masque. Son rayon vaut exactement la DEMI-dimension de
-      l'image : une ellipse plus large déborde du fichier, le dégradé
-      est alors tranché par le bord de la balise, et cette coupure est
-      précisément l'arête que l'on voyait. Inscrite, l'ellipse atteint
-      la transparence avant d'y arriver — il n'y a plus de bord du tout,
-      seulement une image qui s'éteint.
-    */
-    opacity: 0.82;
-    filter: saturate(0.85) contrast(0.88) brightness(1.14);
-    mask-image: radial-gradient(
-      ellipse 50% 50% at 50% 47%,
-      #000 0%,
-      rgb(0 0 0 / 0.98) 30%,
-      rgb(0 0 0 / 0.9) 46%,
-      rgb(0 0 0 / 0.72) 60%,
-      rgb(0 0 0 / 0.48) 72%,
-      rgb(0 0 0 / 0.26) 82%,
-      rgb(0 0 0 / 0.1) 91%,
-      transparent 100%
-    );
+    border-radius: 1rem;
+    box-shadow: var(--shadow-card);
   }
+
 </style>

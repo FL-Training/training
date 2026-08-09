@@ -28,6 +28,15 @@ interface Props {
    * de recadrer le fichier, qui perdrait le reste de la scène.
    */
   cadrage?: string;
+  /**
+   * Présence de l'image, de 0 à 1.
+   *
+   * 0.4 convient au papier. Une image très claire sur un aplat sombre
+   * demande moins (voir `.visuel-sur-sombre`) ; une image sourde sur un
+   * fond gris peut en demander davantage. C'est un réglage d'équilibre,
+   * pas une valeur juste : il se juge sur la page, bloc par bloc.
+   */
+  opacite?: number;
   class?: string;
 }
 
@@ -38,13 +47,14 @@ const {
   cote = "droite",
   largeur = "46%",
   cadrage = "50% 50%",
+  opacite = 0.4,
   class: classe,
 } = Astro.props;
 ---
 
 <div
   class:list={["visuel-fondu", `visuel-${cote}`, classe]}
-  style={`--largeur-visuel: ${largeur}; --cadrage-visuel: ${cadrage}`}
+  style={`--largeur-visuel: ${largeur}; --cadrage-visuel: ${cadrage}; --opacite-visuel: ${opacite}`}
   aria-hidden="true"
 >
   <img
@@ -93,8 +103,21 @@ const {
     height: 100%;
     object-fit: cover;
     object-position: var(--cadrage-visuel, 50% 50%);
-    opacity: 0.4;
-    filter: saturate(0.6) contrast(0.95);
+    opacity: var(--opacite-visuel, 0.4);
+    /*
+      Filtre allégé le 30/07/2026, après mesure.
+
+      `saturate(0.6) contrast(0.95)` écrasait l'image bien plus que son
+      opacité : au même point du bloc, l'étendue des valeurs passait de
+      195 à 10 selon que le filtre était appliqué ou non. Monter
+      l'opacité ne changeait donc presque rien — c'était le filtre, et
+      non la transparence, qui rendait la photographie fantomatique.
+
+      Une désaturation légère suffit à l'empêcher de crier ; le contraste
+      remonte au-dessus de 1 pour que la matière reste lisible sous le
+      masque.
+    */
+    filter: saturate(0.85) contrast(1.08);
     mask-composite: intersect;
     -webkit-mask-composite: source-in;
   }
@@ -137,6 +160,24 @@ const {
         #000 72%,
         transparent 100%
       );
+  }
+
+  /*
+    Sur un aplat sombre, une photographie claire ressort beaucoup plus
+    que sur le papier : à la même opacité elle passait du fond au sujet.
+    On la retient, et `luminosity` lui fait emprunter la teinte du bloc
+    au lieu d'y poser ses propres couleurs — l'image devient une matière,
+    pas une illustration.
+
+    Classe posée par l'appelant (`class="visuel-sur-sombre"`), donc
+    `:global` : les styles d'un composant Astro sont portés par ses
+    propres éléments, et celui-ci ne connaît pas le fond qui l'accueille.
+  */
+  :global(.visuel-sur-sombre) img {
+    /* Le fond sombre plafonne la présence de l'image : la valeur passée
+       en prop y serait presque toujours trop haute. */
+    opacity: 0.22;
+    mix-blend-mode: luminosity;
   }
 
   @media (max-width: 767px) {

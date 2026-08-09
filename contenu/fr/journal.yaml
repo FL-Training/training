@@ -12,6 +12,10 @@ entete:
   texte: "Méthodes, repères, retours de terrain et points de vue : des articles de fond pour celles et ceux qui font face au conflit dans leur métier."
 
 filtres:
+  aucun_label: "Aucun label ne correspond."
+  chercher: "Filtrer les labels…"
+  groupe_methode: "La méthode"
+  groupe_champ: "Champs d'intervention"
   tous: "Tous"
   filtrer_par_flux: "Filtrer par flux"
   filtrer_par_label: "Filtrer par label"

@@ -146,23 +146,102 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
 
       {
         labelsPresents.length > 0 && (
-          <div
-            class="mt-5 flex flex-wrap items-baseline gap-x-1 gap-y-2"
-            role="group"
-            aria-label={journalPage.filtres.filtrer_par_label}
-          >
-            <span class="mr-2 text-[0.68rem] font-semibold tracking-[0.14em] text-ink-faint uppercase">
-              {journalPage.filtres.labels_titre}
-            </span>
-            <button type="button" data-label="tous" class="mot-label mot-actif">
-              {journalPage.filtres.tous}
-            </button>
-            {labelsPresents.map((id) => (
-              <button type="button" data-label={id} class="mot-label">
-                {nomLabel(id, langue)}
-                <span class="compte">{comptesParLabel.get(id)}</span>
-              </button>
-            ))}
+          <div class="mt-6">
+            {/*
+              UN PANNEAU, PAS UNE RANGÉE.
+
+              La taxonomie peut monter à plusieurs dizaines de thèmes.
+              Alignés, ils saturaient la page — neuf tenaient déjà de
+              justesse sur deux lignes — et l'affinage devenait un mur à
+              lire avant de pouvoir choisir.
+
+              Replié, le panneau ne prend qu'une ligne et annonce le
+              thème retenu. Ouvert, il donne la liste entière, rangée par
+              famille et filtrable au clavier : à quarante entrées, on
+              cherche « conflit » plutôt que de parcourir.
+
+              `<details>` natif : l'ouverture et le clavier sont acquis
+              sans script, et le panneau reste utilisable si le
+              JavaScript ne s'exécute pas — seule la recherche s'en
+              passe alors.
+            */}
+            <details class="panneau-themes" data-panneau-themes>
+              <summary>
+                <span class="themes-intitule">{journalPage.filtres.labels_titre}</span>
+                <span class="themes-choix" data-themes-choix>
+                  {journalPage.filtres.tous}
+                </span>
+                <svg
+                  aria-hidden="true"
+                  class="themes-chevron"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </summary>
+
+              <div class="themes-corps">
+                {/*
+                  Le champ n'existe que si le script tourne : sans lui il
+                  ne filtrerait rien et promettrait une fonction absente.
+                */}
+                <input
+                  type="search"
+                  class="themes-recherche"
+                  placeholder={journalPage.filtres.chercher}
+                  aria-label={journalPage.filtres.chercher}
+                  data-themes-recherche
+                  hidden
+                />
+
+                <div
+                  class="themes-listes"
+                  role="group"
+                  aria-label={journalPage.filtres.filtrer_par_label}
+                >
+                  <button type="button" data-label="tous" class="mot-label mot-actif">
+                    {journalPage.filtres.tous}
+                  </button>
+
+                  {["methode", "champ"].map((groupe) => {
+                    const duGroupe = labelsPresents.filter(
+                      (id) => LABELS.find((l) => l.id === id)?.groupe === groupe,
+                    );
+                    return duGroupe.length > 0 ? (
+                      <div class="themes-groupe" data-themes-groupe>
+                        <p class="themes-groupe-titre">
+                          {groupe === "methode"
+                            ? journalPage.filtres.groupe_methode
+                            : journalPage.filtres.groupe_champ}
+                        </p>
+                        <div class="themes-puces">
+                          {duGroupe.map((id) => (
+                            <button
+                              type="button"
+                              data-label={id}
+                              data-nom={nomLabel(id, langue).toLowerCase()}
+                              class="mot-label"
+                            >
+                              {nomLabel(id, langue)}
+                              <span class="compte">{comptesParLabel.get(id)}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null;
+                  })}
+                </div>
+
+                <p class="themes-vide" data-themes-vide hidden>
+                  {journalPage.filtres.aucun_label}
+                </p>
+              </div>
+            </details>
           </div>
         )
       }
@@ -303,6 +382,13 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
         });
       };
 
+      /*
+        Le mouvement est une aide à la lecture, pas un ornement : qui a
+        demandé moins d'animation reçoit le même filtrage, sans fondu.
+      */
+      const sobre = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let premierRendu = true;
+
       const appliquer = () => {
         let visibles = 0;
         cartes.forEach((carte) => {
@@ -310,13 +396,88 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
           const garde =
             (flux === "tous" || carte.dataset.flux === flux) &&
             (label === "tous" || labels.includes(label));
+          const etaitCachee = carte.style.display === "none";
           carte.style.display = garde ? "" : "none";
-          if (garde) visibles++;
+          if (garde) {
+            /*
+              N'animer que ce qui ARRIVE, et jamais au premier rendu —
+              la page ne doit pas se reconstruire sous les yeux de
+              quelqu'un qui n'a rien demandé.
+            */
+            if (!sobre && !premierRendu && etaitCachee) {
+              carte.style.setProperty("--retard-carte", `${Math.min(visibles, 5) * 45}ms`);
+              carte.classList.remove("carte-arrive");
+              // Forcer le navigateur à reprendre l'animation depuis son
+              // début : sans cette lecture, retirer puis remettre la
+              // classe dans le même souffle ne relance rien.
+              void carte.offsetWidth;
+              carte.classList.add("carte-arrive");
+            }
+            visibles++;
+          }
         });
+        premierRendu = false;
         vide?.classList.toggle("hidden", visibles > 0);
         activer(boutonsFlux, "filtre", flux);
         activer(boutonsLabel, "label", label);
+        refleterChoix();
       };
+
+      /*
+        Le thème retenu s'affiche sur le panneau replié : sans cela, il
+        faudrait l'ouvrir pour savoir ce qui filtre la page.
+      */
+      const panneau = document.querySelector<HTMLDetailsElement>("[data-panneau-themes]");
+      const choix = document.querySelector<HTMLElement>("[data-themes-choix]");
+      const refleterChoix = () => {
+        if (!choix) return;
+        const actif = document.querySelector<HTMLButtonElement>(
+          `[data-label="${label}"]`,
+        );
+        choix.textContent = actif?.childNodes[0]?.textContent?.trim() ?? label;
+      };
+
+      /*
+        La recherche de thème. Révélée seulement ici : sans script elle
+        ne filtrerait rien, et un champ qui ne répond pas est pire que
+        pas de champ du tout.
+
+        Elle masque les puces qui ne correspondent pas, puis les familles
+        devenues vides — sinon un titre de groupe resterait seul.
+      */
+      const recherche = document.querySelector<HTMLInputElement>("[data-themes-recherche]");
+      const rienTrouve = document.querySelector<HTMLElement>("[data-themes-vide]");
+      if (recherche) {
+        recherche.hidden = false;
+        recherche.addEventListener("input", () => {
+          const q = recherche.value.trim().toLowerCase();
+          let trouves = 0;
+          for (const b of boutonsLabel) {
+            if (b.dataset.label === "tous") continue;
+            const garde = !q || (b.dataset.nom ?? "").includes(q);
+            b.hidden = !garde;
+            if (garde) trouves++;
+          }
+          for (const g of document.querySelectorAll<HTMLElement>("[data-themes-groupe]")) {
+            g.hidden = !g.querySelector<HTMLElement>(".mot-label:not([hidden])");
+          }
+          rienTrouve && (rienTrouve.hidden = trouves > 0);
+        });
+      }
+
+      /*
+        Choisir un thème referme le panneau : la liste a fait son office,
+        et la page filtrée doit redevenir visible. Le focus revient au
+        bouton, sans quoi il tomberait sur un élément qu'on vient de
+        replier.
+      */
+      boutonsLabel.forEach((b) =>
+        b.addEventListener("click", () => {
+          if (!panneau?.open) return;
+          panneau.open = false;
+          panneau.querySelector("summary")?.focus();
+        }),
+      );
 
       // Les deux filtres se lisent dans l'URL : le menu du site et
       // n'importe quel lien peuvent donc ouvrir le Journal sur une
@@ -524,35 +685,208 @@ const formatDate = new Intl.DateTimeFormat(localeLangue(langue), {
   }
 
   /*
-    LABELS — l'affinage. Des mots, pas des boutons : pas de bordure, une
-    surface qui n'apparaît qu'au survol et à la sélection. La rangée
-    reste lisible même quand la liste s'allongera.
+    L'ENTRÉE EN SCÈNE DES ARTICLES FILTRÉS.
+
+    Les cartes disparaissaient et réapparaissaient d'un coup : le
+    changement se voyait sans se comprendre, et l'on doutait d'avoir
+    cliqué au bon endroit. Un fondu montant les fait arriver, décalé
+    d'une carte à l'autre pour que l'œil suive la liste qui se
+    reconstitue.
+
+    Rien n'est animé à la SORTIE : une carte qui s'efface lentement
+    laisserait un trou pendant que les suivantes remontent, et la page
+    sauterait. Elles partent net, les restantes arrivent en douceur.
+
+    Le décalage est plafonné : au-delà de six cartes il n'ajoute plus de
+    lisibilité, seulement de l'attente.
+  */
+  @keyframes carte-arrive {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .carte-arrive {
+    animation: carte-arrive 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--retard-carte, 0ms);
+  }
+
+  /*
+    Le compteur d'un label et le libellé du panneau changent en même
+    temps que la liste : une transition douce évite le clignotement.
+  */
+  .themes-choix {
+    transition: color 200ms ease;
+  }
+
+  /*
+    LE PANNEAU DES LABELS.
+
+    Replié, il tient sur une ligne quelle que soit la taille de la
+    taxonomie — c'est tout l'intérêt : la page ne se déforme plus quand
+    les thèmes se multiplient.
+  */
+  .panneau-themes {
+    max-width: 28rem;
+  }
+
+  .panneau-themes > summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* La cible reste au-dessus du minimum tactile. */
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 15%, transparent);
+    border-radius: 9999px;
+    font-size: 0.9rem;
+    color: var(--color-ink-soft);
+    cursor: pointer;
+    list-style: none;
+    transition:
+      border-color 200ms ease,
+      background-color 200ms ease;
+  }
+
+  .panneau-themes > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .panneau-themes > summary:hover {
+    border-color: color-mix(in oklab, var(--color-ink) 30%, transparent);
+    background: color-mix(in oklab, var(--color-ink) 4%, transparent);
+  }
+
+  .themes-intitule {
+    font-weight: 600;
+    color: var(--color-navy-deep);
+  }
+
+  /* Le thème retenu, lisible sans ouvrir le panneau. */
+  .themes-choix {
+    color: var(--color-sage-deep);
+  }
+
+  .themes-chevron {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: transform 200ms ease;
+  }
+
+  .panneau-themes[open] > summary .themes-chevron {
+    transform: rotate(180deg);
+  }
+
+  .themes-corps {
+    margin-top: 0.75rem;
+    /*
+      Plafonné, avec défilement interne.
+
+      Mesuré à quarante-neuf thèmes, le panneau ouvert atteignait 924 px
+      sur grand écran et 1136 px sur téléphone : il repoussait les
+      articles hors de vue, et le visiteur perdait ce qu'il était venu
+      lire. La recherche au-dessus reste le vrai chemin quand la liste
+      est longue ; ce plafond garde simplement la page navigable en
+      attendant qu'on s'en serve.
+    */
+    max-height: min(24rem, 60vh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1rem;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 12%, transparent);
+    border-radius: 1rem;
+    background: color-mix(in oklab, var(--color-paper) 70%, transparent);
+  }
+
+  .themes-recherche {
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 15%, transparent);
+    border-radius: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--color-navy-deep);
+    background: var(--color-paper);
+  }
+
+  .themes-recherche::placeholder {
+    color: var(--color-ink-faint);
+  }
+
+  .themes-listes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  /* Le champ pousse les listes quand il est là ; sans lui, rien ne
+     bouge — d'où la marge portée par le champ et non par la liste. */
+  .themes-recherche:not([hidden]) + .themes-listes {
+    margin-top: 0.9rem;
+  }
+
+  .themes-groupe-titre {
+    margin-bottom: 0.45rem;
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+  }
+
+  .themes-puces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .themes-vide {
+    margin-top: 0.8rem;
+    font-size: 0.86rem;
+    color: var(--color-ink-faint);
+  }
+
+  /*
+    LES PUCES DE THÈME. Un contour ténu leur donne leur limite : dans
+    une liste longue, des mots nus se lisent comme une phrase.
   */
   .mot-label {
     display: inline-flex;
-    align-items: baseline;
-    gap: 0.3rem;
-    /* Même raison que les onglets : la pastille reste de la même
-       taille, sa zone sensible atteint 44 px. */
-    min-height: 2.75rem;
-    align-content: center;
-    flex-wrap: wrap;
-    padding: 0.28rem 0.6rem;
-    border-radius: 0.5rem;
-    font-size: 0.86rem;
-    color: var(--color-ink-faint);
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.25rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid color-mix(in oklab, var(--color-ink) 12%, transparent);
+    border-radius: 9999px;
+    font-size: 0.84rem;
+    line-height: 1.2;
+    color: var(--color-ink-soft);
+    background: transparent;
     transition:
       color 200ms ease,
+      border-color 200ms ease,
       background-color 200ms ease;
+  }
+
+  /* « Tous » ouvre la liste : il se détache des familles qui suivent. */
+  .themes-listes > .mot-label {
+    align-self: flex-start;
   }
 
   .mot-label:hover {
     color: var(--color-navy-deep);
-    background: color-mix(in oklab, var(--color-ink) 5%, transparent);
+    border-color: color-mix(in oklab, var(--color-ink) 28%, transparent);
+    background: color-mix(in oklab, var(--color-ink) 4%, transparent);
   }
 
   .mot-label.mot-actif {
     color: var(--color-sage-deep);
+    border-color: var(--color-sage-deep);
     background: var(--color-sage-faint);
     font-weight: 600;
   }

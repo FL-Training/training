@@ -2,6 +2,7 @@
 import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
 import Picto from "../components/Picto.astro";
+import VisuelFondu from "../components/VisuelFondu.astro";
 import { href } from "../lib/url";
 import { contenuLangue } from "../lib/contenu";
 import { langueActive } from "../lib/langue-active";
@@ -34,15 +35,16 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
       rentre dans la page — sur les formats étroits il déborde encore un
       peu, faute de colonne libre.
     */}
+    <div class="relative mx-auto max-w-6xl px-6 pt-14 pb-8 sm:pt-20 md:pt-28 md:pb-10">
     <img
       src={href("/logo-400.webp")}
       alt=""
       width="420"
       height="420"
       aria-hidden="true"
-      class="logo-filigrane pointer-events-none absolute top-1/2 right-[-2rem] h-36 w-36 -translate-y-1/2 opacity-[0.11] select-none sm:right-[-1rem] sm:h-56 sm:w-56 md:right-[3rem] md:h-80 md:w-80 lg:right-[7rem] lg:h-88 lg:w-88 xl:right-[11rem] xl:h-96 xl:w-96"
+      class="logo-filigrane pointer-events-none absolute top-1/2 right-0 z-10 hidden h-72 w-72 -translate-y-1/2 select-none min-[1152px]:block"
     />
-    <div class="mx-auto max-w-6xl px-6 pt-14 pb-8 sm:pt-20 md:pt-28 md:pb-10">
+
       <p class="eyebrow reveal reveal-1">{accueil.hero.surtitre}</p>
       <h1
         class="display reveal reveal-2 mt-4 max-w-4xl text-[2.1rem] text-navy-deep sm:text-[2.7rem] md:mt-5 md:text-[3.4rem] lg:text-[3.8rem]"
@@ -53,18 +55,110 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
         class="reveal reveal-3 mt-5 max-w-xl text-lg leading-relaxed text-ink-soft md:mt-7"
         set:html={enrichir(accueil.hero.texte)}
       />
+      {/*
+        La ligne de repères du livrable. DU TEXTE, jamais une image : un
+        mot gravé dans une illustration n'est ni lu par un lecteur
+        d'écran, ni traduit, ni agrandi au zoom (WCAG 1.4.5, niveau AA).
+        Les points médians sont des séparateurs visuels — masqués à la
+        lecture vocale, qui n'a que faire de la ponctuation d'affichage.
+      */}
+      {accueil.hero.mots_cles && (
+        <p class="reveal reveal-4 mt-6 max-w-2xl text-sm text-ink-faint">
+          {accueil.hero.mots_cles.split("·").map((mot, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true"> · </span>}
+              <span>{mot.trim()}</span>
+            </>
+          ))}
+        </p>
+      )}
       <div class="reveal reveal-4 mt-7 flex flex-wrap gap-4 md:mt-9">
         <a href={href(cheminLangue(langue, "/formations"))} class="btn btn-primary">
           {accueil.hero.bouton_principal}
           <span aria-hidden="true">→</span>
         </a>
-        <a href={href(cheminLangue(langue, "/approche"))} class="btn btn-ghost">
-          {accueil.hero.bouton_secondaire}
-        </a>
+        {/* Le second bouton n'existe plus au livrable : le bloc « Notre
+            approche » porte désormais le sien. */}
+        {accueil.hero.bouton_secondaire && (
+          <a href={href(cheminLangue(langue, "/approche"))} class="btn btn-ghost">
+            {accueil.hero.bouton_secondaire}
+          </a>
+        )}
       </div>
     </div>
     <div class="mx-auto max-w-6xl px-6">
       <DeescalationLine class="h-12 sm:h-16 md:h-24" />
+    </div>
+  </section>
+
+  {/*
+    ============ À quels besoins Pacivis répond ============
+
+    Placé juste après le haut de page, comme le veut le livrable : le
+    visiteur doit s'y reconnaître avant qu'on lui parle de formations.
+
+    Une liste ordinaire, pas un damier de cartes. Le livrable demande
+    « une lecture aérée » et le site réserve les cartes à ce qui mène
+    quelque part — ces six lignes ne sont cliquables nulle part, un
+    habillage de carte promettrait un lien qui n'existe pas.
+
+    La liste est un vrai <ul> : le lecteur d'écran annonce « six
+    éléments » et permet d'en sortir. Six phrases dans un paragraphe ne
+    diraient rien de leur nombre.
+  */}
+  <section class="border-y border-ink/10 bg-paper-deep/30">
+    <div class="mx-auto max-w-6xl px-6 py-16 md:py-20" data-reveal-group>
+      <h2 class="display max-w-3xl text-3xl text-navy-deep md:text-4xl" data-reveal>
+        {accueil.besoins.titre}
+      </h2>
+      <p
+        class="mt-5 max-w-3xl leading-relaxed text-ink-soft"
+        data-reveal
+        set:html={enrichir(accueil.besoins.chapo)}
+      />
+      {/*
+        Deux colonnes, et deux niveaux de lecture par situation.
+
+        Six phrases d'une vingtaine de mots empilées obligeaient à tout
+        lire avant de savoir de quoi elles parlaient : l'œil ne pouvait
+        pas balayer. L'intitulé donne ce point d'accroche, la phrase le
+        détail — on lit six intitulés, puis la ou les deux qui nous
+        concernent.
+
+        Ni cadre ni ombre : les quatre secteurs, juste en dessous, sont
+        déjà un damier de plaques. Deux grilles habillées de suite se
+        confondraient, et la charte écarte l'effet tableau de bord. Ici,
+        seuls l'espace et le pictogramme séparent.
+
+        Les textes passent par `enrichir` — c'est lui qui pose l'espace
+        insécable devant la ponctuation double française, sans quoi le
+        point-virgule tombait seul à la ligne.
+      */}
+      <ul class="grille-besoins mt-10" data-reveal>
+        {accueil.besoins.situations.map((situation) => (
+          <li>
+            <span class="picto-besoin" aria-hidden="true">
+              <Picto nom={situation.picto} />
+            </span>
+            <div>
+              <p class="intitule-besoin">{situation.intitule}</p>
+              <p class="texte-besoin" set:html={enrichir(situation.texte)} />
+            </div>
+          </li>
+        ))}
+      </ul>
+      <p
+        class="mt-8 max-w-3xl leading-relaxed text-ink-soft"
+        data-reveal
+        set:html={enrichir(accueil.besoins.conclusion)}
+      />
+      <a
+        href={href(cheminLangue(langue, "/formations"))}
+        class="btn btn-primary mt-9"
+        data-reveal
+      >
+        {accueil.besoins.bouton} <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
@@ -143,19 +237,44 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
   </section>
 
   <!-- ============ Méthode : 4 piliers ============ -->
-  <section class="bg-abysse text-paper">
-    <div class="mx-auto max-w-6xl px-6 py-20 md:py-24">
+  {/*
+    L'image accompagne le texte sur la DROITE ; celle du bloc suivant se
+    range à gauche. Les deux fondus se répondent d'un bloc à l'autre au
+    lieu de s'empiler du même côté, et le regard change d'appui en
+    descendant la page.
+
+    Sur ce fond sombre, l'image est retenue davantage que sur le gris :
+    une photographie claire y ressort vite, et ce bloc doit rester celui
+    de la méthode, pas celui de son illustration.
+  */}
+  <section class="relative overflow-hidden bg-abysse text-paper">
+    <VisuelFondu
+      src="/approche/pedagogie.webp"
+      cote="droite"
+      largeur="44%"
+      cadrage="55% 45%"
+      class="visuel-sur-sombre"
+    />
+    <div class="relative mx-auto max-w-6xl px-6 py-20 md:py-24">
       <p class="eyebrow !text-sage" data-reveal>{accueil.methode.surtitre}</p>
       <h2
         class="display mt-4 max-w-2xl text-3xl md:text-4xl"
         data-reveal
         set:html={enrichir(accueil.methode.titre, "text-sage")}
       />
-      <p
-        class="mt-5 max-w-3xl leading-relaxed text-paper/75"
-        data-reveal
-        set:html={enrichir(accueil.methode.intro, "text-sage")}
-      />
+      {/*
+        Un paragraphe par bloc de texte, découpé sur la ligne vide. Le
+        livrable en donne deux ici : rendus d'un seul tenant, ils se
+        collaient en un pavé où la respiration voulue disparaissait.
+        Même mécanisme que la page PAXI.
+      */}
+      {accueil.methode.intro.split("\n\n").map((paragraphe) => (
+        <p
+          class="mt-5 max-w-3xl leading-relaxed text-paper/75"
+          data-reveal
+          set:html={enrichir(paragraphe, "text-sage")}
+        />
+      ))}
       {/*
         Ni les quatre piliers ni leurs schémas ici : l'accueil annonce
         la méthode, « Notre approche » la déroule. Les répéter donnait à
@@ -169,59 +288,66 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
   </section>
 
   {/*
-    ============ Spotlight PAXI ============
+    ============ Ancrage aéronautique ============
 
-    La section porte sa respiration EN BAS comme en haut. Sans `pb`, le
-    bloc sombre finissait au ras de la section suivante, dont le fond
-    gris commençait 12 px avant lui : le bas de la carte était mangé, et
-    le bloc paraissait mal posé sur la page.
+    Une SECTION pleine largeur sur fond gris, et non plus une carte
+    sombre posée sur le papier. Deux raisons.
+
+    Le damier d'abord : le bloc de la méthode, juste au-dessus, est un
+    aplat sombre. Une carte sombre à sa suite faisait deux masses
+    presque jointes, séparées par une mince bande de papier — la page
+    s'alourdissait là où elle devait respirer. En alternant papier, gris,
+    papier, sombre, gris, papier, chaque bloc se détache de son voisin.
+
+    L'image ensuite : une cabine vide et un membre d'équipage, en fondu
+    sur la droite. Elle donne au bloc l'ancrage aéronautique que le
+    livrable lui demande d'assumer, sans le réduire à ce seul champ —
+    elle accompagne le texte, elle ne l'illustre pas. Décorative au sens
+    de l'accessibilité : `VisuelFondu` la marque `aria-hidden` et lui
+    laisse un `alt` vide, le texte disant déjà tout.
+
+    Le bloc n'est plus cliquable d'un seul tenant : son bouton porte le
+    lien, comme dans toutes les autres sections de la page.
   */}
-  <section class="mx-auto max-w-6xl px-6 pt-20 pb-20">
-    <a
-      href={href(cheminLangue(langue, "/formations/paxi"))}
-      class="group flex flex-col gap-4 rounded-2xl bg-abysse p-8 text-paper shadow-(--shadow-card) transition-transform duration-300 hover:-translate-y-0.5 md:flex-row md:items-center md:justify-between md:p-10"
-      data-reveal
-    >
-      <div>
-        <p class="eyebrow !text-sage">{accueil.paxi.surtitre}</p>
-        <h2 class="display mt-2 max-w-2xl text-2xl md:text-3xl">
-          {accueil.paxi.titre}
-        </h2>
-        <p class="mt-3 max-w-2xl text-[0.95rem] leading-relaxed text-paper/75">
-          {accueil.paxi.texte}
-        </p>
-      </div>
-      <span
-        class="btn shrink-0 self-start border-1.5 border-sage bg-sage !px-6 text-abysse group-hover:border-paper group-hover:bg-paper md:self-center"
-      >
-        {accueil.paxi.bouton}
-        <span aria-hidden="true">→</span>
-      </span>
-    </a>
-  </section>
-
-  <!-- ============ Teaser Journal ============ -->
-  <section class="mx-auto max-w-6xl px-6 py-20" data-reveal-group>
-    <div class="flex flex-wrap items-end justify-between gap-6" data-reveal>
-      <div>
-        <p class="eyebrow">{accueil.journal.surtitre}</p>
-        <h2 class="display mt-4 text-3xl text-navy-deep md:text-4xl">
-          {accueil.journal.titre}
-        </h2>
-        <p class="mt-4 max-w-2xl leading-relaxed text-ink-soft">
-          {accueil.journal.texte}
-        </p>
-      </div>
-      <a href={href(cheminLangue(langue, "/journal"))} class="btn btn-ghost">
-        {accueil.journal.bouton_tous} <span aria-hidden="true">→</span>
-      </a>
-    </div>
+  <section class="relative overflow-hidden border-y border-ink/10 bg-paper-deep/30">
+    <VisuelFondu
+      src="/formations/paxi.webp"
+      cote="gauche"
+      largeur="42%"
+      cadrage="50% 45%"
+      opacite={0.78}
+    />
     {/*
-      Aucun article ici : l'accueil annonce le Journal, la rubrique le
-      déroule. Les extraits d'articles y faisaient double emploi — et
-      leur nombre aurait varié au fil des publications, déséquilibrant
-      la page.
+      L'image tenant la gauche, le texte se range à droite : sur grand
+      écran ils ne se disputent plus la même moitié. En dessous de
+      768 px le fondu disparaît et la colonne reprend toute la largeur —
+      `md:` suffit donc à porter le décalage.
     */}
+    <div class="relative mx-auto max-w-6xl px-6 py-16 md:py-20" data-reveal-group>
+      <div class="md:ml-auto md:w-[54%]">
+      <p class="eyebrow" data-reveal>{accueil.paxi.surtitre}</p>
+      <h2
+        class="display mt-4 max-w-2xl text-3xl text-navy-deep md:text-4xl"
+        data-reveal
+      >
+        {accueil.paxi.titre}
+      </h2>
+      {accueil.paxi.texte.split("\n\n").map((paragraphe) => (
+        <p
+          class="mt-4 max-w-2xl leading-relaxed text-ink-soft"
+          data-reveal
+          set:html={enrichir(paragraphe)}
+        />
+      ))}
+      <a
+        href={href(cheminLangue(langue, "/formations/paxi"))}
+        class="btn btn-primary mt-9"
+        data-reveal
+      >
+        {accueil.paxi.bouton} <span aria-hidden="true">→</span>
+      </a>
+      </div>
+    </div>
   </section>
 
   <!-- ============ CTA final ============ -->
@@ -232,11 +358,13 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
     >
       {accueil.appel_final.titre}
     </h2>
-    <p
-      class="mt-5 max-w-xl text-ink-soft"
-      data-reveal
-      set:html={enrichir(accueil.appel_final.texte)}
-    />
+    {accueil.appel_final.texte.split("\n\n").map((paragraphe) => (
+      <p
+        class="mt-5 max-w-xl text-ink-soft"
+        data-reveal
+        set:html={enrichir(paragraphe)}
+      />
+    ))}
     <a href={href(cheminLangue(langue, "/contact"))} class="btn btn-primary mt-9" data-reveal>
       {accueil.appel_final.bouton} <span aria-hidden="true">→</span>
     </a>
@@ -244,6 +372,70 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
 </Base>
 
 <style>
+  /*
+    ---- LES SITUATIONS ----
+
+    Deux colonnes dès qu'il y a la place, une seule sur téléphone. Une
+    largeur minimale de 22rem par colonne : en dessous, les phrases se
+    hachent en lignes de trois mots et la lecture redevient pénible.
+
+    Le pictogramme est aligné sur la première ligne de l'intitulé, pas
+    centré sur le bloc : sur une situation de trois lignes, un picto
+    centré flotte au milieu de nulle part.
+  */
+  .grille-besoins {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 2rem 2.5rem;
+    /*
+      `min(22rem, 100%)` et non `22rem` : sur un écran de 375 px, une
+      colonne plancher de 22rem (352 px) plus les marges de la page
+      dépassait la fenêtre d'un pixel et faisait défiler la page en
+      largeur. Le `min` autorise la colonne à descendre sous son plancher
+      quand la place manque vraiment.
+    */
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  }
+
+  .grille-besoins li {
+    display: flex;
+    gap: 0.9rem;
+    align-items: flex-start;
+  }
+
+  .picto-besoin {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    margin-top: 0.1rem;
+    border-radius: 9999px;
+    background: var(--color-sage-faint);
+    color: var(--color-sage-deep);
+  }
+
+  .picto-besoin :global(svg) {
+    width: 1.15rem;
+    height: 1.15rem;
+    stroke-width: 1.6;
+  }
+
+  .intitule-besoin {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    color: var(--color-navy-deep);
+  }
+
+  .texte-besoin {
+    margin-top: 0.3rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-ink-soft);
+  }
+
   /*
     ---- LES QUATRE SECTEURS ----
 
@@ -374,8 +566,44 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
     texte il a totalement disparu, côté marge il reste visible. Le titre
     ne repose donc jamais sur une trame.
   */
-  .logo-filigrane {
-    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 85%);
-    mask-image: linear-gradient(to left, black 30%, transparent 85%);
-  }
+  /*
+    Le logo au PREMIER PLAN, pleinement opaque et sans fondu — demande
+    d'Olivier et Fabien du 30/07/2026. Il n'est donc plus un filigrane :
+    c'est une marque posée sur la page.
+
+    `z-10` le fait passer devant le contenu, `pointer-events-none` lui
+    interdit d'intercepter un clic, et il reste hors de la colonne de
+    texte à toutes les tailles — sans quoi il couvrirait ce qu'on lit.
+  */
+  /*
+    ---- LE LOGO DU HAUT DE PAGE ----
+
+    Opaque et au premier plan depuis le 30/07/2026 : ce n'est plus un
+    filigrane mais une marque posée sur la page (demande de Fabien).
+
+    Sa taille et sa place sont réglées par paliers, parce qu'un logo
+    opaque ne pardonne pas ce qu'un filigrane à 11 % laissait passer.
+    Mesuré à la fin RÉELLE du texte — celle des lignes, pas celle de la
+    boîte, qui court jusqu'à sa largeur maximale — l'ancien réglage
+    recouvrait le titre de 768 à 1280 px : à 1024, le mot « crises »
+    disparaissait sous le cercle.
+
+    UNE SEULE TAILLE, 18rem, ou rien. Trois tailles par palier faisaient
+    un logo qui enflait avec la fenêtre : trop menu pour compter en bas
+    de gamme, trop imposant en haut. Il garde donc sa taille médiane
+    partout où il tient, et s'efface là où il ne tient plus.
+
+    Le seuil est 1152 px : c'est la largeur à laquelle le bloc centré
+    atteint son maximum de 72rem, donc celle à partir de laquelle une
+    colonne se libère à droite du texte. En dessous, la lecture occupe
+    tout et le logo n'a pas de place à prendre. Le logo du bandeau, lui,
+    reste présent à toutes les tailles.
+
+    ANCRÉ AU CONTENEUR, pas à la fenêtre. Posé dans la section pleine
+    largeur, il se collait au bord droit de l'écran : à 1700 px il
+    commençait 300 px après la fin du texte, isolé dans le vide, et
+    l'écart n'aurait fait que croître. Il vit maintenant dans le bloc
+    centré de 72rem — la même largeur que le texte — et reste donc à sa
+    distance quelle que soit la fenêtre.
+  */
 </style>

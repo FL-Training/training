@@ -1,66 +1,122 @@
 seo:
   titre: Formation prévention et gestion des conflits
   description: >-
-    Formations à la prévention et à la gestion des conflits, des tensions et
-    des situations de crise en contexte professionnel : entreprise, secteur
-    public, organismes de formation, en individuel.
+    Prévention et gestion des tensions, des incivilités et des conflits en
+    contexte professionnel : entreprise, secteur public, organismes de
+    formation, en individuel.
 hero:
   surtitre: Formation professionnelle · Fabien Lacombe
   titre: >-
     Former les professionnels à [agir] face aux tensions, aux conflits et aux
-    crises.
+    crises
   texte: >-
-    Pacivis Academy est une structure indépendante de formation professionnelle
-    qui accompagne les professionnels et les organisations lorsque **la tension,
-    le conflit ou la crise** dégradent les conditions ordinaires de travail, de
-    communication et de décision.
-  bouton_principal: Découvrir les formations
-  bouton_secondaire: Notre approche
+    Pacivis Academy est un organisme indépendant de formation et
+    d'accompagnement qui intervient auprès des organisations, des équipes, des
+    managers et des professionnels exposés lorsque **la tension, le conflit ou
+    la crise** dégradent les conditions ordinaires de travail, de communication
+    et de décision.
+  mots_cles: >-
+    Conflits professionnels · Incivilités · Comportements difficiles ·
+    Management des conflits d'équipe · Leadership sous pression
+  bouton_principal: Identifier la formation adaptée
+besoins:
+  titre: Pacivis Academy peut vous aider si…
+  chapo: >-
+    Vous devez préparer des professionnels à faire face à des tensions, des
+    incivilités, des conflits ou des comportements difficiles, sans perdre le
+    cadre, la qualité de la relation ni la capacité d'agir.
+  situations:
+    - picto: shield-alert
+      intitule: Agressivité du public
+      texte: >-
+        vos équipes sont régulièrement exposées à l'agressivité de clients,
+        d'usagers, de passagers ou de publics difficiles ;
+    - picto: unlink
+      intitule: Tensions internes
+      texte: >-
+        des tensions internes freinent la coopération, usent les équipes ou
+        fragilisent l'autorité des managers ;
+    - picto: compass
+      intitule: Managers sous pression
+      texte: >-
+        vos managers doivent réguler des tensions, accompagner la résolution de
+        conflits d'équipe ou exercer leur leadership dans des contextes où la
+        pression fragilise les repères habituels ;
+    - picto: radar
+      intitule: Contextes à risque
+      texte: >-
+        vos collaborateurs doivent continuer à communiquer, décider et agir dans
+        des contextes professionnels à risque ;
+    - picto: graduation-cap
+      intitule: Publics à former
+      texte: >-
+        vous formez des publics amenés à intervenir dans des situations
+        relationnelles tendues ou instables ;
+    - picto: anchor
+      intitule: Posture et stabilité
+      texte: >-
+        vous souhaitez renforcer la posture, la stabilité et les repères d'action
+        de professionnels exposés.
+  conclusion: >-
+    Dans ces situations, la formation ne vise pas seulement à mieux comprendre
+    ce qui se joue. Elle prépare à reconnaître plus tôt les signaux utiles, à
+    ajuster sa réponse et à maintenir une action professionnelle claire lorsque
+    la relation ou le contexte se tend.
+  bouton: Identifier la formation adaptée
 publics:
   surtitre: Votre situation
-  titre: Des interventions construites à partir de vos situations réelles.
+  titre: Des formations adaptées à votre contexte professionnel
   texte: >-
-    Pacivis Academy intervient auprès des organisations comme des professionnels
-    engageant eux-mêmes leur démarche. Choisissez l'entrée qui correspond à
-    votre situation.
+    Entreprise, organisme de formation, secteur public ou démarche individuelle
+    : les formations Pacivis Academy permettent de préciser le contexte, le
+    public concerné et le niveau d'accompagnement utile.
   liste:
     - label: Entreprise
       picto: building-2
-    - label: Secteur public
-      picto: landmark
     - label: Organisme de formation
       picto: graduation-cap
+    - label: Secteur public
+      picto: landmark
     - label: En individuel
       picto: user-round
   bouton: Voir les formations
-paxi:
-  surtitre: Formation PAXI
-  titre: PAXI — Prévenir et gérer les comportements de passagers indisciplinés
-  texte: >-
-    La formation PAXI prépare les pilotes, les personnels navigants commerciaux
-    et les personnels au sol à développer leur vigilance situationnelle, gérer
-    le conflit par la communication, coordonner l'action et agir de manière
-    adaptée.
-  bouton: Découvrir la formation PAXI
-journal:
-  surtitre: Le Journal Pacivis
-  titre: Comprendre avant d'agir.
-  texte: >-
-    Méthodes, repères, retours de terrain et points de vue : des articles de
-    fond pour celles et ceux qui font face au conflit dans leur métier.
-  bouton_tous: Tous les articles
 methode:
-  surtitre: La méthode
-  titre: '[ARCA] : la méthode Pacivis Academy'
+  surtitre: Notre approche
+  titre: Une pédagogie conçue pour transformer les pratiques
   intro: >-
-    La méthode ARCA structure cette approche autour de quatre piliers :
-    anticiper, réguler, communiquer et agir. Ils peuvent être travaillés
-    ensemble ou de façon ciblée, selon les besoins, les situations et les
-    responsabilités des professionnels concernés.
-  bouton: La méthode en détail
-appel_final:
-  titre: Parlons de vos besoins.
+    Les formations Pacivis associent apports théoriques ciblés, mises en
+    situation, analyse des comportements et travail de posture. Cette pédagogie
+    s'appuie sur la méthode [ARCA] — Anticiper, Réguler, Communiquer, Agir —
+    pour transformer les notions travaillées en repères directement mobilisables
+    dans des environnements professionnels singuliers.
+
+
+    L'objectif n'est pas seulement de transmettre des contenus, mais de
+    permettre aux professionnels de mieux lire ce qui se joue, d'ajuster leur
+    réponse et de gagner en stabilité dans l'action.
+  bouton: Découvrir notre approche
+paxi:
+  surtitre: Une expertise reconnue
+  titre: Un ancrage fort dans l'aéronautique et les environnements exposés
   texte: >-
-    Chaque contexte est différent : les formations sont construites à partir de
-    vos situations réelles, de vos contraintes et de vos objectifs.
-  bouton: Prendre contact
+    Pacivis Academy s'est notamment construite à partir d'un travail approfondi
+    dans le champ aéronautique, autour des comportements difficiles, des
+    tensions relationnelles, de la sûreté, de la relation passager et des
+    situations où la qualité de la réponse engage la sécurité, le cadre et la
+    continuité de l'action.
+
+
+    Cet ancrage nourrit l'offre PAXI, dédiée aux professionnels confrontés à ces
+    réalités dans les environnements aéroportuaires et aéronautiques.
+  bouton: Découvrir PAXI
+appel_final:
+  titre: Un besoin de formation ou d'accompagnement ?
+  texte: >-
+    Le plus simple est d'échanger sur votre contexte, les situations
+    rencontrées, les publics concernés et les objectifs attendus.
+
+
+    Pacivis Academy peut vous aider à préciser le besoin, identifier le format
+    adapté et construire une réponse cohérente avec vos contraintes
+    professionnelles.
+  bouton: Échanger avec Pacivis Academy

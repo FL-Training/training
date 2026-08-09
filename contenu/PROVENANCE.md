@@ -113,6 +113,59 @@ lisible.
 
 ---
 
+## `contenu/fr/accueil.yaml`
+
+> **Refonte du 30/07/2026** — livrable « À publier — Pacivis Academy —
+> Page d'accueil — livrable Olivier », version 2 révisée par Fabien.
+> VALIDÉ : les six blocs sont repris mot pour mot. Le livrable pose une
+> consigne ferme : « L'ordre des blocs, les boutons et les quatre entrées
+> visuelles vers la rubrique Formations sont à conserver. »
+
+> **Le bloc « Journal » est retiré de l'accueil.** Décision d'Olivier du
+> 30/07/2026, volontaire : le livrable ne le prévoit plus. Le menu et le
+> pied de page continuent d'y mener. Son texte, effacé du fichier, est
+> archivé ici — c'est la seule trace lisible qu'il en reste :
+>
+> ```yaml
+> journal:
+>   surtitre: Le Journal Pacivis
+>   titre: Comprendre avant d'agir.
+>   texte: >-
+>     Méthodes, repères, retours de terrain et points de vue : des articles
+>     de fond pour celles et ceux qui font face au conflit dans leur métier.
+>   bouton_tous: Tous les articles
+> ```
+>
+> L'annotation qui accompagnait ce bloc dans le composant : « Aucun
+> article ici : l'accueil annonce le Journal, la rubrique le déroule. Les
+> extraits d'articles y faisaient double emploi — et leur nombre aurait
+> varié au fil des publications, déséquilibrant la page. »
+
+> **ARCA reste sur l'accueil.** La première version du livrable décrivait
+> la pédagogie sans jamais nommer la méthode ; Fabien a réécrit le bloc 4
+> en version 2 pour l'y réintégrer, les quatre piliers nommés. L'accueil
+> annonce ARCA, il ne le déroule toujours pas : les piliers vivent sur
+> « Notre approche ».
+
+> **Les surtitres ne viennent pas du livrable.** Il ne fournit que le
+> titre, le texte et le bouton de chaque bloc ; les surtitres sont posés
+> à l'intégration pour ouvrir la section. Celui du bloc aéronautique est
+> « Une expertise reconnue », choisi par Olivier le 30/07/2026 — il dit
+> ce que le bloc démontre, là où « Ancrage aéronautique » ne faisait que
+> répéter le titre qui suit.
+
+> **« Entreprise » au singulier.** Le livrable hésite — son paragraphe
+> écrit « Entreprise, organisme de formation, secteur public ou démarche
+> individuelle », sa liste juste en dessous écrit « Entreprises ». Le
+> singulier est retenu : c'est la forme employée par les portes, le menu
+> et le pied de page. Deux noms pour une même rubrique se remarquent.
+
+> **Aucun texte incrusté dans les images.** Instruction d'Olivier du
+> 30/07/2026. La ligne de mots-clés du haut de page, comme tout le reste,
+> est du texte HTML : lisible au lecteur d'écran, traduisible, agrandie
+> au zoom (WCAG 1.4.5). Les visuels illustrent, ils ne portent pas un mot
+> à lire.
+
 ## `contenu/fr/approche.yaml`
 
 > ============================================================

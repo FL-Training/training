@@ -1,69 +1,125 @@
-# Home page — English working translation (29/07/2026), to be reviewed
-# by Fabien. The French original mixes texts VALIDATED by Fabien and
-# texts composed for the home page: this translation carries the same
-# status and must follow any revision of the original.
+# Home page — English working translation of the 30/07/2026 deliverable
+# (« À publier — Pacivis Academy — Page d'accueil », version 2), to be
+# reviewed by Fabien. The French original is VALIDATED: this translation
+# carries the same status and must follow any revision of it.
+#
+# The order of the blocks, the buttons and the four visual entries to the
+# Training section are fixed by the deliverable and must not be changed.
 seo:
   titre: Training in conflict prevention and management
   description: >-
-    Training in the prevention and management of conflict, tension and crisis
-    in professional settings: corporate, public sector, training providers,
-    individuals.
+    Preventing and managing tension, incivility and conflict in professional
+    settings: corporate, public sector, training providers, individuals.
 hero:
   surtitre: Professional training · Fabien Lacombe
   titre: >-
     Training professionals to [act] in the face of tension, conflict and
-    crisis.
+    crisis
   texte: >-
-    Pacivis Academy is an independent professional training organisation that
-    supports professionals and organisations when **tension, conflict or
-    crisis** degrade the ordinary conditions of work, communication and
-    decision-making.
-  bouton_principal: Explore the training
-  bouton_secondaire: Our approach
+    Pacivis Academy is an independent training and support organisation
+    working with organisations, teams, managers and exposed professionals when
+    **tension, conflict or crisis** degrade the ordinary conditions of work,
+    communication and decision-making.
+  mots_cles: >-
+    Workplace conflict · Incivility · Difficult behaviour · Managing team
+    conflict · Leadership under pressure
+  bouton_principal: Find the right course
+besoins:
+  titre: Pacivis Academy can help you if…
+  chapo: >-
+    You need to prepare professionals to face tension, incivility, conflict or
+    difficult behaviour, without losing the framework, the quality of the
+    relationship or the capacity to act.
+  situations:
+    - picto: shield-alert
+      intitule: Aggression from the public
+      texte: >-
+        your teams are regularly exposed to aggression from customers, users,
+        passengers or difficult publics;
+    - picto: unlink
+      intitule: Internal tension
+      texte: >-
+        internal tension is slowing cooperation, wearing teams down or
+        undermining the authority of managers;
+    - picto: compass
+      intitule: Managers under pressure
+      texte: >-
+        your managers have to regulate tension, support the resolution of team
+        conflict or exercise their leadership in contexts where pressure
+        weakens the usual bearings;
+    - picto: radar
+      intitule: High-risk contexts
+      texte: >-
+        your employees have to keep communicating, deciding and acting in
+        high-risk professional contexts;
+    - picto: graduation-cap
+      intitule: Audiences to train
+      texte: >-
+        you train audiences who will have to act in tense or unstable relational
+        situations;
+    - picto: anchor
+      intitule: Posture and steadiness
+      texte: >-
+        you want to strengthen the posture, the stability and the bearings for
+        action of exposed professionals.
+  conclusion: >-
+    In these situations, training does not aim only at a better understanding
+    of what is at play. It prepares people to recognise the useful signals
+    earlier, to adjust their response and to maintain clear professional
+    action when the relationship or the context tightens.
+  bouton: Find the right course
 publics:
   surtitre: Your situation
-  titre: Training built from your real situations.
+  titre: Training suited to your professional context
   texte: >-
-    Pacivis Academy works with organisations as well as with professionals
-    engaging in the process themselves. Choose the entry that matches your
-    situation.
+    Corporate, training provider, public sector or an individual step: Pacivis
+    Academy courses help specify the context, the audience concerned and the
+    level of support required.
   liste:
     - label: Corporate
       picto: building-2
-    - label: Public sector
-      picto: landmark
     - label: Training providers
       picto: graduation-cap
+    - label: Public sector
+      picto: landmark
     - label: Individuals
       picto: user-round
   bouton: See the training
-paxi:
-  surtitre: PAXI training
-  titre: PAXI — Preventing and managing unruly passenger behaviour
-  texte: >-
-    The PAXI course prepares pilots, cabin crew and ground staff to develop
-    situational vigilance, manage conflict through communication, coordinate
-    action and act appropriately.
-  bouton: Discover the PAXI course
-journal:
-  surtitre: The Pacivis Journal
-  titre: Understand before acting.
-  texte: >-
-    Methods, markers, field feedback and points of view: in-depth articles for
-    those who face conflict in their work.
-  bouton_tous: All articles
 methode:
-  surtitre: The method
-  titre: '[ARCA]: the Pacivis Academy method'
+  surtitre: Our approach
+  titre: A pedagogy designed to transform practice
   intro: >-
-    The ARCA method structures this approach around four pillars: anticipate,
-    regulate, communicate and act. They can be worked on together or
-    selectively, depending on the needs, situations and responsibilities of
-    the professionals involved.
-  bouton: The method in detail
-appel_final:
-  titre: Let's talk about your needs.
+    Pacivis courses combine targeted theoretical input, scenario work,
+    behavioural analysis and work on posture. This pedagogy rests on the
+    [ARCA] method — Anticipate, Regulate, Communicate, Act — to turn what is
+    worked on into bearings that can be used directly in singular professional
+    environments.
+
+
+    The aim is not only to convey content, but to enable professionals to read
+    what is at play more accurately, to adjust their response and to gain
+    steadiness in action.
+  bouton: Discover our approach
+paxi:
+  surtitre: Recognised expertise
+  titre: A strong footing in aviation and exposed environments
   texte: >-
-    Every context is different: training is built from your real situations,
-    your constraints and your objectives.
-  bouton: Get in touch
+    Pacivis Academy was built in part on in-depth work in the aviation field,
+    around difficult behaviour, relational tension, security, the passenger
+    relationship and situations where the quality of the response bears on
+    safety, on the framework and on the continuity of action.
+
+
+    That footing feeds the PAXI course, intended for professionals facing
+    these realities in airport and aviation environments.
+  bouton: Discover PAXI
+appel_final:
+  titre: A training or support need?
+  texte: >-
+    The simplest way is to talk through your context, the situations
+    encountered, the audiences concerned and the results expected.
+
+
+    Pacivis Academy can help you specify the need, identify the right format
+    and build a response consistent with your professional constraints.
+  bouton: Talk to Pacivis Academy
