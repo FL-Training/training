@@ -19,7 +19,6 @@ on:
   push:
     branches:
       - main
-      - production
     tags:
       - "v*"
   workflow_dispatch:
@@ -37,6 +36,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verify signed production tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Production tags must use strict Semantic Versioning." >&2
+            exit 1
+          fi
+          if [ "$(git cat-file -t "${GITHUB_REF_NAME}")" != "tag" ]; then
+            echo "Production tags must be annotated and signed." >&2
+            exit 1
+          fi
+          git -c gpg.ssh.allowedSignersFile=.github/release-allowed-signers \
+            verify-tag "${GITHUB_REF_NAME}"
+          tag_revision="$(git rev-parse "${GITHUB_REF_NAME}^{commit}")"
+          if [ "${tag_revision}" != "${GITHUB_SHA}" ]; then
+            echo "The workflow revision does not match the signed tag." >&2
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "${tag_revision}" origin/main; then
+            echo "The production tag is not based on the accepted development branch." >&2
+            exit 1
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -136,9 +163,9 @@ jobs:
         uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051 # v5
         with:
           images: ghcr.io/fl-training/training
+          flavor: latest=false
           tags: |
             type=raw,value=dev,enable=${{ github.ref == 'refs/heads/main' }}
-            type=raw,value=prod,enable=${{ github.ref == 'refs/heads/production' }}
             type=ref,event=tag
             type=sha,format=long
 
@@ -154,7 +181,7 @@ jobs:
           else
             echo "site_url=https://pacivisacademy.com" >> "${GITHUB_OUTPUT}"
             echo "convex_url=https://site-convex.app.pacivisacademy.com" >> "${GITHUB_OUTPUT}"
-            echo "sveltia_branch=production" >> "${GITHUB_OUTPUT}"
+            echo "sveltia_branch=main" >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Build and publish
