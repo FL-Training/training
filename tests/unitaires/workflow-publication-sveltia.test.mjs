@@ -8,6 +8,7 @@ import { RACINE } from "./_outils.mjs";
 const workflowPath = join(RACINE, ".github/workflows/container.yml");
 const workflowText = readFileSync(workflowPath, "utf8");
 const workflow = yaml.load(workflowText);
+const validateSteps = workflow.jobs.validate.steps;
 const publishSteps = workflow.jobs.publish.steps;
 
 function step(name) {
@@ -18,6 +19,21 @@ function step(name) {
 
 test("Sveltia exposes one explicit batched publication event", () => {
   assert.deepEqual(workflow.on.repository_dispatch.types, ["sveltia-cms-publish"]);
+});
+
+test("production validation restores the signed remote tag object before verification", () => {
+  const verifyStep = validateSteps.find(
+    (candidate) => candidate.name === "Verify signed production tag",
+  );
+  assert.ok(verifyStep);
+  assert.match(
+    verifyStep.run,
+    /git fetch --force origin[\s\S]*refs\/tags\/\$\{GITHUB_REF_NAME\}:refs\/tags\/\$\{GITHUB_REF_NAME\}/,
+  );
+  assert.ok(
+    verifyStep.run.indexOf("git fetch --force origin") <
+      verifyStep.run.indexOf("git cat-file -t"),
+  );
 });
 
 test("a content publication rebuilds only from a signed production base", () => {
@@ -55,7 +71,6 @@ test("the published digest is sent to the desired-state repository", () => {
 });
 
 test("content publishes avoid the redundant runtime build but still scan the release", () => {
-  const validateSteps = workflow.jobs.validate.steps;
   const validationBuild = validateSteps.find(
     (candidate) => candidate.name === "Build runtime image",
   );

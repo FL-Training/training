@@ -52,6 +52,8 @@ jobs:
             echo "Production tags must use strict Semantic Versioning." >&2
             exit 1
           fi
+          git fetch --force origin \
+            "refs/tags/${GITHUB_REF_NAME}:refs/tags/${GITHUB_REF_NAME}"
           if [ "$(git cat-file -t "${GITHUB_REF_NAME}")" != "tag" ]; then
             echo "Production tags must be annotated and signed." >&2
             exit 1
