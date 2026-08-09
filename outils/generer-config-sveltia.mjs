@@ -792,6 +792,7 @@ const config = {
     name: "github",
     repo: "FL-Training/training",
     branch: BRANCHE_SVELTIA,
+    skip_ci: true,
     ...(CLIENT_OAUTH ? { base_url: CLIENT_OAUTH } : {}),
     // En local (localhost, Chrome/Edge), Sveltia propose aussi « Work
     // with Local Repository » : il écrit les fichiers du projet sans se

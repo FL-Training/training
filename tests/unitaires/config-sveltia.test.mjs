@@ -58,6 +58,10 @@ test("le client OAuth est soit absent, soit une adresse https complète", () => 
   }
 });
 
+test("les sauvegardes Sveltia attendent une publication explicite avant de lancer la CI", () => {
+  assert.equal(config.backend?.skip_ci, true);
+});
+
 test("les noms de collections et d'entrées sont uniques", () => {
   const noms = config.collections.map((c) => c.name);
   assert.equal(new Set(noms).size, noms.length);
