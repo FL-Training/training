@@ -1,122 +1,127 @@
-# ============================================================
-# SITE-WIDE TEXTS — ENGLISH
-# Working translation (29/07/2026), to be reviewed by Fabien.
-# Paths are written in this language, WITHOUT the /en prefix —
-# the site adds it (see src/lib/routes.ts, « format canonique »).
-# ============================================================
-
-marque:
-  nom: "Pacivis Academy"
-  slogan: "Conflict prevention & management"
-  signature: "Mastery begins before the conflict."
-  fonction: "Trainer in conflict prevention and management"
-
-navigation:
-  - label: "Home"
-    chemin: "/"
-  - label: "Training"
-    chemin: "/training"
-    sous_menu:
-      - label: "Corporate"
-        chemin: "/training/corporate"
-        picto: "building-2"
-      - label: "Public sector"
-        chemin: "/training/public-sector"
-        picto: "landmark"
-      - label: "Training providers"
-        chemin: "/training/training-providers"
-        picto: "graduation-cap"
-      - label: "Individuals"
-        chemin: "/training/individuals"
-        picto: "user-round"
-  - label: "Our approach"
-    chemin: "/approach"
-    sous_menu:
-      - label: "The ARCA method"
-        ancre: "arca"
-      - label: "Foundations and pedagogy"
-        ancre: "fondations"
-      - label: "Our ambition"
-        ancre: "notre-ambition"
-  - label: "About"
-    chemin: "/about"
-    sous_menu:
-      - label: "Who we are"
-        ancre: "pacivis-academy"
-  - label: "Blog"
-    chemin: "/blog"
-    sous_menu:
-      - label: "Literature review"
-        chemin: "/blog?flux=revue-litteraire"
-      - label: "News perspective"
-        chemin: "/blog?flux=point-de-vue-actu"
-      - label: "Field & practice"
-        chemin: "/blog?flux=terrain-et-pratiques"
-      - label: "Methods & markers"
-        chemin: "/blog?flux=methodes-et-reperes"
-  - label: "Contact"
-    chemin: "/contact"
-  - label: "Log in"
-    chemin: "/login"
-    accent: true
-
-fil:
-  accueil: "Home"
-
-menu:
-  ouvrir: "Open menu"
-  fermer: "Close menu"
-
 journal:
-  duree_lecture: "min read"
-  lire_article: "Read the article"
-
+  duree_lecture: min read
+  lire_article: Read the article
+marque:
+  nom: Pacivis Academy
+  slogan: Conflict prevention & management
+  fonction: Trainer in conflict prevention and management
+  signature: Mastery begins before the conflict.
+navigation:
+  - label: Home
+    chemin: /
+  - label: Training
+    chemin: /training
+    sous_menu:
+      - label: Corporate
+        chemin: /training/corporate
+        ancre: ''
+        picto: building-2
+      - label: Public sector
+        chemin: /training/public-sector
+        ancre: ''
+        picto: landmark
+      - label: Training providers
+        chemin: /training/training-providers
+        ancre: ''
+        picto: graduation-cap
+      - label: Individuals
+        chemin: /training/individuals
+        ancre: ''
+        picto: user-round
+  - label: Our approach
+    chemin: /approach
+    sous_menu:
+      - label: The ARCA method
+        chemin: ''
+        ancre: arca
+        picto: ''
+      - label: Foundations and pedagogy
+        chemin: ''
+        ancre: fondations
+        picto: ''
+      - label: Our ambition
+        chemin: ''
+        ancre: notre-ambition
+        picto: ''
+  - label: About
+    chemin: /about
+    sous_menu:
+      - label: Who we are
+        chemin: ''
+        ancre: pacivis-academy
+        picto: ''
+  - label: Blog
+    chemin: /blog
+    sous_menu:
+      - label: Literature review
+        chemin: /blog?flux=revue-litteraire
+        ancre: ''
+        picto: ''
+      - label: News perspective
+        chemin: /blog?flux=point-de-vue-actu
+        ancre: ''
+        picto: ''
+      - label: Field & practice
+        chemin: /blog?flux=terrain-et-pratiques
+        ancre: ''
+        picto: ''
+      - label: Methods & markers
+        chemin: /blog?flux=methodes-et-reperes
+        ancre: ''
+        picto: ''
+  - label: Contact
+    chemin: /contact
+  - label: Log in
+    chemin: /login
+    accent: true
+fil:
+  accueil: Home
+menu:
+  ouvrir: Open menu
+  fermer: Close menu
 liens:
-  linkedin: "https://www.linkedin.com/in/fabien-lacombe/"
-
+  linkedin: https://www.linkedin.com/in/fabien-lacombe/
 photos:
-  portrait_alt: "Portrait of Fabien Lacombe, trainer in conflict prevention and management"
-  og_alt: "Pacivis Academy — Fabien Lacombe, training in the prevention and management of conflict in professional settings"
-
+  portrait_alt: Portrait of Fabien Lacombe, trainer in conflict prevention and management
+  og_alt: Pacivis Academy — Fabien Lacombe, training in the prevention and management of conflict in professional settings
 pied_de_page:
-  description: "Training in the prevention and management of conflict, aggression and violent situations in professional settings."
-  titre_site: "The site"
+  description: Training in the prevention and management of conflict, aggression and violent situations in professional settings.
+  titre_site: The site
   liens_site:
-    - label: "Training"
-      chemin: "/training"
-    - label: "PAXI"
-      chemin: "/training/unruly-passengers"
-    - label: "Our approach"
-      chemin: "/approach"
-    - label: "Blog"
-      chemin: "/blog"
-    - label: "About Fabien Lacombe"
-      chemin: "/about"
-    - label: "Log in"
-      chemin: "/login"
-    - label: "Contact"
-      chemin: "/contact"
-  titre_secteurs: "Training"
+    - label: Training
+      chemin: /training
+    - label: PAXI
+      chemin: /training/unruly-passengers
+    - label: Our approach
+      chemin: /approach
+    - label: Blog
+      chemin: /blog
+    - label: About Fabien Lacombe
+      chemin: /about
+    - label: Log in
+      chemin: /login
+    - label: Contact
+      chemin: /contact
+  titre_echanger: Get in touch
+  texte_echanger: 'A training project, a question about formats or audiences: the simplest way is to talk it through.'
+  bouton_contact: Contact us
+  bouton_linkedin: LinkedIn
+  copyright: Pacivis Academy — Fabien Lacombe. All rights reserved.
+  titre_secteurs: Training
   liens_secteurs:
-    - label: "Corporate"
-      chemin: "/training/corporate"
-    - label: "Public sector"
-      chemin: "/training/public-sector"
-    - label: "Training providers"
-      chemin: "/training/training-providers"
-    - label: "Individuals"
-      chemin: "/training/individuals"
-  titre_echanger: "Get in touch"
-  texte_echanger: "A training project, a question about formats or audiences: the simplest way is to talk it through."
-  bouton_contact: "Contact us"
-  bouton_linkedin: "LinkedIn"
-  copyright: "Pacivis Academy — Fabien Lacombe. All rights reserved."
+    - label: Corporate
+      chemin: /training/corporate
+    - label: Public sector
+      chemin: /training/public-sector
+    - label: Training providers
+      chemin: /training/training-providers
+    - label: Individuals
+      chemin: /training/individuals
   liens_legaux:
-    - label: "Privacy"
-      chemin: "/privacy-policy"
-
+    - label: Privacy
+      chemin: /privacy-policy
 page_introuvable:
-  surtitre: "Error 404"
-  titre: "This page took the emergency exit."
-  texte: "No unnecessary tension: everything on this site can still be reached from the home page."
-  bouton: "Back to the home page"
+  surtitre: Error 404
+  titre: This page took the emergency exit.
+  texte: 'No unnecessary tension: everything on this site can still be reached from the home page.'
+  bouton: Back to the home page
