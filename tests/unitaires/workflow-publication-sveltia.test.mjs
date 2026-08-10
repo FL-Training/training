@@ -108,6 +108,8 @@ test("content publication stays pending until the exact revision is live", () =>
   const waitStep = step("Wait for published content");
   assert.equal(waitStep.if, "github.event_name == 'repository_dispatch'");
   assert.equal(waitStep.env.EXPECTED_CONTENT_REVISION, "${{ github.sha }}");
+  assert.match(waitStep.run, /--connect-timeout 5/);
+  assert.match(waitStep.run, /--max-time 15/);
   assert.match(waitStep.run, /\.content \/\/ empty/);
   assert.match(waitStep.run, /within 20 minutes/);
 });
