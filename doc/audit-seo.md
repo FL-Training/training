@@ -79,6 +79,62 @@ peut retirer ce qu'il ne fallait pas :
 - **sitemap → page**, par « sitemap sans adresse orpheline » : une
   adresse listée que le build ne produit pas fait échouer l'audit.
 
+## Le partage sur les réseaux
+
+Ces balises n'apparaissent nulle part sur le site. Leur seul lecteur est
+le robot de Facebook, de LinkedIn ou de WhatsApp, et leur seule
+manifestation est l'aperçu qui s'affiche — ou non — dans une
+conversation. Elles se dégradent donc en silence : c'est ainsi que
+quatre défauts ont vécu jusqu'au 10/08/2026.
+
+| Ce qui n'allait pas | Ce que ça donnait | Corrigé par |
+| --- | --- | --- |
+| Les articles se déclaraient `og:type = website` | LinkedIn les traitait comme une page ordinaire, alors que le JSON-LD destiné à Google disait déjà `Article` | `typePage="Article"` sur la route d'article |
+| Ni date ni auteur au partage | Pas de « publié le… par Fabien Lacombe » | `article:published_time`, `article:author`, `article:section` |
+| Vignette de marque sur tous les articles | Quatre articles identiques dans un fil LinkedIn | `npm run og:articles` |
+| Pas de `og:locale:alternate` | Les réseaux ignoraient qu'une version anglaise existe | Déduit des jumelles, même source que les `hreflang` |
+
+**Le format est bloquant, et c'est le point le moins intuitif.** Les
+vignettes du site sont en WebP, que Facebook ne cite pas parmi les
+formats acceptés. Un `og:image` qu'un réseau ne sait pas décoder ne
+dégrade pas l'aperçu : **il le supprime**, et le lien se partage nu.
+`npm run og:articles` produit donc, à côté de chaque vignette, un JPEG
+recadré en 1200 × 630 — le rapport 1,91:1 que Facebook recommande, là où
+les illustrations sont en seize neuvièmes. Le recadrage se fait vers le
+haut : sur une scène avec des visages, le bas se perd mieux.
+
+La convention de nommage vit dans
+[`src/lib/journal-partage.mjs`](../src/lib/journal-partage.mjs), lue à la
+fois par la page qui déclare l'image et par l'outil qui la produit — deux
+copies finiraient par diverger, et la moitié des articles se partagerait
+sans image.
+
+### Ce que Fabien n'a pas à savoir
+
+**Les images de partage des articles sont produites par `npm run build`.**
+Fabien publie depuis l'atelier, le site se reconstruit, l'image est faite
+au passage. Rien à lancer, rien à commiter — elles sont d'ailleurs
+ignorées par git, puisque les versionner les ferait diverger de leur
+source dès la première modification faite depuis Sveltia.
+
+Deux décisions rendent cela sûr, et toutes deux viennent d'un défaut
+constaté le 10/08/2026 :
+
+- **On part des articles, pas des dossiers.** Le script parcourait
+  `public/journal/vignettes/*/vignette/src.webp`, une arborescence
+  héritée de nos propres générations. Or **Sveltia dépose les images
+  téléversées à plat** dans `/journal/vignettes/` : une illustration
+  ajoutée par Fabien n'aurait jamais été vue. Seul le frontmatter dit
+  quelles images sont réellement utilisées.
+- **Un chemin qu'on ne sait pas transformer lève une erreur.** L'ancienne
+  fonction remplaçait un motif et rendait le chemin *inchangé* s'il ne
+  correspondait pas : l'`og:image` aurait alors désigné le WebP, et
+  l'aperçu aurait disparu sans un mot. C'est ce silence qui a permis au
+  défaut d'exister.
+
+Vérifié de bout en bout en simulant le cas : article créé avec une image
+à plat, `npm run build`, image de partage produite et `og:image` correct.
+
 ## La vignette de partage
 
 `npm run og:image` produit `public/og-image.jpg` (français) et

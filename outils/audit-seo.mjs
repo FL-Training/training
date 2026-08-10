@@ -104,6 +104,12 @@ function analyser({ url, fichier, contenu }) {
     description: attribut(contenu, /<meta name="description" content="([^"]*)"/),
     canonique: attribut(contenu, /<link rel="canonical" href="([^"]*)"/),
     ogUrl: attribut(contenu, /<meta property="og:url" content="([^"]*)"/),
+    ogType: attribut(contenu, /<meta property="og:type" content="([^"]*)"/),
+    ogImage: attribut(contenu, /<meta property="og:image" content="([^"]*)"/),
+    ogImageType: attribut(contenu, /<meta property="og:image:type" content="([^"]*)"/),
+    ogAlternates: tous(contenu, /<meta property="og:locale:alternate" content="([^"]*)"/g),
+    articlePubliee: attribut(contenu, /<meta property="article:published_time" content="([^"]*)"/),
+    articleAuteur: attribut(contenu, /<meta property="article:author" content="([^"]*)"/),
     ogTitre: attribut(contenu, /<meta property="og:title" content="([^"]*)"/),
     ogLocale: attribut(contenu, /<meta property="og:locale" content="([^"]*)"/),
     langue: attribut(contenu, /<html lang="([^"]*)"/),
@@ -463,6 +469,84 @@ controle(
     return e;
   })(),
   "En interdiction totale (site sur IP), rien d'autre n'est exigé ; sinon le sitemap doit être déclaré et l'atelier exclu.",
+);
+
+/*
+  9 bis. LE PARTAGE SUR LES RÉSEAUX — ce qu'aucune relecture ne voit.
+
+  Ces balises ne s'affichent nulle part sur le site : leur seul lecteur
+  est le robot de Facebook, de LinkedIn ou de WhatsApp, et leur seule
+  manifestation est l'aperçu qui apparaît — ou n'apparaît pas — dans une
+  conversation. Elles se dégradent donc en silence, et c'est ainsi que
+  quatre défauts ont pu vivre jusqu'au 10/08/2026 : les articles se
+  déclaraient « website », sans date ni auteur, avec la vignette de
+  marque au lieu de leur propre illustration.
+
+  LE FORMAT EST BLOQUANT, et c'est le point le moins intuitif : les
+  vignettes du site sont en WebP, que Facebook ne cite pas parmi les
+  formats qu'il accepte. Un `og:image` qu'un réseau ne sait pas décoder
+  ne dégrade pas l'aperçu, il le supprime — le lien se partage nu. C'est
+  pour cela que `npm run og:articles` produit un JPEG à côté de chaque
+  vignette.
+*/
+const FORMATS_PARTAGE = ["image/jpeg", "image/png"];
+controle(
+  "images de partage dans un format que les réseaux lisent",
+  INDEXABLES().flatMap((p) => {
+    const e = [];
+    if (!p.ogImage) return [`${p.url} : aucune og:image`];
+    if (/\.(webp|avif|svg)$/i.test(chemin(p.ogImage)))
+      e.push(`${p.url} : og:image en ${chemin(p.ogImage).split(".").pop()} — non lisible par tous les réseaux`);
+    if (p.ogImageType && !FORMATS_PARTAGE.includes(p.ogImageType))
+      e.push(`${p.url} : og:image:type « ${p.ogImageType} » hors ${FORMATS_PARTAGE.join(", ")}`);
+    return e;
+  }),
+  "Facebook et LinkedIn documentent JPEG et PNG ; un WebP fait disparaître l'aperçu au lieu de le dégrader. `npm run og:articles` produit le JPEG attendu.",
+);
+
+/*
+  Un article se déclare comme tel. Le graphe JSON-LD destiné à Google le
+  faisait déjà (`@type: Article`) quand `og:type` disait encore
+  « website » : les deux vues du même contenu se contredisaient.
+*/
+/* Le graphe est déjà analysé : on l'interroge, on ne relit pas le HTML.
+   Chercher `"@type":"Article"` dans la source brute dépendrait de la
+   façon dont le JSON est sérialisé — une espace de plus et la détection
+   tombe en silence, laissant le contrôle passer sur zéro page. */
+const EST_ARTICLE = (p) =>
+  (p.jsonLd?.["@graph"] ?? []).some((n) => n["@type"] === "Article");
+controle(
+  "les articles se partagent comme des articles",
+  INDEXABLES()
+    .filter(EST_ARTICLE)
+    .flatMap((p) => {
+      const e = [];
+      if (p.ogType !== "article")
+        e.push(`${p.url} : og:type « ${p.ogType} » alors que les données structurées disent Article`);
+      if (!p.articlePubliee) e.push(`${p.url} : pas de article:published_time`);
+      if (!p.articleAuteur) e.push(`${p.url} : pas de article:author`);
+      return e;
+    }),
+  "Sur og:type « article », LinkedIn affiche la date et l'auteur ; sur « website », il n'affiche rien de plus qu'une page ordinaire.",
+);
+
+/*
+  Une page traduite l'annonce aussi aux réseaux. Même exigence que les
+  `hreflang`, et même source : ce qui est déclaré ici doit correspondre
+  exactement aux jumelles, sans quoi l'une des deux déclarations ment.
+*/
+controle(
+  "og:locale:alternate suit les jumelles de langue",
+  INDEXABLES().flatMap((p) => {
+    const jumelles = p.alternates.filter(
+      (a) => a.hreflang !== "x-default" && a.hreflang !== p.langue,
+    ).length;
+    if (jumelles === p.ogAlternates.length) return [];
+    return [
+      `${p.url} : ${p.ogAlternates.length} og:locale:alternate pour ${jumelles} jumelle(s) hreflang`,
+    ];
+  }),
+  "Les réseaux sociaux apprennent par cette balise qu'une autre version existe ; l'omettre revient à ne pas avoir traduit, de leur point de vue.",
 );
 
 /*

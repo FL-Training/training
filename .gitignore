@@ -28,3 +28,9 @@ convex/_generated/
 
 # logs
 npm-debug.log*
+
+# Images de partage des articles : produites par `npm run build`
+# (outils/generer-partages-articles.mjs) à partir des illustrations.
+# Les versionner les ferait diverger de leur source à la première
+# modification faite depuis Sveltia.
+public/journal/vignettes/**/*-partage.jpg

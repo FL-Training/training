@@ -34,6 +34,7 @@ import {
   FICHIER_EMPREINTES,
   textes,
   empreinte,
+  ecrireEmpreintes,
 } from "./og-image-source.mjs";
 
 const base64 = (chemin) => readFileSync(join(RACINE, chemin)).toString("base64");
@@ -276,8 +277,6 @@ console.log(`  ${debordement.lignes} lignes de titre, bas du bloc à ${debordeme
 
 await navigateur.close();
 
-writeFileSync(
-  join(RACINE, FICHIER_EMPREINTES),
-  `${JSON.stringify(empreintes, null, 2)}\n`,
-);
-console.log(`empreintes : ${FICHIER_EMPREINTES}`);
+/* Sa propre section seulement : les images d'articles ont la leur. */
+ecrireEmpreintes("vignettes", empreintes);
+console.log(`empreintes : ${FICHIER_EMPREINTES} (section « vignettes »)`);

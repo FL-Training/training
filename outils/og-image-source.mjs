@@ -6,10 +6,14 @@
  * sans lancer Chromium. Importer le script de rendu produirait les
  * images à chaque exécution des tests.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import yaml from "js-yaml";
+
+/* La convention de nommage et le format vivent dans src/lib : la page
+   qui déclare l'og:image les lit au même endroit. */
+export { partageDeVignette, LARGEUR_OG, HAUTEUR_OG } from "../src/lib/journal-partage.mjs";
 
 export const RACINE = new URL("..", import.meta.url).pathname;
 
@@ -82,3 +86,24 @@ export const empreinte = (t) =>
     .update(JSON.stringify([t.titre, t.slogan, t.signature, t.marque]))
     .digest("hex")
     .slice(0, 16);
+
+/**
+ * Écrit une section du fichier d'empreintes SANS toucher aux autres.
+ *
+ * Deux scripts l'alimentent — les vignettes de marque et les images
+ * d'articles — et ils ne s'exécutent pas toujours ensemble. Sans
+ * fusion, le second effacerait le travail du premier et le test
+ * réclamerait une régénération sans fin.
+ */
+export function ecrireEmpreintes(section, valeurs) {
+  const fichier = join(RACINE, FICHIER_EMPREINTES);
+  const actuel = existsSync(fichier) ? JSON.parse(readFileSync(fichier, "utf8")) : {};
+  const fusionne = { ...actuel, [section]: valeurs };
+  writeFileSync(fichier, `${JSON.stringify(fusionne, null, 2)}\n`);
+  return fusionne;
+}
+
+export const lireEmpreintes = () => {
+  const fichier = join(RACINE, FICHIER_EMPREINTES);
+  return existsSync(fichier) ? JSON.parse(readFileSync(fichier, "utf8")) : {};
+};

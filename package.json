@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run og:articles && astro build",
     "check": "astro check",
     "preview": "astro preview",
     "apercu": "astro build && astro preview",
@@ -22,7 +22,8 @@
     "audit:seo": "node outils/audit-seo.mjs",
     "audit:a11y": "node outils/audit-accessibilite.mjs",
     "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles && npm run audit:seo && npm run audit:a11y",
-    "og:image": "node outils/generer-og-image.mjs"
+    "og:image": "node outils/generer-og-image.mjs",
+    "og:articles": "node outils/generer-partages-articles.mjs"
   },
   "dependencies": {
     "@astrojs/node": "11.0.2",
@@ -50,6 +51,7 @@
     "axe-core": "^4.12.1",
     "lucide-static": "^1.24.0",
     "playwright-core": "^1.62.0",
+    "sharp": "^0.35.3",
     "typescript": "^6.0.3"
   },
   "overrides": {

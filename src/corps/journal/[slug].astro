@@ -15,6 +15,7 @@ import { nomLabel, ordonnerLabels } from "../../lib/labels";
 import { nomFlux } from "../../lib/flux";
 import { localeLangue } from "../../lib/langues";
 import { racineSite, urlAbsolue } from "../../lib/seo";
+import { partageDeVignette } from "../../lib/journal-partage.mjs";
 
 export async function getStaticPaths() {
   const articles = await getCollection("journal");
@@ -54,9 +55,32 @@ const noeudsSeo = [
 ];
 ---
 
+{/*
+  L'ARTICLE SE PARTAGE AVEC SON PROPRE VISAGE.
+
+  Sans ces trois lignes, les quatre articles du Journal se ressemblent
+  tous dans un fil LinkedIn : même vignette de marque, aucune date,
+  aucun auteur. Leur illustration existe pourtant déjà — c'est celle de
+  la carte du Journal et du haut de l'article.
+
+  On ne partage PAS le fichier de la vignette lui-même : il est en WebP,
+  format qu'aucun des deux réseaux ne garantit, et en seize neuvièmes
+  quand ils attendent 1,91:1. `npm run og:articles` en tire un JPEG
+  1200 × 630 recadré — c'est lui qu'on désigne ici.
+
+  La date de publication suffit à faire basculer `og:type` sur
+  « article » et à ouvrir les balises d'auteur et de rubrique : c'est
+  elle, et rien d'autre, qui distingue une publication d'une page — voir
+  Base.astro.
+*/}
 <Base
   title={entry.data.titre}
   description={entry.data.resume}
+  image={entry.data.vignette ? partageDeVignette(entry.data.vignette.src) : undefined}
+  imageAlt={entry.data.vignette?.alt}
+  publiee={entry.data.date}
+  auteur={entry.data.auteur}
+  rubrique={nomFlux(entry.data.flux, langue)}
   fil={[
     { label: journalPage.article.retour, chemin: cheminLangue(langue, "/journal") },
     { label: entry.data.titre, chemin: `${cheminLangue(langue, "/journal")}/${entry.data.chemin ?? entry.id}` },

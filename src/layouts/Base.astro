@@ -46,6 +46,27 @@ interface Props {
   typePage?: TypePage;
   image?: string;
   imageAlt?: string;
+  /*
+    Les dimensions accompagnent l'image, elles ne la précèdent pas.
+
+    Elles étaient écrites en dur à 1200 × 630 — vrai de la vignette de
+    marque, faux de toute autre. Une illustration d'article mesure
+    1200 × 675 : la déclarer 630 fait réserver au réseau une place qui
+    n'est pas la bonne, et le recadrage se voit.
+  */
+  imageLargeur?: number;
+  imageHauteur?: number;
+  imageType?: string;
+  /*
+    Ce qui fait d'une page partagée une PUBLICATION et non une page.
+
+    Facebook et LinkedIn lisent `og:type` : sur « article », ils
+    attendent une date et un auteur, et les affichent. Sans eux, le
+    Journal se partage comme n'importe quelle page du site.
+  */
+  publiee?: Date;
+  auteur?: string;
+  rubrique?: string;
   noindex?: boolean;
   fil?: Fil[];
   noeudsSeo?: Record<string, unknown>[];
@@ -69,10 +90,35 @@ const {
   */
   image = langue === LANGUE_PAR_DEFAUT ? "/og-image.jpg" : `/og-image-${langue}.jpg`,
   imageAlt = commun.photos.og_alt,
+  imageLargeur = 1200,
+  imageHauteur = 630,
+  imageType = "image/jpeg",
+  publiee,
+  auteur,
+  rubrique,
   noindex = false,
   fil,
   noeudsSeo,
 } = Astro.props;
+
+/*
+  `og:type` SE DÉDUIT DE LA DATE, il ne se déclare pas séparément.
+
+  Le gabarit annonçait « website » sur toutes les pages, y compris les
+  articles du Journal — que les données structurées destinées à Google
+  déclaraient pourtant, elles, comme des `Article`. Les deux vues du même
+  contenu se contredisaient ; c'est le genre d'écart qu'une relecture ne
+  voit pas et qu'un partage révèle.
+
+  On ne réutilise PAS `typePage` pour cela : il nomme le nœud du graphe
+  JSON-LD, et la page d'un article y reste une `WebPage` qui porte un
+  nœud `Article` — les deux notions ne se recouvrent pas.
+
+  Le signal est donc la date de publication, et elle seule : une page qui
+  en déclare une est une publication, et LinkedIn attend alors l'auteur
+  et la rubrique. Un seul signal, rien à tenir cohérent avec autre chose.
+*/
+const typeOuvert = publiee ? "article" : "website";
 
 const marque = commun.marque.nom;
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
@@ -225,17 +271,43 @@ const jsonLd = grapheSeo({
       )
     }
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={typeOuvert} />
     <meta property="og:site_name" content={marque} />
     <meta property="og:title" content={`${title} — ${marque}`} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={localeLangue(langue).replace("-", "_")} />
+    {/*
+      Les autres langues où CETTE page existe. Même source que les
+      `hreflang` — donc filtrées sur `exacte` : on n'annonce pas au
+      réseau une traduction qui n'existe pas, pas plus qu'au moteur.
+    */}
+    {
+      jumelles
+        .filter((j) => j.hreflang !== "x-default" && j.hreflang !== langue)
+        .map((j) => (
+          <meta
+            property="og:locale:alternate"
+            content={localeLangue(j.hreflang).replace("-", "_")}
+          />
+        ))
+    }
     <meta property="og:image" content={imageUrl} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content={String(imageLargeur)} />
+    <meta property="og:image:height" content={String(imageHauteur)} />
+    <meta property="og:image:type" content={imageType} />
     <meta property="og:image:alt" content={imageAlt} />
+    {
+      typeOuvert === "article" && (
+        <>
+          {publiee && (
+            <meta property="article:published_time" content={publiee.toISOString()} />
+          )}
+          {auteur && <meta property="article:author" content={auteur} />}
+          {rubrique && <meta property="article:section" content={rubrique} />}
+        </>
+      )
+    }
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={`${title} — ${marque}`} />
     <meta name="twitter:description" content={description} />
