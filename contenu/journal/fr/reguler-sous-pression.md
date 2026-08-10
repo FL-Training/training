@@ -1,6 +1,6 @@
 ---
 titre: "Réguler : préserver la capacité d’agir lorsque la pression augmente"
-resume: "Sous la pression, l'attention se resserre et les réponses possibles paraissent moins nombreuses. Réguler, c'est préserver assez de stabilité — seul et en équipe — pour rester en prise avec le réel."
+resume: "Sous la pression, l'attention se resserre. Réguler, c'est préserver assez de stabilité — seul et en équipe — pour rester en prise avec le réel."
 flux: "methodes-et-reperes"
 date: 2026-07-30
 labels:
@@ -8,7 +8,7 @@ labels:
   - "stabilite-operationnelle"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/reguler-preserver-la-capacite-d-agir/vignette/src.webp"
+  src: "/journal/vignettes/reguler-sous-pression/vignette/src.webp"
   alt: "Une équipe autour d'une table de réunion, dans un moment de travail sous tension contenue."
 sources: []
 ---

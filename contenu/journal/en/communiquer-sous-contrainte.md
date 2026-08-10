@@ -1,7 +1,7 @@
 ---
 titre: "Communicating: building an understanding that allows joint action"
 chemin: "building-shared-understanding"
-resume: "Communicating begins before the message. Under constraint, it is less about saying things well than about building a shared understanding solid enough for action to be coordinated."
+resume: "Communicating begins before the message: building a shared understanding solid enough for action to be coordinated."
 flux: "methodes-et-reperes"
 date: 2026-08-04
 labels:
@@ -9,7 +9,7 @@ labels:
   - "cooperation"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/communiquer-construire-une-comprehension-commune/vignette/src.webp"
+  src: "/journal/vignettes/communiquer-sous-contrainte/vignette/src.webp"
   alt: "Two professionals in attentive conversation in an office corridor, at speaking distance."
 sources: []
 ---

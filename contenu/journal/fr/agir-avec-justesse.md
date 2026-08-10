@@ -1,6 +1,6 @@
 ---
 titre: "Agir : décider avec justesse sans perdre sa capacité d’ajustement"
-resume: "Décider transforme déjà le champ des possibles. Agir avec justesse, c'est choisir une direction assumable sans renoncer à la réévaluer — graduer la réponse plutôt que trancher une fois pour toutes."
+resume: "Décider transforme déjà le champ des possibles. Agir avec justesse, c'est choisir une direction assumable sans renoncer à la réévaluer."
 flux: "methodes-et-reperes"
 date: 2026-08-09
 labels:
@@ -8,7 +8,7 @@ labels:
   - "leadership-sous-pression"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/agir-decider-avec-justesse/vignette/src.webp"
+  src: "/journal/vignettes/agir-avec-justesse/vignette/src.webp"
   alt: "Un responsable au centre d'une salle d'opérations, entouré de collègues qui échangent des informations."
 sources: []
 ---

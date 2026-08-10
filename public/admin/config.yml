@@ -25,6 +25,7 @@ i18n:
 slug:
   encoding: ascii
   clean_accents: true
+  maxlength: 40
 editor:
   preview: false
 collections:
@@ -48,10 +49,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: hero
             label: Bandeau d'ouverture (hero)
             widget: object
@@ -254,10 +261,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -352,10 +365,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -524,10 +543,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -660,10 +685,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -764,10 +795,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -932,10 +969,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -1054,10 +1097,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: entete
             label: En-tête de page
             widget: object
@@ -1153,8 +1202,9 @@ collections:
         i18n: true
         hint: >-
           Par exemple « corporate » pour l'anglais. Laisser vide en français : l'adresse française
-          est le nom du fichier.
+          est le nom du fichier. 36 signes au plus : l'adresse complète doit rester courte.
         required: false
+        maxlength: 36
       - name: ordre
         label: Ordre d'affichage
         widget: number
@@ -1188,10 +1238,16 @@ collections:
             label: Titre (onglet + Google)
             widget: string
             i18n: true
+            hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
           - name: description
             label: Description (résumé affiché par Google)
             widget: text
             i18n: true
+            hint: >-
+              Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous Google
+              en compose un lui-même, au-dessus il coupe la fin.
+            minlength: 60
+            maxlength: 170
       - name: signature
         label: Tracé de marque de la page
         widget: select
@@ -1566,12 +1622,17 @@ collections:
         i18n: true
         hint: >-
           Par exemple « from-reaction-to-action » pour l'anglais. Laisser vide en français :
-          l'adresse française est le nom du fichier.
+          l'adresse française est le nom du fichier. 40 signes au plus : l'adresse complète doit
+          rester courte.
         required: false
+        maxlength: 40
       - name: resume
         label: Résumé (affiché sur les cartes et dans Google)
         widget: text
         i18n: true
+        hint: Sert de résumé sous le titre dans les résultats Google. Viser 70 à 165 signes.
+        minlength: 60
+        maxlength: 170
       - name: flux
         label: Flux
         widget: select
@@ -1957,10 +2018,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: titre
             label: Titre
             widget: string
@@ -1998,10 +2065,16 @@ collections:
                 label: Titre (onglet + Google)
                 widget: string
                 i18n: true
+                hint: Google en affiche environ 60 signes ; au-delà, la fin est coupée.
               - name: description
                 label: Description (résumé affiché par Google)
                 widget: text
                 i18n: true
+                hint: >-
+                  Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous
+                  Google en compose un lui-même, au-dessus il coupe la fin.
+                minlength: 60
+                maxlength: 170
           - name: titre
             label: Titre
             widget: string

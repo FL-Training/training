@@ -21,7 +21,8 @@
     "i18n:etat": "node outils/etat-traduction.mjs",
     "audit:seo": "node outils/audit-seo.mjs",
     "audit:a11y": "node outils/audit-accessibilite.mjs",
-    "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles && npm run audit:seo && npm run audit:a11y"
+    "test": "npm run check && npm run build && npm run test:cms && npm run test:unitaires && npm run test:styles && npm run audit:seo && npm run audit:a11y",
+    "og:image": "node outils/generer-og-image.mjs"
   },
   "dependencies": {
     "@astrojs/node": "11.0.2",

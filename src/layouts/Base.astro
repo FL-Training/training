@@ -55,7 +55,19 @@ const {
   title,
   description,
   typePage = "WebPage",
-  image = "/og-image.jpg",
+  /*
+    La vignette de partage suit la langue de la page. Une seule image
+    servait tout le site jusqu'au 10/08/2026 : partager une page anglaise
+    montrait une accroche française, décrite par un `og:image:alt`
+    anglais — les pixels et le texte de remplacement se contredisaient.
+
+    Le français garde « og-image.jpg » : c'est l'adresse que les réseaux
+    ont déjà en cache, et la renommer relancerait tous les partages
+    existants pour rien. Les vignettes sont produites par
+    `npm run og:image` ; un test vérifie qu'aucune n'a pris du retard sur
+    le contenu.
+  */
+  image = langue === LANGUE_PAR_DEFAUT ? "/og-image.jpg" : `/og-image-${langue}.jpg`,
   imageAlt = commun.photos.og_alt,
   noindex = false,
   fil,

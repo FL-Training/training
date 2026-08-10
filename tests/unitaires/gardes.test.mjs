@@ -9,14 +9,29 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { charger, lireYaml, lireFrontmatter, copie } from "./_outils.mjs";
+import { readdirSync } from "node:fs";
+/*
+  L'article servant de gabarit est DÉCOUVERT, non nommé.
+
+  Son nom de fichier était écrit en dur : le jour où l'adresse d'un
+  article a été raccourcie, ces tests ont échoué sur un fichier
+  introuvable — un faux échec, qui ne disait rien du contrat vérifié.
+  N'importe quel article réel fait l'affaire ; c'est sa conformité au
+  schéma qui est en jeu, pas son titre.
+*/
+const premierArticle = () => {
+  const dossier = "contenu/journal/fr";
+  const nom = readdirSync(dossier).filter((f) => f.endsWith(".md")).sort()[0];
+  if (!nom) throw new Error(`aucun article dans ${dossier} — le gabarit des tests manque`);
+  return `${dossier}/${nom}`;
+};
+
 
 const { collections } = await charger("src/content.config.ts");
 const { schemas } = await charger("src/lib/contenu.ts");
 
 const porteReelle = lireYaml("contenu/portes/fr/entreprise.yaml");
-const articleReel = lireFrontmatter(
-  "contenu/journal/fr/anticiper-de-la-reaction-a-l-action.md",
-);
+const articleReel = lireFrontmatter(premierArticle());
 const accueilReel = lireYaml("contenu/fr/accueil.yaml");
 
 const refuse = (schema, valeur, message) =>

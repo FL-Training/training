@@ -39,10 +39,26 @@ export const ANCIENS_SECTEURS = {
   "organisme-securite-privee": "/formations/organismes-de-formation",
 };
 
+/**
+ * Journal articles whose address was shortened on 09/08/2026: the old
+ * slugs ran to 92 characters, well past what a search result shows.
+ * A published address never disappears — it may have been shared,
+ * bookmarked or crawled — so each old one still leads to its article.
+ * @type {Record<string, string>}
+ */
+export const ANCIENS_ARTICLES = {
+  "anticiper-de-la-reaction-a-l-action": "/journal/anticiper-avant-de-reagir",
+  "reguler-preserver-la-capacite-d-agir": "/journal/reguler-sous-pression",
+  "communiquer-construire-une-comprehension-commune":
+    "/journal/communiquer-sous-contrainte",
+  "agir-decider-avec-justesse": "/journal/agir-avec-justesse",
+};
+
 /** Every path that only exists to redirect — excluded from the sitemap. */
 export const CHEMINS_REDIRIGES = [
   ...Object.keys(ANCIENNES_FICHES).map((slug) => `/formations/${slug}`),
   ...Object.keys(ANCIENS_SECTEURS).map(
     (slug) => `/formations/secteurs/${slug}`,
   ),
+  ...Object.keys(ANCIENS_ARTICLES).map((slug) => `/journal/${slug}`),
 ];

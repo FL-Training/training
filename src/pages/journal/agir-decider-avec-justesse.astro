@@ -1,0 +1,15 @@
+---
+/*
+  Ancienne adresse de l'article, raccourcie le 09/08/2026.
+
+  Une adresse publiée ne disparaît pas : elle a pu être partagée, mise en
+  favori ou vue par un moteur. Cette page conduit à la nouvelle sans
+  laisser un 404 derrière elle — canonique vers la cible, `noindex` pour
+  ne pas se disputer la place avec elle.
+
+  Route statique, donc prioritaire sur `[slug].astro` qui capte le reste.
+*/
+import Redirection from "../../components/Redirection.astro";
+---
+
+<Redirection vers="/journal/agir-avec-justesse" />

@@ -1,7 +1,7 @@
 ---
 titre: "Acting: deciding with rightness without losing the room to adjust"
 chemin: "deciding-with-rightness"
-resume: "Deciding already transforms the field of what is possible. Acting with rightness means choosing a direction you can stand behind without giving up the ability to reassess it — grading the response rather than settling it once and for all."
+resume: "Deciding already transforms what is possible. Acting with rightness means choosing a direction you can stand behind, and still reassess."
 flux: "methodes-et-reperes"
 date: 2026-08-09
 labels:
@@ -9,7 +9,7 @@ labels:
   - "leadership-sous-pression"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/agir-decider-avec-justesse/vignette/src.webp"
+  src: "/journal/vignettes/agir-avec-justesse/vignette/src.webp"
   alt: "A team leader in the middle of an operations room, surrounded by colleagues exchanging information."
 sources: []
 ---

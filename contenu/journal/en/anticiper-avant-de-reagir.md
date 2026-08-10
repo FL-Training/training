@@ -1,7 +1,7 @@
 ---
 titre: "Anticipating: what makes it possible to move from reaction to action"
 chemin: "from-reaction-to-action"
-resume: "Anticipating is not predicting. It means learning to read what is starting to shift before the situation closes down — and telling what you observe apart from what you interpret."
+resume: "Anticipating is not predicting. It means learning to read what is starting to shift before the situation closes down."
 flux: "methodes-et-reperes"
 date: 2026-07-16
 labels:
@@ -9,7 +9,7 @@ labels:
   - "gestion-des-conflits"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/anticiper-de-la-reaction-a-l-action/vignette/src.webp"
+  src: "/journal/vignettes/anticiper-avant-de-reagir/vignette/src.webp"
   alt: "A professional corridor where a person stops, as if noticing something."
 sources: []
 ---

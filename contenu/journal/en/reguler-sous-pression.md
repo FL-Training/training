@@ -1,7 +1,7 @@
 ---
 titre: "Regulating: preserving the capacity to act as pressure rises"
 chemin: "preserving-the-capacity-to-act"
-resume: "Under pressure, attention narrows and the available responses seem fewer. Regulating means preserving enough stability — alone and as a team — to stay in touch with what is actually happening."
+resume: "Under pressure, attention narrows. Regulating means preserving enough stability — alone and as a team — to stay in touch with what is happening."
 flux: "methodes-et-reperes"
 date: 2026-07-30
 labels:
@@ -9,7 +9,7 @@ labels:
   - "stabilite-operationnelle"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/reguler-preserver-la-capacite-d-agir/vignette/src.webp"
+  src: "/journal/vignettes/reguler-sous-pression/vignette/src.webp"
   alt: "A team around a meeting table, in a moment of work under contained tension."
 sources: []
 ---

@@ -19,10 +19,10 @@
  *   - une référence `@id` du JSON-LD qui ne pointe sur aucun nœud ;
  *   - un lien interne vers une page que le build n'a pas produite.
  *
- * L'audit lit `dist/` et ne suppose rien de la cible : la même commande
- * sert au build GitHub Pages (base /training) et au build Dokploy
- * (`output: server`, sortie dans dist/client). Les deux se comportent
- * différemment sur exactement ces points — voir doc/audit-seo.md.
+ * L'audit lit les pages écrites dans `dist/`, donc un build STATIQUE —
+ * `npm run build`. Un build serveur (DEPLOY_TARGET=dokploy) n'en écrit
+ * qu'une partie et se voit refuser plus bas, plutôt que produire des
+ * « OK » sur des pages absentes. Voir doc/audit-seo.md.
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
@@ -30,10 +30,32 @@ import { join, relative } from "node:path";
 const RACINE = new URL("..", import.meta.url).pathname;
 const RESUME = process.argv.includes("--resume");
 
-/* Le build statique écrit dans dist/, le build serveur dans dist/client. */
-const DIST = ["dist/client", "dist"]
-  .map((d) => join(RACINE, d))
-  .find((d) => existsSync(join(d, "index.html")));
+/*
+  CET AUDIT EXIGE UN BUILD STATIQUE, et refuse d'en auditer un autre.
+
+  `npm run build` produit dist/ en entier. `DEPLOY_TARGET=dokploy` passe
+  en `output: "server"`, où Astro ne prérend QUE les routes portant
+  `export const prerender = true` — mesuré le 09/08/2026 : 36 pages sur
+  le disque, l'accueil et toutes les pages fixes rendues à la demande,
+  donc absentes de dist/client.
+
+  Le site n'y perd rien : @astrojs/sitemap connaît les routes, prérendues
+  ou non, et le sitemap servi en production porte bien ses 34 adresses.
+  Mais un audit qui lit le disque n'y verrait qu'un site amputé, et
+  chacun de ses « OK » serait un OK sur ce qu'il n'a pas regardé.
+
+  Un audit muet vaut mieux qu'un audit rassurant à tort : on s'arrête.
+*/
+if (existsSync(join(RACINE, "dist/server"))) {
+  console.log(
+    "Build serveur détecté (dist/server) : cet audit lit les pages sur le\n" +
+      "disque, or ce mode n'en écrit qu'une partie. Reconstruire sans\n" +
+      "DEPLOY_TARGET — `npm run build` — puis relancer l'audit.",
+  );
+  process.exit(1);
+}
+
+const DIST = [join(RACINE, "dist")].find((d) => existsSync(join(d, "index.html")));
 
 if (!DIST) {
   console.log("Aucun build trouvé : lancer `npm run build` avant l'audit.");
@@ -222,13 +244,28 @@ controle(
 );
 
 /* 3. Les pages de redirection ne doivent pas être proposées à l'index. */
-const { CHEMINS_REDIRIGES } = await import(join(RACINE, "src/lib/redirections.mjs"));
+/*
+  Détectées par leur NATURE, pas par leur déclaration.
+
+  Ce contrôle ne consultait que `CHEMINS_REDIRIGES` (src/lib/redirections.mjs,
+  que l'audit n'a donc plus à importer) : il vérifiait qu'une
+  redirection *déclarée* n'était pas au sitemap. Une redirection qu'on
+  oubliait d'y inscrire lui restait donc invisible — c'est arrivé le
+  09/08/2026 avec quatre articles renommés, dont les anciennes adresses
+  se sont retrouvées au sitemap sans que rien ne le signale.
+
+  On repart maintenant des pages construites : une page en `noindex` dont
+  la canonique désigne une AUTRE adresse ne sert qu'à rediriger, qu'elle
+  figure ou non dans la liste. La liste garde son rôle — nourrir le filtre
+  du sitemap — mais elle ne décide plus de ce que l'audit voit.
+*/
+const sitemapNormalise = new Set(URLS_SITEMAP.map((u) => normal(sansBase(chemin(u)))));
 controle(
   "redirections exclues du sitemap",
-  URLS_SITEMAP.filter((u) =>
-    CHEMINS_REDIRIGES.some((r) => normal(chemin(u)).endsWith(normal(r))),
-  ).map((u) => `${u} est une redirection et figure au sitemap`),
-  "Une page qui n'existe que pour rediriger n'a pas à être explorée : le filtre du sitemap (astro.config.mjs) doit la retirer.",
+  PAGES.filter(estRedirection)
+    .filter((p) => sitemapNormalise.has(normal(p.url)))
+    .map((p) => `${p.url} ne sert qu'à rediriger et figure au sitemap`),
+  "Une page qui n'existe que pour rediriger n'a pas à être explorée : le filtre du sitemap (astro.config.mjs) doit la retirer, via src/lib/redirections.mjs.",
 );
 
 /* 4. Titres et descriptions : uniques, et de longueur exploitable. */
@@ -274,6 +311,36 @@ controle(
   }),
   "Indicatif, pas normatif : un titre coupé perd son dernier mot, une description trop courte laisse le moteur en composer une.",
   "avertissement",
+);
+
+/*
+  Longueur des adresses — BLOQUANT, contrairement aux titres.
+
+  La différence n'est pas de nature mais d'auteur. Un titre vient des
+  livrables de Fabien, qui les rédige ; le mutiler pour douze signes
+  serait pire que le laisser tronqué, d'où l'avertissement ci-dessus.
+  Une adresse, elle, est fabriquée par le développement — nom de fichier
+  ou champ `chemin` — et rien n'oblige à ce qu'elle soit longue. Elle
+  peut donc être tenue.
+
+  Le seuil vient de la mesure, pas d'un usage. Au 09/08/2026 le chemin
+  le plus long fait 40 signes ; celui qu'on venait de raccourcir en
+  faisait 57. 50 sépare les deux : il aurait refusé l'ancien et laisse
+  dix signes de marge sur l'actuel.
+
+  ON MESURE LE CHEMIN ENTIER, préfixe de langue compris. Une adresse
+  anglaise porte donc quatre signes de plus qu'il faut prendre sur le
+  slug — c'est voulu : ce que Google lit et ce que l'on copie dans un
+  courriel, c'est l'adresse entière, pas le dernier segment.
+*/
+const CHEMIN_MAX = 50;
+controle(
+  "longueur des adresses",
+  INDEXABLES()
+    .map((p) => normal(p.url))
+    .filter((u) => u.length > CHEMIN_MAX)
+    .map((u) => `${u} : ${u.length} signes (> ${CHEMIN_MAX})`),
+  `Une adresse longue est tronquée dans les résultats de recherche, se copie mal et se retient moins. ${CHEMIN_MAX} signes suffisent : raccourcir le nom du fichier de contenu, ou son champ « chemin » — et déclarer l'ancienne adresse dans src/lib/redirections.mjs.`,
 );
 
 /* 5. Un seul H1, non vide. */
@@ -396,6 +463,33 @@ controle(
     return e;
   })(),
   "En interdiction totale (site sur IP), rien d'autre n'est exigé ; sinon le sitemap doit être déclaré et l'atelier exclu.",
+);
+
+/*
+  10. Le sitemap ne peut ni oublier une page, ni en inventer une.
+
+  IL NE PEUT PAS SE PÉRIMER : @astrojs/sitemap le reconstruit à chaque
+  build, à partir des routes que connaît Astro. Il n'existe aucune liste
+  à tenir à jour à la main, donc rien à oublier de mettre à jour — une
+  page ajoutée à src/pages ou une fiche ajoutée à contenu/ y entre au
+  build suivant, sans intervention.
+
+  Le sens page → sitemap est déjà tenu par le contrôle 1 : toute page
+  indexable dont la canonique manque au sitemap y échoue. Reste le sens
+  inverse, contrôlé ici — une adresse au sitemap qui ne correspond plus
+  à aucune page construite. Un moteur qui la suit tombe sur un 404, et
+  l'ensemble du fichier perd en crédit.
+
+  Ce contrôle n'a de sens que sur un build complet : c'est ce que la
+  garde en tête de fichier assure en refusant les builds serveur.
+*/
+const cheminsConstruits = new Set(PAGES.map((p) => normal(p.url)));
+controle(
+  "sitemap sans adresse orpheline",
+  URLS_SITEMAP.map((u) => normal(sansBase(chemin(u))))
+    .filter((c) => !cheminsConstruits.has(c))
+    .map((c) => `${c} figure au sitemap, mais aucune page ne porte cette adresse`),
+  "Le sitemap est proposé à l'exploration : chacune de ses adresses doit répondre.",
 );
 
 // --- Verdict ---------------------------------------------------------------

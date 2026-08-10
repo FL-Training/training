@@ -1,6 +1,6 @@
 ---
 titre: "Communiquer : construire une compréhension qui permet d’agir ensemble"
-resume: "Communiquer commence avant le message. Sous contrainte, il s'agit moins de bien dire que de construire une compréhension partagée, assez solide pour que l'action puisse se coordonner."
+resume: "Communiquer commence avant le message : construire une compréhension partagée, assez solide pour que l'action puisse se coordonner."
 flux: "methodes-et-reperes"
 date: 2026-08-04
 labels:
@@ -8,7 +8,7 @@ labels:
   - "cooperation"
 auteur: "Fabien Lacombe"
 vignette:
-  src: "/journal/vignettes/communiquer-construire-une-comprehension-commune/vignette/src.webp"
+  src: "/journal/vignettes/communiquer-sous-contrainte/vignette/src.webp"
   alt: "Deux professionnels en échange attentif dans un couloir de bureau, à distance de conversation."
 sources: []
 ---

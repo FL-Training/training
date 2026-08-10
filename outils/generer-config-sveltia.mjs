@@ -167,10 +167,35 @@ const image = (name, label, dossier, publicPath, extra = {}) => ({
   ...extra,
 });
 
+/*
+  La description est tenue À LA SAISIE, pas au build.
+
+  Un contrôle de longueur au build ferait échouer la publication après
+  coup, sur une machine que Fabien ne voit pas, pour un texte qu'il ne
+  peut plus corriger sans nous. Ici, Sveltia affiche un compteur pendant
+  la frappe et refuse l'enregistrement hors bornes : la contrainte se
+  voit au moment où elle se répare.
+
+  Les bornes sont larges à dessein. Google coupe une description autour
+  de 165 signes, et c'est ce que l'audit SEO rappelle en avertissement ;
+  ici on ne barre que la faute franche — deux mots, ou un paragraphe
+  entier collé. Au 09/08/2026 la plus longue des descriptions du site
+  fait 163 signes (accueil), la plus courte 86 : personne n'est bloqué,
+  et sept signes de marge restent au-dessus.
+
+  Le titre, lui, n'est pas borné : les livrables de Fabien en portent
+  jusqu'à 87 signes, et l'audit SEO les signale sans les refuser. Poser
+  un maximum ici l'empêcherait d'enregistrer ses propres textes.
+*/
 const seo = () =>
   objet("seo", "Référencement (SEO)", [
-    t("titre", "Titre (onglet + Google)"),
-    long("description", "Description (résumé affiché par Google)"),
+    t("titre", "Titre (onglet + Google)", "Google en affiche environ 60 signes ; au-delà, la fin est coupée."),
+    {
+      ...long("description", "Description (résumé affiché par Google)",
+        "Le résumé sous le titre dans les résultats. Viser 70 à 165 signes : en dessous Google en compose un lui-même, au-dessus il coupe la fin."),
+      minlength: 60,
+      maxlength: 170,
+    },
   ]);
 
 const entete = (origine) =>
@@ -609,11 +634,17 @@ const portes = {
   editor: { preview: false },
   fields: [
     t("nom", "Nom de la porte"),
-    tf(
-      "chemin",
-      "Adresse de la page dans cette langue (slug)",
-      "Par exemple « corporate » pour l'anglais. Laisser vide en français : l'adresse française est le nom du fichier.",
-    ),
+    {
+      ...tf(
+        "chemin",
+        "Adresse de la page dans cette langue (slug)",
+        "Par exemple « corporate » pour l'anglais. Laisser vide en français : l'adresse française est le nom du fichier. 36 signes au plus : l'adresse complète doit rester courte.",
+      ),
+      // Plus court que les 40 signes du Journal parce que le préfixe est
+      // plus long : « /en/training/ » fait treize signes, et 13 + 36 = 49
+      // reste sous la limite d'adresse de l'audit SEO.
+      maxlength: 36,
+    },
     { name: "ordre", label: "Ordre d'affichage", widget: "number", value_type: "int", i18n: "duplicate" },
     {
       name: "statut",
@@ -703,12 +734,24 @@ const journal = {
   sortable_fields: ["date", "titre"],
   fields: [
     t("titre", "Titre"),
-    tf(
-      "chemin",
-      "Adresse de l'article dans cette langue (slug)",
-      "Par exemple « from-reaction-to-action » pour l'anglais. Laisser vide en français : l'adresse française est le nom du fichier.",
-    ),
-    long("resume", "Résumé (affiché sur les cartes et dans Google)"),
+    {
+      ...tf(
+        "chemin",
+        "Adresse de l'article dans cette langue (slug)",
+        "Par exemple « from-reaction-to-action » pour l'anglais. Laisser vide en français : l'adresse française est le nom du fichier. 40 signes au plus : l'adresse complète doit rester courte.",
+      ),
+      // Même calcul que le `slug.maxlength` global : « /en/blog/ » plus
+      // 40 signes reste sous la limite d'adresse de l'audit SEO.
+      maxlength: 40,
+    },
+    {
+      // `resume` EST la meta description de l'article — voir
+      // src/corps/journal/[slug].astro. Mêmes bornes que seo.description.
+      ...long("resume", "Résumé (affiché sur les cartes et dans Google)",
+        "Sert de résumé sous le titre dans les résultats Google. Viser 70 à 165 signes."),
+      minlength: 60,
+      maxlength: 170,
+    },
     {
       name: "flux",
       label: "Flux",
@@ -810,7 +853,34 @@ const config = {
     locales: CODES_LANGUES,
     default_locale: LANGUE_PAR_DEFAUT,
   },
-  slug: { encoding: "ascii", clean_accents: true },
+  /*
+    `maxlength` borne le NOM DE FICHIER que Sveltia dérive du titre.
+
+    Sans lui, un article créé depuis l'éditeur hérite d'une adresse aussi
+    longue que son titre — et les titres de Fabien font 83 à 87 signes.
+    Le résultat dépasserait la limite d'adresse que l'audit SEO fait
+    respecter (outils/audit-seo.mjs, « longueur des adresses ») et le
+    build refuserait de passer, plusieurs jours après la rédaction.
+
+    40 est calculé sur le préfixe le plus courant : « /journal/ » et
+    « /en/blog/ » font neuf signes, donc 9 + 40 = 49, sous la limite de
+    50. Une fiche créée sous « /formations/ » (douze signes) pourrait la
+    frôler ; c'est l'audit qui le dirait, mais aucune fiche ne se crée
+    ainsi aujourd'hui.
+
+    SVELTIA TRONQUE, IL NE REFUSE PAS — vérifié dans le paquet 0.175.1 :
+    la slugification finit par `d.length > u && (d = Pp(d, u))`, et `Pp`
+    n'est qu'un `[...e].slice(0, t)`. La coupe se fait après le passage en
+    ASCII et le remplacement des séparateurs, mais SANS ÉGARD AUX MOTS :
+    un titre long peut donner « …-la-capacite-d-a », voire un tiret en
+    fin d'adresse.
+
+    C'est un compromis assumé. Fabien obtient une adresse courte et un
+    build qui passe, là où un refus l'aurait laissé sans issue ; l'adresse
+    reste à relire à la création, et c'est le seul moment où elle se
+    reprend sans coûter une redirection.
+  */
+  slug: { encoding: "ascii", clean_accents: true, maxlength: 40 },
   editor: { preview: false },
   collections: [
     {
