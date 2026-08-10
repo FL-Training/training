@@ -257,6 +257,8 @@ jobs:
           sveltia_branch=main
           build_id=${{ steps.context.outputs.base_revision }}
           content_revision=${GITHUB_SHA}
+          promotion_base_revision=${{ steps.context.outputs.base_revision }}
+          promotion_base_tag=${{ steps.context.outputs.base_tag }}
           EOF
           elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             cat >> "${GITHUB_OUTPUT}" <<EOF
@@ -266,6 +268,8 @@ jobs:
           sveltia_branch=main
           build_id=${GITHUB_SHA}
           content_revision=${GITHUB_SHA}
+          promotion_base_revision=${{ steps.context.outputs.base_revision }}
+          promotion_base_tag=${{ steps.context.outputs.base_tag }}
           EOF
           else
             cat >> "${GITHUB_OUTPUT}" <<EOF
@@ -275,6 +279,8 @@ jobs:
           sveltia_branch=main
           build_id=${GITHUB_SHA}
           content_revision=${GITHUB_SHA}
+          promotion_base_revision=
+          promotion_base_tag=
           EOF
           fi
 
@@ -326,8 +332,8 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.desired-state-token.outputs.token }}
           DEPLOYMENT_CHANNEL: ${{ steps.channel.outputs.deployment_channel }}
-          BASE_REVISION: ${{ steps.context.outputs.base_revision }}
-          BASE_TAG: ${{ steps.context.outputs.base_tag }}
+          BASE_REVISION: ${{ steps.channel.outputs.promotion_base_revision }}
+          BASE_TAG: ${{ steps.channel.outputs.promotion_base_tag }}
           IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
           SOURCE_REVISION: ${{ github.sha }}
           SOURCE_REF: ${{ github.ref }}
