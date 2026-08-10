@@ -1,50 +1,32 @@
-# ============================================================
-# PAGE « POLITIQUE DE CONFIDENTIALITÉ »
-#
-# ⚠️ CETTE PAGE ENGAGE JURIDIQUEMENT. Elle doit décrire le
-# traitement réel, pas celui qu'on projette. Toute évolution de
-# l'hébergement ou du formulaire doit s'y refléter le jour même.
-#
-# Corrigée le 09/08/2026 : elle annonçait un stockage sur « la
-# plateforme Convex, déploiement hébergé en Irlande ». C'était faux.
-# Les messages sont enregistrés par une instance Convex INSTALLÉE SUR
-# LE SERVEUR PRIVÉ de Pacivis Academy — vérifié le 09/08/2026 :
-# site-convex.app.pacivisacademy.com et le site répondent sur la même
-# adresse IP, à Francfort. Aucune donnée ne transite par Convex Cloud.
-# ============================================================
-
 seo:
-  titre: "Politique de confidentialité"
-  description: "Comment Pacivis Academy traite les données du formulaire de contact : quelles données, pour quel usage, où elles sont hébergées et vos droits."
-
-titre: "Politique de confidentialité"
+  titre: Politique de confidentialité
+  description: 'Comment Pacivis Academy traite les données du formulaire de contact : quelles données, pour quel usage, où elles sont hébergées et vos droits.'
+titre: Politique de confidentialité
 intro: "Ce site est un site vitrine : il ne dépose aucun cookie, n'utilise aucun outil de mesure d'audience et ne collecte des données personnelles que lorsque vous choisissez d'utiliser le formulaire de contact."
-
 sections:
-  - titre: "Données collectées par le formulaire de contact"
-    texte: |
-      Lorsque vous envoyez un message via la page Contact, les informations suivantes sont enregistrées : votre **nom**, votre **adresse email**, votre **organisation** (facultatif), le **sujet** choisi et le **contenu de votre message**, ainsi que la date de réception.
-  - titre: "Finalité et base juridique"
+  - titre: Données collectées par le formulaire de contact
+    texte: 'Lorsque vous envoyez un message via la page Contact, les informations suivantes sont enregistrées : votre **nom**, votre **adresse email**, votre **organisation** (facultatif), le **sujet** choisi et le **contenu de votre message**, ainsi que la date de réception.'
+  - titre: Finalité et base juridique
     texte: "Ces informations servent exclusivement à répondre à votre demande. Elles ne sont ni cédées, ni vendues, ni utilisées à des fins publicitaires ou de prospection non sollicitée. Le traitement repose sur l'exécution de mesures précontractuelles prises à votre demande (article 6.1.b du RGPD) : c'est vous qui initiez le contact, et les données sont nécessaires pour y répondre."
-  - titre: "Responsable du traitement"
-    texte: "Fabien Lacombe, formateur indépendant, éditeur du site."
-  - titre: "Où sont hébergées les données"
-    texte: |
+  - titre: Responsable du traitement
+    texte: Fabien Lacombe, formateur indépendant, éditeur du site.
+  - titre: Où sont hébergées les données
+    texte: |-
       Les messages sont enregistrés sur un **serveur privé dédié**, situé en **Allemagne**, donc au sein de l'Union européenne et sous le régime du RGPD.
 
       Ils ne sont **confiés à aucune plateforme tierce** : le logiciel qui les reçoit et les conserve est installé sur ce serveur, administré pour le compte de Pacivis Academy. Aucun service en ligne externe n'intervient dans la chaîne — ni pour recevoir le formulaire, ni pour stocker son contenu, ni pour vous répondre.
-  - titre: "Sécurité"
-    texte: |
+  - titre: Sécurité
+    texte: |-
       Les échanges entre votre navigateur et le site sont **chiffrés de bout en bout** (HTTPS), y compris l'envoi du formulaire.
 
       L'accès aux messages est **restreint nommément** à Fabien Lacombe et à l'administrateur technique du site. Le serveur est exploité selon des procédures écrites couvrant la configuration, les mises à jour de sécurité, la gestion des accès et les sauvegardes.
-  - titre: "Durée de conservation"
-    texte: "Les messages sont conservés **trois ans** à compter de leur réception, durée qui couvre le traitement de la demande et le suivi de la relation commerciale pouvant en découler. Au-delà, ils sont **supprimés automatiquement** : une tâche quotidienne efface les messages ayant dépassé ce terme, sans intervention humaine."
-  - titre: "Vos droits"
-    texte: |
+  - titre: Durée de conservation
+    texte: 'Les messages sont conservés **trois ans** à compter de leur réception, durée qui couvre le traitement de la demande et le suivi de la relation commerciale pouvant en découler. Au-delà, ils sont **supprimés automatiquement** : une tâche quotidienne efface les messages ayant dépassé ce terme, sans intervention humaine.'
+  - titre: Vos droits
+    texte: |-
       Conformément au RGPD, vous disposez des droits d'**accès**, de **rectification**, d'**effacement**, de **limitation du traitement**, d'**opposition** et de **portabilité** des données vous concernant. Pour les exercer, contactez Fabien Lacombe via le formulaire de contact ou son profil LinkedIn.
 
       Votre demande est traitée **dans un délai maximum d'un mois**. L'adresse email que vous avez utilisée suffit à retrouver l'ensemble de vos messages, à vous en communiquer une copie ou à les effacer définitivement.
       Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la CNIL (Commission nationale de l'informatique et des libertés) : www.cnil.fr.
-  - titre: "Cookies et traceurs"
-    texte: "Ce site ne dépose aucun cookie et n'embarque aucun traceur tiers. Les polices de caractères et toutes les ressources sont servies directement par le site, sans appel à des services externes."
+  - titre: Cookies et traceurs
+    texte: Ce site ne dépose aucun cookie et n'embarque aucun traceur tiers. Les polices de caractères et toutes les ressources sont servies directement par le site, sans appel à des services externes

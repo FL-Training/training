@@ -1,37 +1,32 @@
-# "Privacy policy" page — English working translation (29/07/2026), to
-# be reviewed. Legal text: have it checked before publication.
 seo:
-  titre: "Privacy policy"
-  description: "How Pacivis Academy handles contact-form data: what data, for what purpose, where it is hosted and your rights."
-
-titre: "Privacy policy"
-intro: "This is a showcase website: it sets no cookies, uses no audience-measurement tools, and only collects personal data when you choose to use the contact form."
-
+  titre: Privacy policy
+  description: 'How Pacivis Academy handles contact-form data: what data, for what purpose, where it is hosted and your rights.'
+titre: Privacy policy
+intro: 'This is a showcase website: it sets no cookies, uses no audience-measurement tools, and only collects personal data when you choose to use the contact form.'
 sections:
-  - titre: "Data collected by the contact form"
-    texte: |
-      When you send a message via the Contact page, the following information is recorded: your **name**, your **email address**, your **organisation** (optional), the chosen **subject** and the **content of your message**, together with the date of receipt.
-  - titre: "Purpose and legal basis"
-    texte: "This information is used exclusively to answer your request. It is neither shared, nor sold, nor used for advertising or unsolicited canvassing. Processing is based on pre-contractual measures taken at your request (Article 6.1.b GDPR): you initiate the contact, and the data is necessary to respond to it."
-  - titre: "Data controller"
-    texte: "Fabien Lacombe, independent trainer, publisher of the website."
-  - titre: "Where the data is hosted"
-    texte: |
+  - titre: Data collected by the contact form
+    texte: 'When you send a message via the Contact page, the following information is recorded: your **name**, your **email address**, your **organisation** (optional), the chosen **subject** and the **content of your message**, together with the date of receipt.'
+  - titre: Purpose and legal basis
+    texte: 'This information is used exclusively to answer your request. It is neither shared, nor sold, nor used for advertising or unsolicited canvassing. Processing is based on pre-contractual measures taken at your request (Article 6.1.b GDPR): you initiate the contact, and the data is necessary to respond to it.'
+  - titre: Data controller
+    texte: Fabien Lacombe, independent trainer, publisher of the website.
+  - titre: Where the data is hosted
+    texte: |-
       Messages are recorded on a **dedicated private server** located in **Germany**, and therefore within the European Union and under the GDPR.
 
       They are **not entrusted to any third-party platform**: the software that receives and keeps them is installed on that server, administered on behalf of Pacivis Academy. No external online service is involved in the chain — neither to receive the form, nor to store its contents, nor to reply to you.
-  - titre: "Security"
-    texte: |
+  - titre: Security
+    texte: |-
       Exchanges between your browser and the site are **encrypted end to end** (HTTPS), including the submission of the form.
 
       Access to messages is **restricted by name** to Fabien Lacombe and the site's technical administrator. The server is operated under written procedures covering configuration, security updates, access management and backups.
-  - titre: "Retention period"
-    texte: "Messages are kept for **three years** from the date they are received, a period covering the handling of the request and any commercial relationship that may follow. Beyond that, they are **deleted automatically**: a daily task erases messages past that term, with no human intervention."
-  - titre: "Your rights"
-    texte: |
+  - titre: Retention period
+    texte: 'Messages are kept for **three years** from the date they are received, a period covering the handling of the request and any commercial relationship that may follow. Beyond that, they are **deleted automatically**: a daily task erases messages past that term, with no human intervention.'
+  - titre: Your rights
+    texte: |-
       In accordance with the GDPR, you have the rights of **access**, **rectification**, **erasure**, **restriction of processing**, **objection** and **portability** of your personal data. To exercise them, contact Fabien Lacombe via the contact form or his LinkedIn profile.
 
       Your request is handled **within one month at most**. The email address you used is enough to retrieve all your messages, to send you a copy of them or to erase them permanently.
       If you consider that your rights are not respected, you may lodge a complaint with the CNIL (the French data protection authority): www.cnil.fr.
-  - titre: "Cookies and trackers"
-    texte: "This website sets no cookies and embeds no third-party trackers. Fonts and all resources are served directly by the site, without calls to external services."
+  - titre: Cookies and trackers
+    texte: This website sets no cookies and embeds no third-party trackers. Fonts and all resources are served directly by the site, without calls to external services.
