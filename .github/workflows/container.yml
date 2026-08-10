@@ -35,6 +35,7 @@ concurrency:
 
 jobs:
   validate:
+    if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -102,6 +103,7 @@ jobs:
             PUBLIC_SITE_URL=https://dev.app.pacivisacademy.com
             PUBLIC_CONVEX_URL=https://site-convex-dev.app.pacivisacademy.com
             PUBLIC_BUILD_ID=${{ github.sha }}
+            PUBLIC_CONTENT_REVISION=${{ github.sha }}
             SVELTIA_BRANCH=main
             SVELTIA_CLIENT_OAUTH=https://oauth.app.pacivisacademy.com
           cache-from: type=gha
@@ -147,7 +149,9 @@ jobs:
           exit-code: 1
 
   publish:
-    if: github.event_name != 'pull_request'
+    if: >-
+      github.event_name != 'pull_request' &&
+      (needs.validate.result == 'success' || needs.validate.result == 'skipped')
     needs: validate
     runs-on: ubuntu-latest
     permissions:
@@ -252,6 +256,7 @@ jobs:
           convex_url=https://site-convex.app.pacivisacademy.com
           sveltia_branch=main
           build_id=${{ steps.context.outputs.base_revision }}
+          content_revision=${GITHUB_SHA}
           EOF
           elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             cat >> "${GITHUB_OUTPUT}" <<EOF
@@ -260,6 +265,7 @@ jobs:
           convex_url=https://site-convex.app.pacivisacademy.com
           sveltia_branch=main
           build_id=${GITHUB_SHA}
+          content_revision=${GITHUB_SHA}
           EOF
           else
             cat >> "${GITHUB_OUTPUT}" <<EOF
@@ -268,6 +274,7 @@ jobs:
           convex_url=https://site-convex-dev.app.pacivisacademy.com
           sveltia_branch=main
           build_id=${GITHUB_SHA}
+          content_revision=${GITHUB_SHA}
           EOF
           fi
 
@@ -284,6 +291,7 @@ jobs:
             PUBLIC_SITE_URL=${{ steps.channel.outputs.site_url }}
             PUBLIC_CONVEX_URL=${{ steps.channel.outputs.convex_url }}
             PUBLIC_BUILD_ID=${{ steps.channel.outputs.build_id }}
+            PUBLIC_CONTENT_REVISION=${{ steps.channel.outputs.content_revision }}
             SVELTIA_BRANCH=${{ steps.channel.outputs.sveltia_branch }}
             SVELTIA_CLIENT_OAUTH=https://oauth.app.pacivisacademy.com
           cache-from: type=gha
@@ -350,3 +358,26 @@ jobs:
                 workflow_url: $workflow_url
               }
             }' | gh api --method POST repos/FL-Training/infrastructure-config/dispatches --input -
+
+      - name: Wait for published content
+        if: github.event_name == 'repository_dispatch'
+        env:
+          EXPECTED_CONTENT_REVISION: ${{ github.sha }}
+          PUBLIC_VERSION_URL: https://pacivisacademy.com/version.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 120); do
+            response="$(curl --fail --silent --show-error \
+              --header 'cache-control: no-cache' \
+              "${PUBLIC_VERSION_URL}?revision=${EXPECTED_CONTENT_REVISION}&attempt=${attempt}" \
+              || true)"
+            live_revision="$(jq --raw-output '.content // empty' <<<"${response}" 2>/dev/null || true)"
+            if [ "${live_revision}" = "${EXPECTED_CONTENT_REVISION}" ]; then
+              echo "Content ${EXPECTED_CONTENT_REVISION} is live in production."
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Production did not expose content ${EXPECTED_CONTENT_REVISION} within 20 minutes." >&2
+          exit 1

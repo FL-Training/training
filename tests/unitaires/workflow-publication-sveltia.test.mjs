@@ -71,6 +71,8 @@ test("the published digest is sent to the desired-state repository", () => {
 });
 
 test("content publishes avoid the redundant runtime build but still scan the release", () => {
+  assert.equal(workflow.jobs.validate.if, "github.event_name != 'repository_dispatch'");
+  assert.match(workflow.jobs.publish.if, /needs\.validate\.result == 'skipped'/);
   const validationBuild = validateSteps.find(
     (candidate) => candidate.name === "Build runtime image",
   );
@@ -79,4 +81,18 @@ test("content publishes avoid the redundant runtime build but still scan the rel
     step("Scan content release image").if,
     "github.event_name == 'repository_dispatch'",
   );
+});
+
+test("content publication stays pending until the exact revision is live", () => {
+  const buildStep = step("Build and publish");
+  assert.match(
+    buildStep.with["build-args"],
+    /PUBLIC_CONTENT_REVISION=\$\{\{ steps\.channel\.outputs\.content_revision \}\}/,
+  );
+
+  const waitStep = step("Wait for published content");
+  assert.equal(waitStep.if, "github.event_name == 'repository_dispatch'");
+  assert.equal(waitStep.env.EXPECTED_CONTENT_REVISION, "${{ github.sha }}");
+  assert.match(waitStep.run, /\.content \/\/ empty/);
+  assert.match(waitStep.run, /within 20 minutes/);
 });
