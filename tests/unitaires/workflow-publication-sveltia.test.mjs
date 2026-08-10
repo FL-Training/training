@@ -64,10 +64,24 @@ test("the deployment app token is repository-scoped and least-privileged", () =>
 test("the published digest is sent to the desired-state repository", () => {
   const notifyStep = step("Notify desired-state repository");
   assert.equal(notifyStep.env.IMAGE_DIGEST, "${{ steps.build.outputs.digest }}");
-  assert.equal(notifyStep.env.BASE_REVISION, "${{ steps.context.outputs.base_revision }}");
-  assert.equal(notifyStep.env.BASE_TAG, "${{ steps.context.outputs.base_tag }}");
+  assert.equal(
+    notifyStep.env.BASE_REVISION,
+    "${{ steps.channel.outputs.promotion_base_revision }}",
+  );
+  assert.equal(
+    notifyStep.env.BASE_TAG,
+    "${{ steps.channel.outputs.promotion_base_tag }}",
+  );
   assert.match(notifyStep.run, /pacivis-site-artifact-published/);
   assert.match(notifyStep.run, /repos\/FL-Training\/infrastructure-config\/dispatches/);
+});
+
+test("development evidence never claims a signed production base", () => {
+  const channelScript = step("Resolve deployment channel").run;
+  const developmentBranch = channelScript.slice(channelScript.indexOf("else\n"));
+  assert.match(developmentBranch, /deployment_channel=development/);
+  assert.match(developmentBranch, /promotion_base_revision=\n/);
+  assert.match(developmentBranch, /promotion_base_tag=\n/);
 });
 
 test("content publishes avoid the redundant runtime build but still scan the release", () => {
