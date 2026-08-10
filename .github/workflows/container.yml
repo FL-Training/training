@@ -150,6 +150,7 @@ jobs:
 
   publish:
     if: >-
+      always() &&
       github.event_name != 'pull_request' &&
       (needs.validate.result == 'success' || needs.validate.result == 'skipped')
     needs: validate

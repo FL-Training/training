@@ -86,6 +86,7 @@ test("development evidence never claims a signed production base", () => {
 
 test("content publishes avoid the redundant runtime build but still scan the release", () => {
   assert.equal(workflow.jobs.validate.if, "github.event_name != 'repository_dispatch'");
+  assert.match(workflow.jobs.publish.if, /^always\(\) &&/);
   assert.match(workflow.jobs.publish.if, /needs\.validate\.result == 'skipped'/);
   const validationBuild = validateSteps.find(
     (candidate) => candidate.name === "Build runtime image",
