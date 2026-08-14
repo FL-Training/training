@@ -104,9 +104,11 @@ collections:
                 widget: string
                 i18n: true
               - name: chapo
-                label: Phrase d'introduction
+                label: Phrase d'introduction (facultatif)
                 widget: text
                 i18n: true
+                hint: À laisser vide si le titre ci-dessus annonce déjà la liste.
+                required: false
               - name: situations
                 label: Les situations
                 widget: list

@@ -111,11 +111,18 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
       <h2 class="display max-w-3xl text-3xl text-navy-deep md:text-4xl" data-reveal>
         {accueil.besoins.titre}
       </h2>
-      <p
-        class="mt-5 max-w-3xl leading-relaxed text-ink-soft"
-        data-reveal
-        set:html={enrichir(accueil.besoins.chapo)}
-      />
+      {/*
+        Le chapô est facultatif : quand le titre annonce déjà la liste,
+        il ferait doublon. Rendu sans condition, il laisserait une marge
+        vide entre le titre et les situations.
+      */}
+      {accueil.besoins.chapo && (
+        <p
+          class="mt-5 max-w-3xl leading-relaxed text-ink-soft"
+          data-reveal
+          set:html={enrichir(accueil.besoins.chapo)}
+        />
+      )}
       {/*
         Deux colonnes, et deux niveaux de lecture par situation.
 

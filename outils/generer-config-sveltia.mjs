@@ -262,7 +262,11 @@ const pageAccueil = {
     ]),
     objet("besoins", "Bloc « À quels besoins Pacivis répond »", [
       t("titre", "Titre"),
-      long("chapo", "Phrase d'introduction"),
+      longf(
+        "chapo",
+        "Phrase d'introduction (facultatif)",
+        "À laisser vide si le titre ci-dessus annonce déjà la liste.",
+      ),
       listeMin1("situations", "Les situations", [
         dup(t("picto", "Pictogramme", "Nom du picto (voir la liste dans LISEZMOI.md)")),
         t("intitule", "Intitulé court", "Trois ou quatre mots : c'est ce que l'œil lit en premier."),

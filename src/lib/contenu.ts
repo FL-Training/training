@@ -149,7 +149,20 @@ const accueilSchema = z.object({
   */
   besoins: z.object({
     titre: texteRequis,
-    chapo: texteRequis,
+    /*
+      FACULTATIF depuis le 14/08/2026, à la demande de Fabien.
+
+      Le titre du bloc portait « Pacivis Academy peut vous aider si… »,
+      et le chapô développait. Fabien l'a réécrit en une phrase complète
+      qui annonce la liste — « … si votre organisation est confrontée à
+      des difficultés concernant : » — et le chapô fait alors doublon.
+      L'éditeur refusait pourtant de l'enregistrer vide.
+
+      Le rendu saute le paragraphe quand il n'y a rien à dire : un
+      paragraphe vide laisserait une marge sans texte entre le titre et
+      les situations.
+    */
+    chapo: texteFacultatif,
     /*
       Chaque situation se lit à DEUX niveaux : un intitulé court que
       l'œil attrape en passant, la phrase du livrable pour qui s'y

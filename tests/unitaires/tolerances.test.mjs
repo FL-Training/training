@@ -45,6 +45,19 @@ test("le contenu réel passe tel quel — le gabarit des autres tests est sain",
   schemas.communSchema.parse(copie(communReel));
 });
 
+/*
+  Signalé par Fabien le 14/08/2026, depuis l'atelier : « Phrase
+  d'introduction » portait une étoile et refusait l'enregistrement à
+  vide. Il venait de réécrire le titre du bloc en une phrase qui annonce
+  la liste — « … si votre organisation est confrontée à des difficultés
+  concernant : » — et le chapô faisait alors doublon.
+*/
+test("le chapô du bloc « besoins » peut rester vide quand le titre annonce déjà la liste", () => {
+  const accueil = copie(lireYaml("contenu/fr/accueil.yaml"));
+  accueil.besoins.chapo = "";
+  assert.equal(schemas.accueilSchema.parse(accueil).besoins.chapo, undefined);
+});
+
 test("un tracé de marque enregistré vide vaut « pas de tracé »", () => {
   const porte = copie(porteReelle);
   porte.signature = "";
