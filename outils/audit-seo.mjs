@@ -175,6 +175,36 @@ const URLS_SITEMAP = sitemaps.flatMap((f) =>
   tous(readFileSync(join(DIST, f), "utf8"), /<loc>([^<]*)<\/loc>/g),
 );
 
+/*
+  Le nom de marque est LU DANS LE CONTENU, jamais recopié : c'est celui
+  que le gabarit ajoute aux titres (commun.marque.nom), et le contrôle
+  de doublon ci-dessous n'aurait aucun sens s'il en surveillait un autre.
+*/
+const { default: yamlSeo } = await import("js-yaml");
+const MARQUE = (() => {
+  /*
+    Le contrôle porte sur toutes les langues : lire la marque d'une
+    seule d'entre elles cesserait de couvrir les autres le jour où elles
+    divergeraient — sans que rien ne le dise. On le vérifie donc.
+  */
+  const noms = readdirSync(join(RACINE, "contenu"), { withFileTypes: true })
+    .filter((e) => e.isDirectory() && existsSync(join(RACINE, "contenu", e.name, "commun.yaml")))
+    .map((e) => [
+      e.name,
+      yamlSeo.load(readFileSync(join(RACINE, "contenu", e.name, "commun.yaml"), "utf8")).marque.nom,
+    ]);
+  const distincts = [...new Set(noms.map(([, n]) => n))];
+  if (distincts.length !== 1) {
+    console.log(
+      `ÉCHEC  le nom de marque diffère selon la langue — ${noms.map(([l, n]) => `${l} : « ${n} »`).join(", ")}\n` +
+        "          Le contrôle de doublon de marque ne peut pas couvrir toutes les pages.\n" +
+        "          Aligner contenu/*/commun.yaml, ou reprendre ce contrôle par langue.",
+    );
+    process.exit(1);
+  }
+  return distincts[0];
+})();
+
 // --- Contrôles -------------------------------------------------------------
 
 let anomalies = 0;
@@ -296,6 +326,24 @@ const doublons = (cle) => {
       return `${cle} identique en « ${langue} » sur ${urls.join(", ")} : « ${valeur.slice(0, 60)}… »`;
     });
 };
+/*
+  LA MARQUE NE DOIT PARAÎTRE QU'UNE FOIS DANS UN TITRE.
+
+  « À propos — Pacivis Academy — Pacivis Academy » a été servi en
+  production de la mise en ligne au 13/08/2026 : le contenu portait déjà
+  la marque, et le gabarit l'ajoutait sans regarder. Aucun contrôle ne
+  pouvait le voir — un titre doublé reste unique, reste non vide, et ne
+  dépasse même pas forcément la longueur usuelle. Il ne se lit que dans
+  l'onglet du navigateur et dans les résultats de recherche.
+*/
+controle(
+  "la marque n'apparaît qu'une fois par titre",
+  INDEXABLES()
+    .filter((p) => p.titre && p.titre.split(MARQUE).length - 1 > 1)
+    .map((p) => `${p.url} : « ${p.titre} »`),
+  "Le gabarit ajoute le nom du site au titre de la page (src/layouts/Base.astro) ; un titre de contenu qui le porte déjà le ferait apparaître deux fois.",
+);
+
 controle("titres uniques", doublons("titre"),
   "Deux pages au même titre se concurrencent dans les résultats de recherche.");
 controle("descriptions uniques", doublons("description"),

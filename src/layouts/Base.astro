@@ -121,6 +121,52 @@ const {
 const typeOuvert = publiee ? "article" : "website";
 
 const marque = commun.marque.nom;
+
+/*
+  LE NOM DE MARQUE N'EST AJOUTÉ QUE S'IL TIENT.
+
+  « — Pacivis Academy » pèse dix-huit signes, ajoutés sans condition à
+  chaque titre. Au 13/08/2026, dix titres dépassaient la longueur
+  exploitable dans les résultats de recherche ; sept d'entre eux tenaient
+  en réalité largement, et ne débordaient qu'à cause du suffixe — celui
+  de la page Organismes de formation fait quarante-huit signes, celui de
+  PAXI cinquante.
+
+  Le compromis est celui que retiennent les guides de référencement :
+  Google recommande de nommer le site dans le titre, mais un titre coupé
+  perd son dernier mot, ce qui est pire. On ajoute donc la marque quand
+  elle tient sous la borne, et on la laisse tomber sinon — le nom de
+  domaine reste affiché à côté du titre dans les résultats.
+
+  La composition est faite ICI et une seule fois : le titre du document,
+  `og:title`, `twitter:title` et le nœud JSON-LD la partagent. Ils la
+  répétaient chacun de leur côté, et rien n'aurait signalé qu'ils se
+  mettent à diverger.
+*/
+const TITRE_MAX = 65;
+const titreComplet = (() => {
+  /*
+    Le titre porte parfois DÉJÀ la marque : « À propos — Pacivis
+    Academy » est écrit ainsi dans le contenu, et le gabarit l'a doublée
+    en production depuis la mise en ligne — « À propos — Pacivis Academy
+    — Pacivis Academy ». Personne ne l'avait vu, l'audit non plus : la
+    balise ne s'affiche que dans l'onglet du navigateur et dans les
+    résultats de recherche.
+
+    On le vérifie ici plutôt que de corriger les deux fichiers de
+    contenu : Fabien peut retaper la marque dans un titre demain, depuis
+    l'atelier, et rien ne l'en empêcherait.
+
+    `includes` et non `endsWith`, à dessein. Un titre comme « La méthode
+    Pacivis Academy expliquée » porte la marque au milieu de la phrase :
+    y ajouter le suffixe la répéterait sans rien apprendre au lecteur.
+    Le test large ne fait pas perdre la marque — elle est déjà dans le
+    titre, c'est précisément la condition testée.
+  */
+  if (title.includes(marque)) return title;
+  const avecMarque = `${title} — ${marque}`;
+  return avecMarque.length <= TITRE_MAX ? avecMarque : title;
+})();
 const base = import.meta.env.BASE_URL.replace(/\/+$/, "");
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const imageUrl = urlAbsolue(Astro.site!, `${base}${image}`);
@@ -153,7 +199,7 @@ const jsonLd = grapheSeo({
   site: Astro.site!,
   base: import.meta.env.BASE_URL,
   pathname: Astro.url.pathname,
-  titre: `${title} — ${marque}`,
+  titre: titreComplet,
   description,
   typePage,
   imageUrl,
@@ -227,7 +273,7 @@ const jsonLd = grapheSeo({
         )}
       />
     )}
-    <title>{title} — {marque}</title>
+    <title>{titreComplet}</title>
     <meta name="description" content={description} />
     {
       noindex ? (
@@ -273,7 +319,7 @@ const jsonLd = grapheSeo({
 
     <meta property="og:type" content={typeOuvert} />
     <meta property="og:site_name" content={marque} />
-    <meta property="og:title" content={`${title} — ${marque}`} />
+    <meta property="og:title" content={titreComplet} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={localeLangue(langue).replace("-", "_")} />
@@ -309,7 +355,7 @@ const jsonLd = grapheSeo({
       )
     }
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} — ${marque}`} />
+    <meta name="twitter:title" content={titreComplet} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={imageUrl} />
     <meta name="twitter:image:alt" content={imageAlt} />

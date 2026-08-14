@@ -24,7 +24,7 @@ production porte bien ses 34 adresses — mais un audit qui lit le disque
 n'y verrait qu'un site amputé et donnerait des « OK » sur des pages qu'il
 n'a pas regardées. Il refuse donc de tourner s'il trouve `dist/server`.
 
-## Les 15 contrôles
+## Les 20 contrôles
 
 | Contrôle | Ce qui serait faux sans lui |
 | --- | --- |
@@ -37,6 +37,7 @@ n'a pas regardées. Il refuse donc de tourner s'il trouve `dist/server`.
 | Descriptions uniques par langue | Idem, sur l'extrait affiché |
 | Longueurs titre/description | *Avertissement seulement* — au jugement de l'éditeur |
 | Longueur des adresses | **Bloquant** — une adresse au-delà de 50 signes |
+| Marque unique dans le titre | Le nom du site répété deux fois dans un même titre |
 | Sitemap sans adresse orpheline | Une adresse proposée à l'exploration qui répond 404 |
 | `<h1>` unique | Deux ou zéro sujet principal déclaré |
 | Résolution des `@id` JSON-LD | Un graphe de données structurées qui référence du vide |
@@ -63,6 +64,35 @@ le chemin le plus long fait 40 signes, et celui qu'on venait de
 raccourcir en faisait 57. Cinquante sépare les deux. On mesure le chemin
 entier, préfixe de langue compris : c'est l'adresse qu'un moteur affiche
 et qu'on copie dans un courriel, pas son dernier segment.
+
+## Le nom de marque dans les titres
+
+Le gabarit ajoute « — Pacivis Academy » au titre de chaque page. Deux
+règles encadrent cet ajout, toutes deux nées d'un défaut réel constaté
+le 13/08/2026 :
+
+**Il n'est ajouté que s'il tient.** Le suffixe pèse dix-huit signes.
+Sur dix titres signalés comme trop longs, sept tenaient largement et ne
+débordaient qu'à cause de lui — celui de la page Organismes de formation
+fait quarante-huit signes, celui de PAXI cinquante. Google recommande de
+nommer le site dans le titre, mais un titre coupé perd son dernier mot,
+ce qui est pire ; le nom de domaine reste d'ailleurs affiché à côté du
+titre dans les résultats. Le compte d'avertissements est ainsi passé de
+dix à trois, sans qu'aucun texte de Fabien soit modifié.
+
+**Il n'est pas ajouté si le titre porte déjà la marque.** « À propos —
+Pacivis Academy — Pacivis Academy » a été servi en production de la mise
+en ligne au 13/08/2026 : le contenu portait déjà la marque, et le
+gabarit l'ajoutait sans regarder. Ni la revue humaine ni l'audit
+DataForSEO ne l'avaient vu — un titre doublé reste unique, reste non
+vide, et ne dépasse même pas forcément la longueur usuelle. Il ne se lit
+que dans l'onglet du navigateur et dans les résultats de recherche.
+
+Le test est large (`includes`, pas `endsWith`) et c'est voulu : un titre
+comme « La méthode Pacivis Academy expliquée » porte la marque au milieu
+de la phrase, et le suffixe la répéterait sans rien apprendre. Le
+contrôle « la marque n'apparaît qu'une fois par titre » vérifie le
+résultat sur le build, et refuse la régression.
 
 ## Le sitemap ne peut pas se périmer
 
