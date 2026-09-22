@@ -1,6 +1,11 @@
 # syntax=docker/dockerfile:1.7
 
-ARG NODE_IMAGE=node:24.18.0-bookworm-slim@sha256:6f7b03f7c2c8e2e784dcf9295400527b9b1270fd37b7e9a7285cf83b6951452d
+# Remontée le 22/09/2026 depuis 24.18.0 : son Debian portait
+# libpcre2-8-0 10.42-1, visé par trois avis d'exécution de code
+# (CVE-2026-86145, -89157, -89161) que le scan de l'image refuse.
+# Vérifié dans l'image : 24.18.0 livre 10.42-1, 24.21.0 livre
+# 10.42-1+deb12u1, la version corrigée.
+ARG NODE_IMAGE=node:24.21.0-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
 
 FROM ${NODE_IMAGE} AS dependencies
 WORKDIR /app
