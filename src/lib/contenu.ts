@@ -118,6 +118,58 @@ const communSchema = z.object({
   }),
 });
 
+/*
+  L'encart d'événement de l'accueil. Voir son usage dans `accueilSchema`.
+
+  Un titre vide vaut « aucun événement » : c'est ainsi que Fabien retire
+  l'encart. Le reste des champs n'est alors jamais lu, et l'éditeur n'a
+  pas à les vider un à un.
+*/
+const evenementSchema = z.object({
+  etiquette: texteRequis,
+  titre: texteRequis,
+  accroche: texteFacultatif,
+  date_texte: texteRequis,
+  /* Lue par `<time datetime>` et par la disparition automatique. */
+  date_fin: z.coerce.date(),
+  horaires: texteFacultatif,
+  lieu: texteRequis,
+  adresse: texteFacultatif,
+  tarif: texteFacultatif,
+  places: texteFacultatif,
+  programme: z.array(texteRequis).default([]),
+  /*
+    Les intitulés qui s'affichent restent dans le contenu, comme tout
+    le reste du site : ce sont des mots que le visiteur lit, donc des
+    mots qui se traduisent et que Fabien peut vouloir dire autrement.
+    Seules les formules d'accessibilité invisibles vivent dans
+    `lib/interface.ts`.
+  */
+  libelles: z.object({
+    date: texteRequis,
+    lieu: texteRequis,
+    conditions: texteRequis,
+    programme: texteRequis,
+  }),
+  affiche: z.object({
+    src: texteRequis,
+    apercu: texteFacultatif,
+    alt: texteRequis,
+  }),
+  bouton_affiche: texteRequis,
+  bouton_inscription: texteFacultatif,
+  lien_inscription: texteFacultatif,
+  /* Le rappel qui suit le défilement, que Fabien peut couper seul. */
+  rappel_flottant: z.boolean().default(true),
+  rappel_texte: texteFacultatif,
+});
+
+const evenementFacultatif = z.preprocess((v) => {
+  if (typeof v !== "object" || v === null) return undefined;
+  const titre = (v as Record<string, unknown>).titre;
+  return typeof titre === "string" && titre.trim() !== "" ? v : undefined;
+}, evenementSchema.optional());
+
 const accueilSchema = z.object({
   seo,
   hero: z.object({
@@ -142,6 +194,26 @@ const accueilSchema = z.object({
     */
     bouton_secondaire: texteFacultatif,
   }),
+  /*
+    ENCART D'ÉVÉNEMENT — ponctuel, et facultatif par nature.
+
+    Demandé par Fabien le 22/09/2026 pour le stage du 24 octobre. Il
+    l'annonce lui-même comme ponctuel : « à terme il y aura une section
+    du journal dédiée aux événements à venir, mais pour l'instant un
+    encart suffira ». Le bloc entier disparaît donc quand son titre est
+    vide — Fabien retire l'encart en vidant un champ, sans nous.
+
+    L'INFORMATION EST EN TEXTE, l'affiche vient en plus. L'affiche que
+    Fabien fournit est une image où tout est gravé : la date, le lieu,
+    le tarif, le programme. Un lecteur d'écran n'en lit rien, un moteur
+    n'en indexe rien, le zoom la pixellise (WCAG 1.4.5). Ces champs
+    portent donc l'information ; l'affiche l'illustre et s'ouvre en
+    grand pour qui veut la voir ou la diffuser.
+
+    `date_fin` commande la disparition automatique : un événement passé
+    annoncé « à venir » est pire que pas d'encart du tout.
+  */
+  evenement: evenementFacultatif,
   /*
     « À quels besoins Pacivis Academy répond » — bloc du livrable du
     30/07/2026. Le visiteur doit s'y reconnaître : un chapô, les

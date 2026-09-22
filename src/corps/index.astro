@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import DeescalationLine from "../components/DeescalationLine.astro";
 import Picto from "../components/Picto.astro";
 import VisuelFondu from "../components/VisuelFondu.astro";
+import EncartEvenement from "../components/EncartEvenement.astro";
 import { href } from "../lib/url";
 import { contenuLangue } from "../lib/contenu";
 import { langueActive } from "../lib/langue-active";
@@ -11,17 +12,65 @@ import { cheminLangue } from "../lib/routes";
 // La langue se lit dans l'adresse : ce composant sert toutes les
 // langues publiées, le contenu suit.
 const langue = langueActive(Astro.url.pathname);
-const { accueil } = contenuLangue(langue);
+const { accueil, commun } = contenuLangue(langue);
 import { enrichir } from "../lib/texte";
+import { racineSite, urlAbsolue } from "../lib/seo";
+import { estAVenir } from "../lib/evenement";
 
 /*
   Les schémas d'ARCA sont désignés par le nom du pilier et non par son
   initiale : « Anticiper » et « Agir » commencent tous deux par A.
 */
 const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
+
+/*
+  L'ÉVÉNEMENT DÉCLARÉ AUX MOTEURS.
+
+  Google sait afficher un événement — date, lieu, nom — directement dans
+  ses résultats, et c'est exactement ce que Fabien cherche en voulant un
+  encart « tape à l'œil » : des places à remplir. Le graphe de la page
+  l'accueille aux côtés des nœuds habituels.
+
+  Pas de nœud `offers` tant que l'adresse d'inscription manque : annoncer
+  un tarif sans dire où réserver serait une promesse en l'air, et Google
+  refuse d'ailleurs une offre sans URL.
+*/
+/*
+  L'ÉVÉNEMENT PASSÉ NE S'ANNONCE PLUS NULLE PART.
+
+  Mesuré le 22/09/2026 : avec une date reculée, l'encart disparaissait
+  bien du document, mais le nœud `Event` y restait — le site n'affichait
+  plus rien et continuait de déclarer à Google un stage terminé. Le
+  composant et le graphe posent désormais la même question à la même
+  fonction.
+*/
+const evenement = accueil.evenement && estAVenir(accueil.evenement.date_fin)
+  ? accueil.evenement
+  : undefined;
+const noeudsSeo = evenement
+  ? [
+      {
+        "@type": "Event",
+        name: evenement.titre,
+        description: evenement.accroche ?? evenement.titre,
+        startDate: evenement.date_fin.toISOString().slice(0, 10),
+        endDate: evenement.date_fin.toISOString().slice(0, 10),
+        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+        eventStatus: "https://schema.org/EventScheduled",
+        image: urlAbsolue(Astro.site!, evenement.affiche.src),
+        location: {
+          "@type": "Place",
+          name: evenement.lieu,
+          ...(evenement.adresse ? { address: evenement.adresse } : {}),
+        },
+        organizer: { "@id": `${racineSite(Astro.site!, import.meta.env.BASE_URL)}#organization` },
+      },
+    ]
+  : undefined;
+
 ---
 
-<Base title={accueil.seo.titre} description={accueil.seo.description}>
+<Base title={accueil.seo.titre} description={accueil.seo.description} noeudsSeo={noeudsSeo}>
   <!-- ============ Hero ============ -->
   <section class="hero-section relative overflow-hidden">
     {/*
@@ -90,6 +139,14 @@ const SCHEMAS_ARCA = ["anticiper", "reguler", "communiquer", "agir"] as const;
       <DeescalationLine class="h-12 sm:h-16 md:h-24" />
     </div>
   </section>
+
+  {/*
+    L'encart d'événement vient JUSTE APRÈS le haut de page : c'est
+    l'annonce d'une date qui approche, elle perd son sens plus bas.
+    Il ne s'affiche que s'il y a un événement à venir — le composant
+    écarte de lui-même une date passée.
+  */}
+  {evenement && <EncartEvenement evenement={evenement} fermer={commun.menu.fermer} />}
 
   {/*
     ============ À quels besoins Pacivis répond ============

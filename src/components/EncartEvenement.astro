@@ -1,0 +1,761 @@
+---
+/**
+ * ENCART D'ÉVÉNEMENT — l'annonce ponctuelle du haut de l'accueil.
+ *
+ * Demandé par Fabien le 22/09/2026 : « un petit encart un peu tape à
+ * l'œil "Événements à venir", qui suit quand on fait défiler, et
+ * l'affiche qui s'affiche quand on clique ».
+ *
+ * Trois pièces, et chacune répond à un morceau de la demande :
+ *
+ *   - l'ENCART, posé juste après le haut de page, porte l'information ;
+ *   - le RAPPEL, qui n'apparaît qu'une fois l'encart passé, « suit »
+ *     le défilement sans occuper l'écran tant que l'encart est visible ;
+ *   - l'AFFICHE, ouverte dans un `<dialog>`, se montre en grand.
+ *
+ * L'INFORMATION EST EN TEXTE, l'affiche vient en plus. Tout est gravé
+ * dans l'affiche de Fabien — date, lieu, tarif, programme : un lecteur
+ * d'écran n'en lit rien, un moteur n'en indexe rien, le zoom la
+ * pixellise (WCAG 1.4.5). L'encart dit donc tout par lui-même ;
+ * l'affiche illustre, et sert à qui veut la diffuser.
+ */
+import { href } from "../lib/url";
+import { estAVenir } from "../lib/evenement";
+
+interface Props {
+  evenement: {
+    etiquette: string;
+    titre: string;
+    accroche?: string;
+    date_texte: string;
+    date_fin: Date;
+    horaires?: string;
+    lieu: string;
+    adresse?: string;
+    tarif?: string;
+    places?: string;
+    programme: string[];
+    affiche: { src: string; apercu?: string; alt: string };
+    bouton_affiche: string;
+    bouton_inscription?: string;
+    lien_inscription?: string;
+    rappel_flottant: boolean;
+    rappel_texte?: string;
+    libelles: { date: string; lieu: string; conditions: string; programme: string };
+  };
+  fermer: string;
+}
+
+const { evenement: e, fermer } = Astro.props;
+
+/*
+  L'ÉVÉNEMENT PASSÉ NE S'ANNONCE PAS.
+
+  Le jour d'après, l'encart disparaît du build. C'est le garde-fou qui
+  compte le plus ici : Fabien annonce l'encart comme ponctuel, et un
+  stage passé présenté comme « à venir » dit au visiteur que le site
+  n'est pas tenu. La date de fin couvre la journée entière.
+*/
+const passe = !estAVenir(e.date_fin);
+
+const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscription : null;
+---
+
+{!passe && (
+  <>
+    {/*
+      `data-evenement` est lu par le script du rappel : il observe cet
+      encart pour savoir quand le visiteur l'a dépassé.
+    */}
+    <section
+      class="encart-evenement"
+      data-evenement
+      data-fin={e.date_fin.toISOString().slice(0, 10)}
+      aria-labelledby="evenement-titre"
+    >
+      <div class="encart-corps">
+        <div class="encart-texte">
+          <p class="encart-etiquette">
+            <span class="encart-pastille" aria-hidden="true" />
+            {e.etiquette}
+          </p>
+
+          <h2 class="display encart-titre" id="evenement-titre">{e.titre}</h2>
+
+          {e.accroche && <p class="encart-accroche">{e.accroche}</p>}
+
+          <dl class="encart-faits">
+            <div>
+              <dt>{e.libelles.date}</dt>
+              <dd>
+                <time datetime={e.date_fin.toISOString().slice(0, 10)}>{e.date_texte}</time>
+                {e.horaires && <span class="encart-detail">{e.horaires}</span>}
+              </dd>
+            </div>
+            <div>
+              <dt>{e.libelles.lieu}</dt>
+              <dd>
+                {e.lieu}
+                {e.adresse && <span class="encart-detail">{e.adresse}</span>}
+              </dd>
+            </div>
+            {(e.tarif || e.places) && (
+              <div>
+                <dt>{e.libelles.conditions}</dt>
+                <dd>
+                  {e.tarif}
+                  {e.places && <span class="encart-detail">{e.places}</span>}
+                </dd>
+              </div>
+            )}
+          </dl>
+
+          {e.programme.length > 0 && (
+            <div class="encart-programme">
+              <p class="encart-programme-titre">{e.libelles.programme}</p>
+              <ul>
+                {e.programme.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div class="encart-actions">
+            <button type="button" class="btn btn-ambre" data-ouvrir-affiche>
+              {e.bouton_affiche}
+            </button>
+            {inscription && (
+              <a href={inscription} class="btn btn-ligne-claire" rel="noopener">
+                {e.bouton_inscription}
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/*
+          L'aperçu de l'affiche ouvre la même boîte que le bouton : on
+          clique volontiers sur ce que l'on regarde. Ce n'est pas un
+          second contenu — d'où `aria-hidden` sur l'image et un libellé
+          porté par le bouton.
+        */}
+        <button type="button" class="encart-apercu" data-ouvrir-affiche>
+          <img
+            src={href(e.affiche.apercu ?? e.affiche.src)}
+            alt=""
+            width="520"
+            height="736"
+            loading="lazy"
+            decoding="async"
+          />
+          <span class="sr-only">{e.bouton_affiche}</span>
+          <span class="encart-apercu-loupe" aria-hidden="true">⤢</span>
+        </button>
+      </div>
+      {/*
+        Une sentinelle sans hauteur, posée au bas de l'encart.
+
+        L'observateur surveillait l'encart entier, et c'était faux dès
+        qu'il tenait dans l'écran : à 1440 × 900 il mesure 657 px, donc
+        il restait partiellement visible longtemps après qu'on l'ait
+        lu, et le rappel n'apparaissait qu'une fois la section suivante
+        bien entamée. Mesuré : absent juste sous l'encart en desktop,
+        présent en mobile — où l'encart, lui, dépasse l'écran.
+
+        Une marque de hauteur nulle au bas du bloc tranche sans
+        ambiguïté : dès qu'elle sort par le haut, l'encart est derrière
+        le visiteur, quelle que soit la taille de l'écran.
+      */}
+      <span class="encart-sentinelle" data-evenement-fin aria-hidden="true" />
+    </section>
+
+    {/*
+      LE RAPPEL QUI SUIT LE DÉFILEMENT.
+
+      Masqué tant que l'encart est à l'écran — le doubler n'apprendrait
+      rien et mangerait de la place. Il ne se montre qu'une fois l'encart
+      dépassé, et le visiteur peut le refermer pour de bon.
+    */}
+    {e.rappel_flottant && (
+      <div class="rappel-evenement" data-rappel hidden>
+        <button type="button" class="rappel-lien" data-ouvrir-affiche>
+          <span class="rappel-pastille" aria-hidden="true" />
+          <span class="rappel-texte">
+            <span class="rappel-etiquette">{e.etiquette}</span>
+            <span class="rappel-titre">{e.rappel_texte ?? e.date_texte}</span>
+          </span>
+        </button>
+        <button type="button" class="rappel-fermer" data-fermer-rappel aria-label={fermer}>
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+    )}
+
+    {/*
+      `<dialog>` natif, et non une boîte reconstruite : il piège le
+      focus, se ferme à Échap et rend le reste de la page inerte sans
+      une ligne de script. Trois comportements qu'une imitation rate
+      presque toujours.
+    */}
+    <dialog class="affiche-boite" data-affiche aria-labelledby="affiche-titre">
+      <div class="affiche-barre">
+        <p class="affiche-titre" id="affiche-titre">{e.titre}</p>
+        <button type="button" class="affiche-fermer" data-fermer-affiche aria-label={fermer}>
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <img src={href(e.affiche.src)} alt={e.affiche.alt} width="1240" height="1754" />
+      {inscription && (
+        <a href={inscription} class="btn btn-ambre affiche-inscription" rel="noopener">
+          {e.bouton_inscription}
+        </a>
+      )}
+    </dialog>
+  </>
+)}
+
+<style>
+  /*
+    L'AMBRE VIENT DE L'AFFICHE, et ne sert qu'ici.
+
+    La charte du site tient le vert pour accent rare ; elle n'a pas
+    d'orange. Celui-ci est relevé sur l'affiche même (#d89858) : il fait
+    le lien visuel entre l'encart et l'image qu'il ouvre, et c'est ce
+    qui rend le bloc « tape à l'œil » sans emprunter une couleur
+    étrangère au projet.
+
+    Il n'est employé que SUR FOND SOMBRE, et c'est une contrainte
+    mesurée, pas une préférence : 5,85:1 sur l'abysse — au-delà du 4,5:1
+    exigé pour du texte — mais 2,24:1 sur le papier, très en dessous.
+  */
+  .encart-evenement {
+    --ambre: #d89858;
+    --ambre-clair: #e8b784;
+    position: relative;
+    background: var(--color-abysse);
+    color: var(--color-paper);
+    border-top: 3px solid var(--ambre);
+    overflow: hidden;
+  }
+
+  .encart-corps {
+    margin: 0 auto;
+    max-width: 72rem;
+    padding: 3rem 1.5rem;
+    display: grid;
+    gap: 2.5rem;
+    align-items: center;
+  }
+
+  @media (min-width: 900px) {
+    .encart-corps {
+      grid-template-columns: 1fr 17rem;
+      padding: 3.5rem 1.5rem;
+    }
+  }
+
+  .encart-etiquette {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ambre-clair);
+  }
+
+  /* La pastille bat lentement : c'est le seul mouvement de l'encart. */
+  .encart-pastille {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--ambre);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ambre) 70%, transparent);
+    animation: battement 2.4s ease-out infinite;
+  }
+
+  @keyframes battement {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ambre) 70%, transparent); }
+    70% { box-shadow: 0 0 0 0.6rem transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  .encart-titre {
+    margin-top: 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    line-height: 1.15;
+    color: var(--color-paper);
+  }
+
+  .encart-accroche {
+    margin-top: 0.9rem;
+    max-width: 44rem;
+    line-height: 1.6;
+    color: color-mix(in oklab, var(--color-paper) 82%, transparent);
+  }
+
+  /*
+    Les faits en liste de définitions : une date, un lieu et des
+    conditions ne sont pas des paragraphes, et un lecteur d'écran
+    annonce alors chaque valeur avec ce qu'elle décrit.
+  */
+  .encart-faits {
+    margin-top: 1.75rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .encart-faits {
+      grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+      gap: 1.5rem;
+    }
+  }
+
+  .encart-faits dt {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ambre-clair);
+  }
+
+  .encart-faits dd {
+    margin-top: 0.3rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .encart-detail {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: color-mix(in oklab, var(--color-paper) 72%, transparent);
+  }
+
+  .encart-programme {
+    margin-top: 1.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid color-mix(in oklab, var(--color-paper) 18%, transparent);
+  }
+
+  .encart-programme-titre {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ambre-clair);
+  }
+
+  .encart-programme ul {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .encart-programme li {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid color-mix(in oklab, var(--color-paper) 22%, transparent);
+    border-radius: 999px;
+    font-size: 0.85rem;
+    color: color-mix(in oklab, var(--color-paper) 85%, transparent);
+  }
+
+  .encart-actions {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /*
+    Cibles d'au moins 44 px de haut, et un écart entre elles : c'est la
+    taille exigée au doigt (WCAG 2.5.8), que le reste du site tient déjà.
+  */
+  .btn-ambre,
+  .btn-ligne-claire {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .btn-ambre {
+    background: var(--ambre);
+    color: #1a1207;
+    border: 1px solid var(--ambre);
+    font-weight: 600;
+  }
+
+  .btn-ambre:hover,
+  .btn-ambre:focus-visible {
+    background: var(--ambre-clair);
+    border-color: var(--ambre-clair);
+  }
+
+  .btn-ligne-claire {
+    background: transparent;
+    color: var(--color-paper);
+    border: 1px solid color-mix(in oklab, var(--color-paper) 45%, transparent);
+  }
+
+  .btn-ligne-claire:hover,
+  .btn-ligne-claire:focus-visible {
+    border-color: var(--color-paper);
+    background: color-mix(in oklab, var(--color-paper) 10%, transparent);
+  }
+
+  /* L'aperçu de l'affiche, légèrement incliné : une affiche posée. */
+  .encart-apercu {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 17rem;
+    margin: 0 auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.45);
+    transform: rotate(-1.5deg);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .encart-apercu img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .encart-apercu:hover,
+  .encart-apercu:focus-visible {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.55);
+  }
+
+  .encart-apercu-loupe {
+    position: absolute;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--ambre);
+    color: #1a1207;
+    font-size: 1.1rem;
+  }
+
+  /*
+    L'ANNEAU DE FOCUS S'INVERSE SUR FOND SOMBRE.
+
+    L'anneau du site est un vert profond cerné de papier : sur le fond
+    clair des autres sections, les deux couches se détachent. Ici, le
+    vert tombe à 2,88:1 sur l'abysse — sous le 3:1 qu'exige WCAG 1.4.11
+    pour un élément d'interface. L'audit d'accessibilité l'a relevé à
+    2,45:1 sur le bouton de l'aperçu, et c'est le même défaut que le
+    site avait déjà corrigé sur ses autres blocs sombres.
+
+    On échange donc les deux couches : le papier dessine l'anneau
+    (13:1 sur ce fond) et l'abysse l'isole de ce qui l'entoure — y
+    compris de l'affiche elle-même, dont le bouton d'aperçu épouse les
+    contours.
+  */
+  .encart-evenement :focus-visible,
+  .rappel-evenement :focus-visible,
+  .affiche-boite :focus-visible {
+    outline: 2px solid var(--color-paper);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--color-abysse);
+  }
+
+  .encart-sentinelle {
+    display: block;
+    height: 0;
+  }
+
+  /* --- Le rappel qui suit le défilement ---------------------------- */
+
+  .rappel-evenement {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 40;
+    display: flex;
+    align-items: stretch;
+    gap: 1px;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: color-mix(in oklab, var(--color-paper) 22%, transparent);
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.35);
+    animation: rappel-arrive 0.4s ease-out both;
+  }
+
+  .rappel-evenement[hidden] {
+    display: none;
+  }
+
+  @keyframes rappel-arrive {
+    from { opacity: 0; transform: translateY(0.75rem); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .rappel-lien,
+  .rappel-fermer {
+    border: 0;
+    background: var(--color-abysse);
+    color: var(--color-paper);
+    cursor: pointer;
+    min-height: 2.75rem;
+  }
+
+  .rappel-lien {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.6rem 1rem;
+    text-align: left;
+  }
+
+  .rappel-pastille {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: #d89858;
+    flex: none;
+  }
+
+  .rappel-texte {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .rappel-etiquette {
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #e8b784;
+  }
+
+  .rappel-titre {
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .rappel-fermer {
+    width: 2.75rem;
+    font-size: 1.35rem;
+    line-height: 1;
+  }
+
+  .rappel-lien:hover,
+  .rappel-fermer:hover,
+  .rappel-lien:focus-visible,
+  .rappel-fermer:focus-visible {
+    background: var(--color-navy-deep);
+  }
+
+  /* --- L'affiche en grand ------------------------------------------ */
+
+  .affiche-boite {
+    /*
+      DIMENSIONNÉE PAR SA HAUTEUR, pas par sa largeur.
+
+      Une affiche A4 est une fois et demie plus haute que large : en la
+      bornant à 44 rem de large, elle réclamait 62 rem de haut et se
+      retrouvait coupée, obligeant à faire défiler une image qu'on ouvre
+      justement pour la voir d'un coup. On part donc de la place
+      disponible en hauteur et on en déduit la largeur.
+    */
+    width: min(92vw, 60vh, 44rem);
+    max-height: 92vh;
+    /*
+      `margin: auto` centre un dialogue modal — c'est le comportement du
+      navigateur, que la remise à zéro de Tailwind annule en posant
+      `margin: 0` sur tout. Sans lui, l'affiche s'ouvrait collée au coin
+      haut gauche.
+    */
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0.75rem;
+    background: var(--color-abysse);
+    color: var(--color-paper);
+    overflow: auto;
+  }
+
+  .affiche-boite::backdrop {
+    background: rgba(8, 12, 20, 0.82);
+  }
+
+  .affiche-barre {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.75rem 0.75rem 1.25rem;
+    background: var(--color-abysse);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-paper) 15%, transparent);
+  }
+
+  .affiche-titre {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .affiche-fermer {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--color-paper) 12%, transparent);
+    color: var(--color-paper);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .affiche-fermer:hover,
+  .affiche-fermer:focus-visible {
+    background: color-mix(in oklab, var(--color-paper) 22%, transparent);
+  }
+
+  .affiche-boite img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .affiche-inscription {
+    margin: 1rem 1.25rem 1.25rem;
+  }
+
+  /*
+    Aucun mouvement pour qui n'en veut pas — la pastille cesse de battre
+    et l'affiche posée se redresse (WCAG 2.3.3).
+  */
+  @media (prefers-reduced-motion: reduce) {
+    .encart-pastille { animation: none; }
+    .rappel-evenement { animation: none; }
+    .encart-apercu { transform: none; transition: none; }
+    .encart-apercu:hover,
+    .encart-apercu:focus-visible { transform: none; }
+  }
+</style>
+
+<script>
+  /*
+    Trois comportements, et rien de plus : ouvrir l'affiche, montrer le
+    rappel une fois l'encart dépassé, le refermer pour de bon.
+
+    `astro:page-load` et non `DOMContentLoaded` : le routeur de vues
+    remplace le document sans recharger la page, et un écouteur posé une
+    seule fois ne reverrait jamais l'encart d'une navigation suivante.
+  */
+  function calerEvenement() {
+    const boite = document.querySelector<HTMLDialogElement>("[data-affiche]");
+    if (boite) {
+      for (const bouton of document.querySelectorAll("[data-ouvrir-affiche]")) {
+        bouton.addEventListener("click", () => boite.showModal());
+      }
+      boite
+        .querySelector("[data-fermer-affiche]")
+        ?.addEventListener("click", () => boite.close());
+      /*
+        Un clic hors de l'affiche referme : le `<dialog>` occupe toute la
+        surface du fond, donc la cible du clic est le dialogue lui-même
+        dès qu'on tombe à côté de son contenu.
+      */
+      boite.addEventListener("click", (evenement) => {
+        if (evenement.target === boite) boite.close();
+      });
+    }
+
+    const encart = document.querySelector<HTMLElement>("[data-evenement]");
+    if (!encart) return;
+
+    /*
+      LE FILET DE LA DATE PASSÉE.
+
+      Le build écarte déjà un événement terminé, mais il ne s'exécute
+      qu'à la publication suivante : entre le lendemain du stage et la
+      prochaine retouche de Fabien, la page servie continuerait de
+      l'annoncer « à venir ». Le navigateur, lui, connaît la date du
+      jour à chaque visite.
+    */
+    const fin = encart.dataset.fin;
+    if (fin) {
+      /*
+        Même comparaison que `lib/evenement.ts` : des dates civiles,
+        pas des instants. Reconstruire un instant à « 23:59:59 »
+        l'aurait replacé dans le fuseau du visiteur, et l'encart se
+        serait effacé dès le matin du jour même à l'ouest de
+        Greenwich — le défaut que le test unitaire a rattrapé.
+      */
+      const deuxChiffres = (n: number) => String(n).padStart(2, "0");
+      const a = new Date();
+      const aujourdHui =
+        `${a.getFullYear()}-${deuxChiffres(a.getMonth() + 1)}-${deuxChiffres(a.getDate())}`;
+      if (aujourdHui > fin) {
+        encart.remove();
+        document.querySelector("[data-rappel]")?.remove();
+        boite?.remove();
+        return;
+      }
+    }
+
+    const rappel = document.querySelector<HTMLElement>("[data-rappel]");
+    const sentinelle = encart.querySelector("[data-evenement-fin]");
+    if (!rappel || !sentinelle) return;
+
+    /*
+      Refermé une fois, refermé pour la session : le rappel ne doit pas
+      revenir à chaque défilement chez quelqu'un qui l'a écarté.
+    */
+    let ecarte = false;
+    try {
+      ecarte = sessionStorage.getItem("rappel-evenement-ecarte") === "1";
+    } catch {
+      /* Navigation privée, stockage refusé : le rappel vivra la page. */
+    }
+
+    rappel.querySelector("[data-fermer-rappel]")?.addEventListener("click", () => {
+      ecarte = true;
+      rappel.hidden = true;
+      try {
+        sessionStorage.setItem("rappel-evenement-ecarte", "1");
+      } catch {
+        /* Sans stockage, l'oubli se limite au changement de page. */
+      }
+    });
+
+    /*
+      Le rappel paraît lorsque le BAS de l'encart est passé au-dessus de
+      l'écran : le visiteur l'a lu et poursuit sa lecture. Au-dessus, il
+      n'y est pas encore arrivé ; dedans, le doubler n'apprendrait rien.
+    */
+    const observateur = new IntersectionObserver(
+      ([entree]) => {
+        const depasse = entree.boundingClientRect.top < 0;
+        rappel.hidden = ecarte || !depasse;
+      },
+      { threshold: 0 },
+    );
+    observateur.observe(sentinelle);
+  }
+
+  document.addEventListener("astro:page-load", calerEvenement);
+</script>

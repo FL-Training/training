@@ -260,6 +260,92 @@ const pageAccueil = {
       t("bouton_principal", "Bouton principal"),
       tf("bouton_secondaire", "Bouton secondaire", "Facultatif. Laisser vide pour n'afficher qu'un seul bouton."),
     ]),
+    /*
+      ENCART D'ÉVÉNEMENT — tout entier facultatif.
+
+      Fabien le décrit comme ponctuel : il le remplit pour un stage, et
+      le retire ensuite. C'est le TITRE qui commande : vidé, l'encart
+      disparaît du site sans qu'il ait à vider les autres champs — d'où
+      l'insistance du libellé et de l'aide.
+
+      L'affiche se téléverse ici même. Elle ne remplace pas les champs
+      texte : tout y est gravé, et une image ne se lit ni à la voix, ni
+      au zoom, ni par un moteur de recherche.
+    */
+    objet("evenement", "Encart « Événement à venir » (facultatif)", [
+      tf(
+        "titre",
+        "Titre de l'événement — VIDER CE CHAMP RETIRE L'ENCART",
+        "Tant que ce champ porte un titre, l'encart s'affiche en haut de l'accueil. Le vider suffit à le faire disparaître : les autres champs peuvent rester remplis pour un prochain événement.",
+      ),
+      tf("etiquette", "Étiquette", "Par exemple « Événement à venir ». Affichée au-dessus du titre."),
+      longf("accroche", "Accroche", "Une phrase de présentation. Facultative."),
+      tf("date_texte", "Date, telle qu'elle s'affiche", "Par exemple « Samedi 24 octobre 2026 »."),
+      {
+        name: "date_fin",
+        label: "Dernier jour de l'événement",
+        widget: "date",
+        format: "yyyy-MM-dd",
+        i18n: "duplicate",
+        required: false,
+        hint: "L'encart disparaît tout seul le lendemain de cette date : un stage passé ne doit pas rester annoncé comme à venir.",
+      },
+      tf("horaires", "Horaires", "Par exemple « 9 h – 12 h · 13 h – 17 h ». Facultatif."),
+      tf("lieu", "Lieu", "Ville et nom du site, par exemple « Villejuif · Complexe sportif Guy Boniface »."),
+      tf("adresse", "Adresse complète", "Facultative."),
+      tf("tarif", "Tarif", "Par exemple « 40 € ». Facultatif."),
+      tf("places", "Places et inscription", "Par exemple « 19 places · inscription obligatoire ». Facultatif."),
+      {
+        name: "programme",
+        label: "Au programme",
+        widget: "list",
+        i18n: true,
+        required: false,
+        field: { name: "point", label: "Point du programme", widget: "string" },
+        hint: "Les thèmes abordés, un par ligne. Affichés en pastilles.",
+      },
+      objet("libelles", "Intitulés affichés", [
+        tf("date", "Intitulé « Date »"),
+        tf("lieu", "Intitulé « Lieu »"),
+        tf("conditions", "Intitulé « Conditions »"),
+        tf("programme", "Intitulé « Au programme »"),
+      ], { hint: "Les petits mots affichés au-dessus de chaque information. À traduire, rarement à changer." }),
+      objet("affiche", "Affiche de l'événement", [
+        {
+          name: "src",
+          label: "Affiche",
+          widget: "image",
+          i18n: "duplicate",
+          required: false,
+          hint: "L'affiche qui s'ouvre en grand au clic. Format WebP ou JPEG, environ 1200 px de large, moins de 250 Ko.",
+          media_folder: "/public/evenements",
+          public_folder: "/evenements",
+        },
+        {
+          name: "apercu",
+          label: "Aperçu de l'affiche (facultatif)",
+          widget: "image",
+          i18n: "duplicate",
+          required: false,
+          hint: "Version allégée montrée dans l'encart. Laisser vide pour utiliser l'affiche elle-même.",
+          media_folder: "/public/evenements",
+          public_folder: "/evenements",
+        },
+        longf("alt", "Description de l'affiche", "Ce que montre l'affiche, pour les personnes qui ne la voient pas. Reprendre le titre, les intervenants, la date et le lieu."),
+      ]),
+      tf("bouton_affiche", "Bouton qui ouvre l'affiche", "Par exemple « Voir l'affiche »."),
+      tf("bouton_inscription", "Bouton d'inscription", "Par exemple « S'inscrire ». Laisser vide pour ne pas l'afficher."),
+      tf("lien_inscription", "Adresse d'inscription", "L'adresse HelloAsso ou équivalente. Sans elle, le bouton d'inscription n'apparaît pas."),
+      {
+        name: "rappel_flottant",
+        label: "Afficher le rappel qui suit le défilement",
+        widget: "boolean",
+        i18n: "duplicate",
+        required: false,
+        default: true,
+      },
+      tf("rappel_texte", "Texte du rappel", "Court, par exemple « Stage du 24 octobre ». Sans lui, la date complète est reprise."),
+    ], { hint: "Un encart ponctuel en haut de l'accueil. Pour le retirer : vider le champ « Titre de l'événement »." }),
     objet("besoins", "Bloc « À quels besoins Pacivis répond »", [
       t("titre", "Titre"),
       longf(

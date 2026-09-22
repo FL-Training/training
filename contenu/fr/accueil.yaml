@@ -8,6 +8,38 @@ hero:
   mots_cles: Conflits professionnels · Incivilités · Comportements difficiles · Management des conflits d'équipe · Leadership sous pression
   bouton_principal: Identifier la formation adaptée
   bouton_secondaire: ''
+evenement:
+  etiquette: Événement à venir
+  titre: Prévention et gestion de la violence
+  accroche: Comprendre les situations de conflit et d'agression pour agir avec plus de sérénité et d'efficacité.
+  date_texte: Samedi 24 octobre 2026
+  date_fin: 2026-10-24
+  horaires: 9 h – 12 h · 13 h – 17 h
+  lieu: Villejuif · Complexe sportif Guy Boniface
+  adresse: 31/32 avenue Louis Aragon · 94800 Villejuif
+  tarif: 40 €
+  places: 19 places · inscription obligatoire
+  programme:
+    - Analyse du danger
+    - Communication et posture
+    - Cadre juridique
+    - Gestion du stress
+    - Techniques physiques de self-défense
+    - Négociation de crise
+  libelles:
+    date: Date
+    lieu: Lieu
+    conditions: Conditions
+    programme: Au programme
+  affiche:
+    src: /evenements/prevention-violence-2026-10-24-affiche.webp
+    apercu: /evenements/prevention-violence-2026-10-24-affiche-apercu.webp
+    alt: "Affiche du stage « Prévention et gestion de la violence », animé par Fabien Lacombe et Fabrice Prat, le samedi 24 octobre 2026 à Villejuif."
+  bouton_affiche: Voir l'affiche
+  bouton_inscription: S'inscrire
+  lien_inscription: ""
+  rappel_flottant: true
+  rappel_texte: Stage du 24 octobre
 besoins:
   titre: Pacivis Academy peut vous aider si…
   chapo: Vous devez préparer des professionnels à faire face à des tensions, des incivilités, des conflits ou des comportements difficiles, sans perdre le cadre, la qualité de la relation ni la capacité d'agir.

@@ -8,6 +8,38 @@ hero:
   mots_cles: Workplace conflict · Incivility · Difficult behaviour · Managing team conflict · Leadership under pressure
   bouton_principal: Find the right course
   bouton_secondaire: ''
+evenement:
+  etiquette: Upcoming event
+  titre: Preventing and managing violence
+  accroche: Understanding situations of conflict and aggression in order to act with greater composure and effect.
+  date_texte: Saturday 24 October 2026
+  date_fin: 2026-10-24
+  horaires: 9 am – 12 pm · 1 pm – 5 pm
+  lieu: Villejuif · Complexe sportif Guy Boniface
+  adresse: 31/32 avenue Louis Aragon · 94800 Villejuif, France
+  tarif: "€40"
+  places: 19 places · registration required
+  programme:
+    - Reading the danger
+    - Communication and posture
+    - Legal framework
+    - Managing stress
+    - Physical self-defence techniques
+    - Crisis negotiation
+  libelles:
+    date: Date
+    lieu: Venue
+    conditions: Details
+    programme: Programme
+  affiche:
+    src: /evenements/prevention-violence-2026-10-24-affiche.webp
+    apercu: /evenements/prevention-violence-2026-10-24-affiche-apercu.webp
+    alt: "Poster for the workshop “Preventing and managing violence”, led by Fabien Lacombe and Fabrice Prat, on Saturday 24 October 2026 in Villejuif, France."
+  bouton_affiche: View the poster
+  bouton_inscription: Register
+  lien_inscription: ""
+  rappel_flottant: true
+  rappel_texte: Workshop on 24 October
 besoins:
   titre: Pacivis Academy can help you if…
   chapo: You need to prepare professionals to face tension, incivility, conflict or difficult behaviour, without losing the framework, the quality of the relationship or the capacity to act.

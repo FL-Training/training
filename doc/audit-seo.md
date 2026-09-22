@@ -263,3 +263,41 @@ Pages, et sans cette déduction chaque comparaison de chemin était fausse
 sur un hébergement et juste sur l'autre — le premier faux positif massif
 de cet outil. Le mécanisme est conservé : il coûte trois lignes et met
 l'outil à l'abri du prochain déménagement.
+
+## L'encart d'événement
+
+Ajouté le 22/09/2026 à la demande de Fabien, pour le stage du 24 octobre :
+« un petit encart un peu tape à l'œil, qui suit quand on fait défiler,
+et l'affiche qui s'affiche quand on clique ». Trois pièces —
+[`EncartEvenement.astro`](../src/components/EncartEvenement.astro) :
+l'encart qui porte l'information, le rappel qui n'apparaît qu'une fois
+l'encart dépassé, et l'affiche ouverte dans un `<dialog>`.
+
+**L'information est en texte, l'affiche vient en plus.** Tout est gravé
+dans l'image que Fabien fournit — date, lieu, tarif, programme : un
+lecteur d'écran n'en lit rien, un moteur n'en indexe rien, le zoom la
+pixellise (WCAG 1.4.5). L'encart dit donc tout par lui-même, et le nœud
+JSON-LD `Event` permet à Google d'afficher le stage dans ses résultats.
+
+**Il disparaît tout seul, et à deux niveaux.** Au build, et dans le
+navigateur du visiteur — parce que le build ne s'exécute qu'à la
+publication suivante, et qu'entre le lendemain du stage et la prochaine
+retouche de Fabien la page servie continuerait de l'annoncer.
+
+Trois défauts relevés en le vérifiant, tous corrigés :
+
+| Défaut | Ce qui le rendait invisible |
+| --- | --- |
+| Le rappel n'apparaissait jamais sur ordinateur | L'encart (657 px) tient dans la fenêtre (900 px) : il restait « visible » bien après avoir été lu. Une sentinelle de hauteur nulle au bas du bloc tranche désormais, quelle que soit la taille d'écran. |
+| Le nœud `Event` survivait à la date passée | L'encart disparaissait, Google continuait d'entendre parler du stage. La règle vit maintenant dans [`lib/evenement.ts`](../src/lib/evenement.ts), lue par les deux. |
+| Le calcul de date se décalait d'un fuseau | Le YAML porte une date civile, que le lecteur pose à minuit UTC ; y ajouter « 23 h 59 » en heure locale déplaçait la limite. Sur une machine à Toronto, l'encart s'effaçait le matin même du stage. On compare des dates civiles. |
+
+**L'anneau de focus s'inverse sur fond sombre.** Le vert du site tombe à
+2,88:1 sur l'abysse, sous le 3:1 exigé par WCAG 1.4.11 — l'audit
+d'accessibilité l'a relevé à 2,45:1 sur le bouton de l'aperçu. Le papier
+dessine l'anneau, l'abysse l'isole. C'est le même défaut que le site
+avait déjà corrigé sur ses autres blocs sombres, et qu'un nouveau bloc
+sombre réintroduit s'il ne le reprend pas.
+
+**Pour retirer l'encart**, Fabien vide le champ « Titre de l'événement »
+dans l'atelier. Les autres champs restent en place pour le stage suivant.

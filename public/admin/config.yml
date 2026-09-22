@@ -94,6 +94,185 @@ collections:
                 i18n: true
                 hint: Facultatif. Laisser vide pour n'afficher qu'un seul bouton.
                 required: false
+          - name: evenement
+            label: Encart « Événement à venir » (facultatif)
+            widget: object
+            i18n: true
+            fields:
+              - name: titre
+                label: Titre de l'événement — VIDER CE CHAMP RETIRE L'ENCART
+                widget: string
+                i18n: true
+                hint: >-
+                  Tant que ce champ porte un titre, l'encart s'affiche en haut de l'accueil. Le
+                  vider suffit à le faire disparaître : les autres champs peuvent rester remplis
+                  pour un prochain événement.
+                required: false
+              - name: etiquette
+                label: Étiquette
+                widget: string
+                i18n: true
+                hint: Par exemple « Événement à venir ». Affichée au-dessus du titre.
+                required: false
+              - name: accroche
+                label: Accroche
+                widget: text
+                i18n: true
+                hint: Une phrase de présentation. Facultative.
+                required: false
+              - name: date_texte
+                label: Date, telle qu'elle s'affiche
+                widget: string
+                i18n: true
+                hint: Par exemple « Samedi 24 octobre 2026 ».
+                required: false
+              - name: date_fin
+                label: Dernier jour de l'événement
+                widget: date
+                format: yyyy-MM-dd
+                i18n: duplicate
+                required: false
+                hint: >-
+                  L'encart disparaît tout seul le lendemain de cette date : un stage passé ne doit
+                  pas rester annoncé comme à venir.
+              - name: horaires
+                label: Horaires
+                widget: string
+                i18n: true
+                hint: Par exemple « 9 h – 12 h · 13 h – 17 h ». Facultatif.
+                required: false
+              - name: lieu
+                label: Lieu
+                widget: string
+                i18n: true
+                hint: Ville et nom du site, par exemple « Villejuif · Complexe sportif Guy Boniface ».
+                required: false
+              - name: adresse
+                label: Adresse complète
+                widget: string
+                i18n: true
+                hint: Facultative.
+                required: false
+              - name: tarif
+                label: Tarif
+                widget: string
+                i18n: true
+                hint: Par exemple « 40 € ». Facultatif.
+                required: false
+              - name: places
+                label: Places et inscription
+                widget: string
+                i18n: true
+                hint: Par exemple « 19 places · inscription obligatoire ». Facultatif.
+                required: false
+              - name: programme
+                label: Au programme
+                widget: list
+                i18n: true
+                required: false
+                field:
+                  name: point
+                  label: Point du programme
+                  widget: string
+                hint: Les thèmes abordés, un par ligne. Affichés en pastilles.
+              - name: libelles
+                label: Intitulés affichés
+                widget: object
+                i18n: true
+                fields:
+                  - name: date
+                    label: Intitulé « Date »
+                    widget: string
+                    i18n: true
+                    required: false
+                  - name: lieu
+                    label: Intitulé « Lieu »
+                    widget: string
+                    i18n: true
+                    required: false
+                  - name: conditions
+                    label: Intitulé « Conditions »
+                    widget: string
+                    i18n: true
+                    required: false
+                  - name: programme
+                    label: Intitulé « Au programme »
+                    widget: string
+                    i18n: true
+                    required: false
+                hint: >-
+                  Les petits mots affichés au-dessus de chaque information. À traduire, rarement à
+                  changer.
+              - name: affiche
+                label: Affiche de l'événement
+                widget: object
+                i18n: true
+                fields:
+                  - name: src
+                    label: Affiche
+                    widget: image
+                    i18n: duplicate
+                    required: false
+                    hint: >-
+                      L'affiche qui s'ouvre en grand au clic. Format WebP ou JPEG, environ 1200 px
+                      de large, moins de 250 Ko.
+                    media_folder: /public/evenements
+                    public_folder: /evenements
+                  - name: apercu
+                    label: Aperçu de l'affiche (facultatif)
+                    widget: image
+                    i18n: duplicate
+                    required: false
+                    hint: >-
+                      Version allégée montrée dans l'encart. Laisser vide pour utiliser l'affiche
+                      elle-même.
+                    media_folder: /public/evenements
+                    public_folder: /evenements
+                  - name: alt
+                    label: Description de l'affiche
+                    widget: text
+                    i18n: true
+                    hint: >-
+                      Ce que montre l'affiche, pour les personnes qui ne la voient pas. Reprendre le
+                      titre, les intervenants, la date et le lieu.
+                    required: false
+              - name: bouton_affiche
+                label: Bouton qui ouvre l'affiche
+                widget: string
+                i18n: true
+                hint: Par exemple « Voir l'affiche ».
+                required: false
+              - name: bouton_inscription
+                label: Bouton d'inscription
+                widget: string
+                i18n: true
+                hint: Par exemple « S'inscrire ». Laisser vide pour ne pas l'afficher.
+                required: false
+              - name: lien_inscription
+                label: Adresse d'inscription
+                widget: string
+                i18n: true
+                hint: >-
+                  L'adresse HelloAsso ou équivalente. Sans elle, le bouton d'inscription n'apparaît
+                  pas.
+                required: false
+              - name: rappel_flottant
+                label: Afficher le rappel qui suit le défilement
+                widget: boolean
+                i18n: duplicate
+                required: false
+                default: true
+              - name: rappel_texte
+                label: Texte du rappel
+                widget: string
+                i18n: true
+                hint: >-
+                  Court, par exemple « Stage du 24 octobre ». Sans lui, la date complète est
+                  reprise.
+                required: false
+            hint: >-
+              Un encart ponctuel en haut de l'accueil. Pour le retirer : vider le champ « Titre de
+              l'événement ».
           - name: besoins
             label: Bloc « À quels besoins Pacivis répond »
             widget: object
