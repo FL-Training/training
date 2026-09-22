@@ -31,7 +31,7 @@
  * serveur de développement.
  */
 import { chromium } from "playwright-core";
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -63,7 +63,24 @@ const serveur = spawn("npx", ["astro", "preview", "--port", String(PORT)], {
   cwd: RACINE,
   stdio: "ignore",
 });
-const arreter = () => serveur.kill();
+/*
+  ARRÊTER LE SERVEUR NE SUFFIT PLUS À TUER LE PROCESSUS LANCÉ.
+
+  Depuis Astro 7.2, `astro preview` ne sert plus lui-même : il confie le
+  travail à un serveur DÉTACHÉ, qu'il laisse vivre en arrière-plan, et
+  refuse d'en démarrer un second — « Preview server already running ».
+  Tuer le processus `npx` laissait donc le vrai serveur derrière lui ;
+  l'outil suivant se voyait refuser son port et échouait sur un
+  `ERR_CONNECTION_REFUSED` qui ne disait rien de la cause.
+
+  Constaté le 22/09/2026 en montant Astro de 7.1.3 à 7.2.10 : les tests
+  de styles laissaient un serveur sur 4488, et l'audit d'accessibilité
+  qui suit dans `npm test` ne démarrait plus jamais.
+*/
+const arreter = () => {
+  serveur.kill();
+  spawnSync("npx", ["astro", "preview", "stop"], { cwd: RACINE, stdio: "ignore" });
+};
 process.on("exit", arreter);
 
 const ADRESSE = `http://localhost:${PORT}${BASE.replace(/\/$/, "")}`;
