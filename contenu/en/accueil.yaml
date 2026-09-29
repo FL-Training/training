@@ -37,7 +37,7 @@ evenement:
     alt: "Poster for the workshop “Preventing and managing violence”, led by Fabien Lacombe and Fabrice Prat, on Saturday 24 October 2026 in Villejuif, France."
   bouton_affiche: View the poster
   bouton_inscription: Register
-  lien_inscription: ""
+  lien_inscription: https://www.helloasso.com/associations/krav-maga-94/evenements/stage-de-formation-a-la-prevention-et-gestion-de-la-violence
   rappel_flottant: true
   rappel_texte: Workshop on 24 October
 besoins:

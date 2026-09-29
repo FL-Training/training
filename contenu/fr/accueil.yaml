@@ -37,7 +37,7 @@ evenement:
     alt: "Affiche du stage « Prévention et gestion de la violence », animé par Fabien Lacombe et Fabrice Prat, le samedi 24 octobre 2026 à Villejuif."
   bouton_affiche: Voir l'affiche
   bouton_inscription: S'inscrire
-  lien_inscription: ""
+  lien_inscription: https://www.helloasso.com/associations/krav-maga-94/evenements/stage-de-formation-a-la-prevention-et-gestion-de-la-violence
   rappel_flottant: true
   rappel_texte: Stage du 24 octobre
 besoins:

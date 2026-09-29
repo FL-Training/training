@@ -121,15 +121,23 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
             </div>
           )}
 
+          {/*
+            L'INSCRIPTION PASSE DEVANT L'AFFICHE.
+
+            Les deux boutons voisinent, comme Fabien l'a demandé, mais
+            c'est l'inscription qui porte l'accent : l'affiche informe,
+            l'inscription remplit les places. Un visiteur qui ne lit
+            qu'un bouton doit tomber sur celui-là.
+          */}
           <div class="encart-actions">
-            <button type="button" class="btn btn-ambre" data-ouvrir-affiche>
-              {e.bouton_affiche}
-            </button>
             {inscription && (
-              <a href={inscription} class="btn btn-ligne-claire" rel="noopener">
+              <a href={inscription} class="btn btn-accent" rel="noopener">
                 {e.bouton_inscription}
               </a>
             )}
+            <button type="button" class="btn btn-ligne-claire" data-ouvrir-affiche>
+              {e.bouton_affiche}
+            </button>
           </div>
         </div>
 
@@ -206,7 +214,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
       </div>
       <img src={href(e.affiche.src)} alt={e.affiche.alt} width="1240" height="1754" />
       {inscription && (
-        <a href={inscription} class="btn btn-ambre affiche-inscription" rel="noopener">
+        <a href={inscription} class="btn btn-accent affiche-inscription" rel="noopener">
           {e.bouton_inscription}
         </a>
       )}
@@ -216,25 +224,25 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
 
 <style>
   /*
-    L'AMBRE VIENT DE L'AFFICHE, et ne sert qu'ici.
+    LA CHARTE DU SITE, PAS CELLE DE L'AFFICHE.
 
-    La charte du site tient le vert pour accent rare ; elle n'a pas
-    d'orange. Celui-ci est relevé sur l'affiche même (#d89858) : il fait
-    le lien visuel entre l'encart et l'image qu'il ouvre, et c'est ce
-    qui rend le bloc « tape à l'œil » sans emprunter une couleur
-    étrangère au projet.
+    La première version reprenait l'ambre de l'affiche (var(--color-sage)) pour
+    lier l'encart à l'image qu'il ouvre. Fabien l'a écarté le 29/09/2026
+    en découvrant le résultat : « il a repris la charte de l'affiche,
+    pas celle du site ». L'affiche est un document, le site une marque —
+    c'est la marque qui commande.
 
-    Il n'est employé que SUR FOND SOMBRE, et c'est une contrainte
-    mesurée, pas une préférence : 5,85:1 sur l'abysse — au-delà du 4,5:1
-    exigé pour du texte — mais 2,24:1 sur le papier, très en dessous.
+    On reprend donc le vocabulaire des autres sections sombres du site,
+    « Notre approche » et « Notre méthode » : sauge pour l'accent,
+    papier atténué pour le texte de soutien. Mesuré : sauge sur abysse
+    donne 6,36:1, bien au-delà du 4,5:1 exigé. L'inverse — papier sur
+    sauge — tombe à 2,06:1, d'où le texte sombre sur le bouton plein.
   */
   .encart-evenement {
-    --ambre: #d89858;
-    --ambre-clair: #e8b784;
     position: relative;
     background: var(--color-abysse);
     color: var(--color-paper);
-    border-top: 3px solid var(--ambre);
+    border-top: 3px solid var(--color-sage);
     overflow: hidden;
   }
 
@@ -262,7 +270,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     font-weight: 600;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--ambre-clair);
+    color: var(--color-sage);
   }
 
   /* La pastille bat lentement : c'est le seul mouvement de l'encart. */
@@ -270,13 +278,13 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     width: 0.55rem;
     height: 0.55rem;
     border-radius: 50%;
-    background: var(--ambre);
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--ambre) 70%, transparent);
+    background: var(--color-sage);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sage) 70%, transparent);
     animation: battement 2.4s ease-out infinite;
   }
 
   @keyframes battement {
-    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--ambre) 70%, transparent); }
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-sage) 70%, transparent); }
     70% { box-shadow: 0 0 0 0.6rem transparent; }
     100% { box-shadow: 0 0 0 0 transparent; }
   }
@@ -318,7 +326,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--ambre-clair);
+    color: var(--color-sage);
   }
 
   .encart-faits dd {
@@ -347,7 +355,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     font-weight: 600;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--ambre-clair);
+    color: var(--color-sage);
   }
 
   .encart-programme ul {
@@ -378,24 +386,28 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     Cibles d'au moins 44 px de haut, et un écart entre elles : c'est la
     taille exigée au doigt (WCAG 2.5.8), que le reste du site tient déjà.
   */
-  .btn-ambre,
+  .btn-accent,
   .btn-ligne-claire {
     min-height: 2.75rem;
     display: inline-flex;
     align-items: center;
   }
 
-  .btn-ambre {
-    background: var(--ambre);
-    color: #1a1207;
-    border: 1px solid var(--ambre);
+  /*
+    Sauge plein, texte ABYSSE et non papier : mesuré, papier sur sauge
+    ne donne que 2,06:1 là où le couple inverse en donne 6,36.
+  */
+  .btn-accent {
+    background: var(--color-sage);
+    color: var(--color-abysse);
+    border: 1px solid var(--color-sage);
     font-weight: 600;
   }
 
-  .btn-ambre:hover,
-  .btn-ambre:focus-visible {
-    background: var(--ambre-clair);
-    border-color: var(--ambre-clair);
+  .btn-accent:hover,
+  .btn-accent:focus-visible {
+    background: color-mix(in oklab, var(--color-sage) 84%, var(--color-paper));
+    border-color: color-mix(in oklab, var(--color-sage) 84%, var(--color-paper));
   }
 
   .btn-ligne-claire {
@@ -449,8 +461,8 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: var(--ambre);
-    color: #1a1207;
+    background: var(--color-sage);
+    color: var(--color-abysse);
     font-size: 1.1rem;
   }
 
@@ -529,7 +541,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
-    background: #d89858;
+    background: var(--color-sage);
     flex: none;
   }
 
@@ -543,7 +555,7 @@ const inscription = e.lien_inscription && e.bouton_inscription ? e.lien_inscript
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #e8b784;
+    color: var(--color-sage);
   }
 
   .rappel-titre {
